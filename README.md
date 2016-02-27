@@ -11,36 +11,7 @@ cd scotuswebcites.io
 ./setup.py
 ``` 
 
-----
-First you will need to create a new utf-8 encoded mysql database for the project, and assign a user to that database with the pertinent permissions.  Assuming we want to call the database ```scotusdatabase```, the user ```scotususer```, and the password ```scotuspassword```, we can do the following.  Keep in mind, you should use your own unique strings for the database name, user, and password:
-
-```
-mysql -u root -p
-CREATE DATABASE scotusdatabase DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
-CREATE USER 'scotususer'@'localhost' IDENTIFIED BY 'scotuspassword';
-GRANT ALL PRIVILEGES ON scotusdatabase.* TO 'scotususer'@'localhost';
-```  
-
-Now you will need to clone this repository, download the dependencies (via pip), and initialize the application settings file.  The last step below will open the settings file in the standard vi text editor:  
-
-```
-git clone git@github.com:orangeoval/scotus.git
-cd scotus
-chmod 755 manage.py
-pip install -r requirements.txt
-cp scotus/settings.py.dist scotus/settings.py
-vi scotus/settings.py
-```  
-
-You will need to find the following database variables in the file and change them to reflect the mysql database, user, and password that you created above:
-
-```
-MYSQL_DATABASE
-MYSQL_USER
-MYSQL_PASSWORD
-```  
-
-You will also want to change ```CONTACT_EMAIL``` to reflect your valid email address.  You can type ':wq!' (without the quotation marks) to save your changes and exit the vi editor.  You will also need to set up  a django user for the application to verify the citations (you can look at the [django documentation](https://docs.djangoproject.com/en/1.8/topics/auth/) for instructions, but I intend to add specific instructions soon.  To run the opinion discovery and web citation process, you can manually run the following from within the ```scotus/``` directory:  
+To run the opinion discovery and web citation process, you can manually run the following from within the ```scotus/``` directory:  
 
 ```
 ./manage.py discover
