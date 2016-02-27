@@ -93,8 +93,8 @@ WSGI_APPLICATION = 'scotus.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE':	'django.db.backends.mysql',
-        'NAME':		'MYSQL_DATABASE',
-        'USER':		'MYSQL_USER',
+        'NAME':		'scotuswebcites',
+        'USER':		'scotuswebcites',
         'PASSWORD':	'MYSQL_PASSWORD',
         'HOST':		'localhost',
         'PORT':		'3306',
@@ -106,13 +106,9 @@ DATABASES = {
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'America/New_York'
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
 
 
@@ -120,7 +116,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
-
 STATICFILES_DIRS = [
     BASE_DIR + STATIC_URL,
 ]
@@ -131,7 +126,7 @@ WEBCITE = {
     'api_query': 'http://www.webcitation.org/archive?returnxml=true&url=%s&email=%s',
 }
 PERMA = {
-    'enabled': False,
+    'enabled': False,	#ENABLE_PERMA_CC
     'archive_base': 'https://perma.cc',
     'api_key': 'PERMA_CC_API_KEY',
     'api_query': 'https://api.perma.cc/v1/archives/?api_key=%s'
@@ -144,6 +139,6 @@ LOGIN_URL = '/login'
 LOGIN_REDIRECT_URL = '/'
 
 # Custom user agent for network requests
-USER_AGENT = 'Branched version of http://github.com/edsu/opinions' 
-CONTACT_EMAIL = 'CONTACT_EMAIL'
+USER_AGENT = 'scotuswebcites.io [https://github.com/arderyp/scotuswebcites.io]' 
+CONTACT_EMAIL = 'YOUR_CONTACT_EMAIL'
 REQ_HEADER = {"User-Agent": USER_AGENT, 'From': CONTACT_EMAIL}
