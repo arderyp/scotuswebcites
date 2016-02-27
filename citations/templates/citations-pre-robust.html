@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Verified</th>
+          <th>Citation</th>
+          <th>Opinion</th>
+          <th>Memento</th>
+          {% if WEBCITE.enabled or PERMA.enabled %}
+          <th>Stable</th>
+          {% endif %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for citation in citations %}
+          <tr>
+            <td>
+              <a class='anchor' name='{{ citation.id }}'></a>
+              {% if citation.verify_date %} 
+                  <span id="verify-date">{{ citation.verify_date|date:"Y.m.d" }}</span>
+              {% else %}
+                <a class="btn btn-primary" href="/citations/verify/{{ citation.id  }}" role="button">Verify</a>
+              {% endif %}
+            </td>
+
+            <td>
+              {% if citation.validated %}
+                {% if citation.status != 'u' %}
+                  <a href="{{ citation.validated  }}" target="_blank">{{ citation.validated }}</a>
+                {% else %}
+                  {{ citation.validated  }}
+                {% endif %}
+              {% else %}
+                {% if citation.status != 'u' %}
+                    <a class="{{ citation.status }}" href="{{ citation.scraped  }}" target="_blank">{{ citation.scraped }}</a>
+                {% else %}
+                  {{ citation.scraped }}
+                {% endif %}
+              {% endif %}
+            </td>
+
+            <td><a href="{{ citation.opinion.pdf_url  }}" target="_blank">{{ citation.opinion.name }}</a></td>
+
+            <td class="centered">
+              {% if citation.memento %}
+                <a href="{{ citation.memento }}" target="_blank" title="Combined captures courtesey of mementoweb.org">
+                  <img src="/static/img/memento-logo.png" id="memento-logo" />
+                </a>
+              {% endif %}
+            </td>
+           
+            {% if WEBCITE.enabled or PERMA.enabled %}
+              <td class="centered">
+                <span id="captures">
+                  {% if WEBCITE.enabled and citation.webcite %}
+                    <a href="{{ citation.webcite }}" target="_blank" title="Live capture coutesy of webcitation.org">
+                      <img id="webcite-logo" src="/static/img/webcite-logo.png" />
+                    </a> {% if PERMA.enabled and citation.perma %} | {% endif %}
+                  {% endif %}
+                  {% if PERMA.enabled and citation.perma %}
+                    <a href="{{ citation.perma }}" target="_blank" title="Live capture coutesy of perma.cc">
+                      <img id="perma-logo" src="/static/img/perma-logo.png" />
+                    </a> 
+                  {% endif %}
+                </span>
+              </td>
+            {% endif %}
+
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+{% endblock %}

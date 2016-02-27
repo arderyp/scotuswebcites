@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% load custom_filters %}
+
+{% block content %}
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Verified</th>
+          <th>Status</th>
+          <th>Citation</th>
+          <th>Opinion</th>
+          <th>Memento</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for citation in citations %}
+          <tr>
+            <td>
+              <a class='anchor' name='{{ citation.id }}'></a>
+              {% if citation.verify_date %} 
+                {% if citation.perma %}
+                  <a target="_blank" href="{{ citation.perma }}" title="view application capture">
+                    <span class="label label-info label-as-badge">
+                      {{ citation.verify_date|date:"Y.m.d" }}
+                    </span>
+                  </a>
+                {% else %}
+                  <span class="label label-default label-as-badge">
+                    {{ citation.verify_date|date:"Y.m.d" }}
+                  </span>
+                {% endif %}
+              {% else %}
+                <a class="btn btn-primary" href="/citations/verify/{{ citation.id  }}" title="verify citation" role="button">Verify</a>
+              {% endif %}
+            </td>
+
+            <td>
+              <span class="label label-default label-as-badge status-{{ citation.status }}" title="{{ statuses|get_item:citation.status }}">
+                {{ citation.status }}
+              </span>
+            </td>
+
+            <td>
+              {% if citation.status == 'u' %}
+                {% if citation.validated %}
+                  {{ citation.validated }}
+                {% else %}
+                  {{ citation.scraped }}
+                {% endif %}
+              {% else %}
+                {% if citation.validated %}
+                  <a target="_blank" href="{{ citation.validated }}" title="visit live citation page">
+                    {{ citation.validated }}
+                  </a>
+                {% else %}
+                  <a target="_blank" href="{{ citation.scraped }}" title="visit live citation page">
+                    {{ citation.scraped }}
+                  </a>
+                {% endif %}
+              {% endif %}
+            </td>
+
+            <td>
+              <a href="{{ citation.opinion.pdf_url  }}" target="_blank">{{ citation.opinion.name }}</a>
+            </td>
+
+            <td>
+              {% if citation.memento %}
+                <a href="{{ citation.memento }}" target="_blank" title="view Memento captures">
+                  <img src="/static/img/memento-logo.png" id="memento-logo" />
+                </a>
+              {% endif %}
+            </td>
+
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+{% endblock %}

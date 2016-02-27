@@ -1,0 +1,15 @@
+#!/bin/bash
+
+## If you are using virtualenv / virtualenvwrapper, you can use the logic below
+## You will want to rename this file 'discover.sh' and add it to your crontab
+## You will also need to update the path in the 'source' line and in the 'PYTHONPATH' line to reflect your local paths.
+
+source /home/user/.virtualenvs/scotus/bin/activate
+
+DJANGO_SETTINGS_MODULE=scotus.settings
+PYTHONPATH=/home/user/scotus
+export DJANGO_SETTINGS_MODULE
+export PYTHONPATH
+
+echo;echo 'RUNNING DISCOVERY';echo
+python $PYTHONPATH/manage.py discover

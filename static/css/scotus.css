@@ -1,0 +1,71 @@
+#overview {
+  float: left;
+  width: 100%;
+}
+
+#rot_distribution {
+  float: right;
+}
+
+#login-form {
+  width: 200px;
+  height: 200px;
+  position: absolute;
+  top:0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+}
+
+.anchor {
+  display: block;
+  position: relative;
+  top: -75px;
+  visibility: hidden;
+}
+
+input#id_validated {
+  width: 1000px;
+}
+
+.js-disabled,
+.load-wheel {
+  font-style: italic;
+  font-size:10px;
+}
+
+#memento-logo {
+  height: 30px;
+  width: 30px;    
+}
+
+#perma-logo {
+  height: 10px;
+  width: 17px;
+}
+
+#webcite-logo {
+  height: 14px;
+  width: 14px;
+}
+
+td.centered {
+  text-align: center;
+}
+
+.label-as-badge {
+    border-radius: 1em;
+}
+
+.status-a {
+    background-color: #90ed7d;
+}
+
+.status-r {
+    background-color: #f7a35c;
+}
+
+.status-u {
+    background-color: #434348;
+}
