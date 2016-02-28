@@ -8,7 +8,6 @@
           <th>Verified</th>
           <th>Status</th>
           <th>Citation</th>
-          <th>Opinion</th>
           <th>Memento</th>
         </tr>
       </thead>
@@ -30,7 +29,13 @@
                   </span>
                 {% endif %}
               {% else %}
-                <a class="btn btn-primary" href="/citations/verify/{{ citation.id  }}" title="verify citation" role="button">Verify</a>
+                {% if user.is_authenticated %}
+                  <a class="btn btn-primary" href="/citations/verify/{{ citation.id  }}" title="verify citation" role="button">Verify</a>
+                {% else %}
+                  <span class="label label-default label-as-badge">
+                    unverified
+                  </span>
+                {% endif %}
               {% endif %}
             </td>
 
@@ -58,10 +63,10 @@
                   </a>
                 {% endif %}
               {% endif %}
-            </td>
 
-            <td>
-              <a href="{{ citation.opinion.pdf_url  }}" target="_blank">{{ citation.opinion.name }}</a>
+              <a href="{{ citation.opinion.pdf_url  }}" title="Cited in '{{ citation.opinion.name }}'">
+                <span class="glyphicon glyphicon-book"></span>
+              </a>
             </td>
 
             <td>

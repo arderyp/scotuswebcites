@@ -3,4 +3,6 @@ django-bootstrap3==5.4.0
 lxml==3.4.3
 MySQL-python==1.2.5
 pdfminer==20140328
+python-dateutil==2.4.2
 requests==2.6.2
+six==1.10.0

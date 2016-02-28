@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load custom_filters %}
 
 {% block content %}
     <br>
@@ -8,20 +9,30 @@
            <th>Opinion</th>
            <th>Justice</th>
            <th>Published</th>
-           <th>Updated</th>
+           <th>Revised</th>
            <th>Web Citations</th>
          </tr>
        </thead>
        <tbody>
        {% for opinion in opinions %}
        <tr>
-         <td><a href="{{ opinion.pdf_url }}" target="_blank">{{ opinion.name }}</a></td>
+         <td>
+             <a href="{{ opinion.pdf_url }}" title="View Original Opinion" target="_blank">
+                 {{ opinion.name }}
+             </a>
+         </td>
          <td>{{ opinion.justice.name }}</td>
-         <td>{{ opinion.published }}</td>
-         <td>{% if opinion.updated %}{{ opinion.updated_date }}{% endif %}</td>
+         <td>{{ opinion.published|yyyymmdd }}</td>
+         <td>
+             {% if opinion.revised_date %}
+                <a href="{{ opinion.revised_pdf_url }}" title="View Revised Opinion">
+                    {{ opinion.revised_date|yyyymmdd }}
+                </a>
+             {% endif %}
+         </td>
          <td>
            {% if opinion.citation_count %}
-             <a href="/citations/{{ opinion.id  }}" title="view opinion citations">
+             <a href="/citations/{{ opinion.id  }}" title="view opinion citations" target="_blank">
                <span class="label label-info label-as-badge">
                  {{ opinion.citation_count }}
                </span>
