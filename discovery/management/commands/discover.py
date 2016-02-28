@@ -5,9 +5,8 @@ from discovery.Discovery import Discovery
 
 class Command(NoArgsCommand):
     def handle_noargs(self, **options):
-        job = Discovery()
-        job.run()
         try:
+            job = Discovery()
             job.run()
         except:
             self.send_error_email()
