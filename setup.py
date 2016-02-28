@@ -2,6 +2,7 @@
 
 import os
 import sys
+import time
 import random
 import string
 from getpass import getpass, getuser
@@ -107,9 +108,11 @@ django_password = getpass('We are almost done! This application uses a single us
                           'Your user name is "%s".  Now you need to come up with a password. If you can remember '
                           'it, it is a bad password. So think of something random, long, and complex, then write '
                           'it down on a piece of paper along with your username quoted above.  You will need to '
-                          'type it below twice to confirm it. When you are done, store the piece of paper '
+                          'type/paste it below twice to confirm it. When you are done, store the piece of paper '
                           'somewhere safe. Please enter the password: ' % django_user)
+time.sleep(2)
 verify = getpass('\nPlease enter the password again: ')
+time.sleep(2)
 while django_password != verify:
     django_password = getpass("\n\nThe passwords did not match.  Hopefully this means it is complicated!\n"
                               "Let's try this again.  Please enter the password: ")
