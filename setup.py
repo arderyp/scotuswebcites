@@ -14,7 +14,8 @@ def generate_random_alpha_numeric_string(length):
 
 # Handle requirements
 positive = ['yes', 'y']
-proceed = raw_input('\n\nHave you already installed and set up mysql on this machine server, and is it running? ')
+proceed = raw_input('\n\nHave you already installed pip and set up mysql on this machine, '
+                    'and is the latter running right now? ')
 if proceed not in positive:
     print('Please take care of that and then run this script again.\n\n')
     sys.exit()
@@ -56,6 +57,7 @@ print('Created new %s database accessible via full privileges to new %s user usi
       'your provided password' % (application, application))
 
 # Determine custom environment settings
+settings = 'scotus/settings.py'
 email = raw_input('\n\nPlease enter your email address: ')
 if raw_input('Is this a production environment? ') in positive:
     is_production = True
@@ -66,6 +68,16 @@ if raw_input('Do you want to enable Perma.cc archiving? ') in positive:
     perma_api_key = raw_input('Please enter your Perma.cc API key: ')
 else:
     print('Disabling Perma.cc.  You can always manually enable it later via %s' % settings)
+if raw_input('Would you like to use a gmail account to sent system emails? ') in positive:
+    configure_gmail = True
+    gmail_address = raw_input("Please enter the gmail address that you'd like to use: ")
+    gmail_password = getpass("Please enter the password associated with this account: ")
+
+else:
+    configure_gmail = False
+    print('Feel free to look at the Django documentation, edit %s, and possibly configure '
+          'your server to set up email in for your environment. Bur for the time being, '
+          'system emails will not be sent and may cause system errors.')
 
 # Create fresh custom settings.py file
 settings = 'scotus/settings.py'
@@ -80,6 +92,11 @@ with open('%s.dist' % settings, 'r') as dist:
                 line = line.replace('YOUR_CONTACT_EMAIL', email)
             elif 'YOUR_SECRET_KEY' in line:
                 line = line.replace('YOUR_SECRET_KEY', generate_random_alpha_numeric_string(75))
+            elif configure_gmail:
+                if 'YOUR_GMAIL_ADDRESS' in line:
+                    line = line.replace('YOUR_GMAIL_ADDRESS', gmail_address)
+                elif 'YOUR_GMAIL_PASSWORD' in line:
+                    line = line.replace('YOUR_GMAIL_PASSWORD', gmail_password)
             elif perma_api_key:
                 if '#ENABLE_PERMA_CC' in line:
                     line = line.replace('False', 'True')
