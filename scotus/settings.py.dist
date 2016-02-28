@@ -21,11 +21,10 @@ PDF_DIR = BASE_DIR + '/docs/pdfs/'
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'rlsl4293tp4e6c)$4!w)5h-7tngl6m4e!c__ecvrq-tc6xftd0'
+SECRET_KEY = 'YOUR_SECRET_KEY'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
-
+DEBUG = True
 ALLOWED_HOSTS = []
 
 
@@ -126,7 +125,7 @@ WEBCITE = {
     'api_query': 'http://www.webcitation.org/archive?returnxml=true&url=%s&email=%s',
 }
 PERMA = {
-    'enabled': False,	#ENABLE_PERMA_CC
+    'enabled': False,	#ENABLE_PERMA_CC (don't delete this comment, it is used in setup.py)
     'archive_base': 'https://perma.cc',
     'api_key': 'PERMA_CC_API_KEY',
     'api_query': 'https://api.perma.cc/v1/archives/?api_key=%s'

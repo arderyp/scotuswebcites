@@ -52,6 +52,8 @@ def download_csv(request):
 
 
 def overview(request):
+    from datetime import datetime
+    from time import time, mktime
     from opinions.models import Opinion
     from citations.models import Citation
     from django.db.models import Count
@@ -84,7 +86,16 @@ def overview(request):
         context['citation_distribution'].append([js_date, opinion['citation_count']])
 
     sorted_data = sorted(context['citation_distribution'], key=lambda x: x[0])
-    context['earliest'] = sorted_data[0][0] - js_month
-    context['latest'] = sorted_data[-1][0] + js_month
+
+    if sorted_data:
+        earliest = sorted_data[0][0] - js_month
+        latest = sorted_data[-1][0] + js_month
+    else:
+        # No scraping has been done yet, set dates manually, charts will be blank
+        earliest = 1262304000
+        latest = time()
+
+    context['earliest'] = earliest - js_month
+    context['latest'] = latest + js_month
 
     return render(request, template, context)
