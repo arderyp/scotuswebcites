@@ -4,7 +4,7 @@
 #### Setup
 Out of the box, this application depends on a mysql backend, and the instructions below cater to that dependency.  You can easily use another database backend, see the [Django documentation](https://docs.djangoproject.com/en/1.8/ref/settings/#databases) for instructions. Likewise, to run the application in production, you should also install and configure a web server, such a [nginx](http://nginx.com/) or [apache](https://httpd.apache.org/).  Lastly, if you are installing this application on a server or VM where other websties, webapplications, or processes unrelated to this project are running, you should consider using [virtualenv](https://pypi.python.org/pypi/virtualenv) and [virtualenvwrapper](https://pypi.python.org/pypi/virtualenvwrapper) 
 
-Once mysql is installed and configured with a root user account, move into the directory where you want to store this application and then run the following:
+To follow the directions below, you will also need to install [pip](http://pypi.python.org/pypi/pip), which is used to fetch the application requirements. Once that's taken care of, an mysql is installed and configured with a root user account, move into the directory where you want to store this application and then run the following:
 ```
 git clone git@github.com:arderyp/scotuswebcites.io.git
 cd scotuswebcites.io
