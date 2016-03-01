@@ -1,6 +1,5 @@
 from django.shortcuts import render
 from opinions.models import Opinion
-from citations.models import Citation
 from django.http import HttpResponseRedirect
 
 def index(request):
