@@ -28,7 +28,7 @@ def download_csv(request):
         'Category',
         'Published',
         'Discovered',
-        'PDF Url',
+        'Opinion PDF Url',
         'Reporter',
         'Docket',
         'Part',

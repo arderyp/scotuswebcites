@@ -72,52 +72,26 @@ class Citation(models.Model):
 
         self.st = [x[1] for x in ST if x[0] == st][0]
         self.se = [x[1] for x in SE if x[0] == se][0]
-        
-
-        for attr in self.__dict__:
-            if attr == 'opinion' or attr.startswith('_'):
-                continue
-
-            data = getattr(self, attr)
-
-            if data is None:
-                data = ''
-            elif not type(data) in [str, unicode]:
-                data = str(data)
-
-            setattr(self, attr, data.encode('utf8'))
-
-        self.opinion.name = self.opinion.name.encode('utf8')
-        self.opinion.justice.name = self.opinion.justice.name.encode('utf8')
-        self.opinion.category = self.opinion.category.encode('utf8')
-        self.opinion.published = self.opinion.published.strftime('%Y-%m-%d').encode('utf8')
-        self.opinion.discovered = self.opinion.discovered.strftime('%Y-%m-%d').encode('utf8')
-        self.opinion.pdf_url = self.opinion.pdf_url.encode('utf8')
-        self.opinion.reporter = self.opinion.reporter.encode('utf8')
-        self.opinion.docket = self.opinion.docket.encode('utf8')
-        self.opinion.part = self.opinion.part.encode('utf8')
-        
 
         return [
-            self.scraped,
-            self.validated,
-            self.verify_date,
+            self.scraped.encode('utf8') if self.scraped else '',
+            self.validated.encode('utf8') if self.validated else '',
+            self.verify_date.encode('utf8') if self.verify_date else '',
             self.se,
             self.st,
-            self.memento,
-            self.webcite,
-            self.perma,
-            self.opinion.name,
-            self.opinion.justice.name,
-            self.opinion.category,
-            self.opinion.published,
-            self.opinion.discovered,
-            self.opinion.pdf_url,
-            self.opinion.reporter,
-            self.opinion.docket,
-            self.opinion.part,
+            self.memento.encode('utf8') if self.memento else '',
+            self.webcite.encode('utf8') if self.webcite else '',
+            self.perma.encode('utf8') if self.perma else '',
+            self.opinion.name.encode('utf8'),
+            self.opinion.justice.name.encode('utf8'),
+            self.opinion.category.encode('utf8') if self.opinion.category else '',
+            self.opinion.published.strftime('%Y-%m-%d').encode('utf8'),
+            self.opinion.discovered.strftime('%Y-%m-%d').encode('utf8'),
+            self.opinion.pdf_url.encode('utf8'),
+            self.opinion.reporter.encode('utf8') if self.opinion.reporter else '',
+            self.opinion.docket.encode('utf8'),
+            self.opinion.part.encode('utf8') if self.opinion.part else '',
         ]
-
 
     #TODO: add pertinent metadat to via api queries below
     #TODO: handle try exceptions more fully
