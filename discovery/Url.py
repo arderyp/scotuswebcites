@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from scotus import settings
-from urlparse import urlparse
-from time import sleep
 import requests
+from time import sleep
+from urlparse import urlparse
+
+from scotus import settings
+from discovery.Logger import Logger
+
 
 class Url:
     TIMEOUT = 30
@@ -21,13 +24,11 @@ class Url:
                 url = 'http://' + url 
 
             try:
-                return requests.get(url,
-                                    headers=cls.HEADERS,
-                                    timeout=cls.TIMEOUT,)
+                return requests.get(url, headers=cls.HEADERS, timeout=cls.TIMEOUT,)
             except Exception:
                 pass
        
         if err:
-            print 'ERROR: fetching %s' % url
+            Logger.error('Fetching failed for: %s' % url)
 
         return False

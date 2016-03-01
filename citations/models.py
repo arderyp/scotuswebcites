@@ -1,6 +1,9 @@
+# -*- coding: utf-8 -*-
+
 from django.db import models
 from scotus import settings
 from discovery.Url import Url
+
 
 class Citation(models.Model):
     SCRAPE_EVALUATIONS = (

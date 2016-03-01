@@ -31,7 +31,6 @@ class Pdf:
             return False
 
         with open(self.local_file, 'w') as local:
-            #ADDRESS: need .decode('utf8') below?
             local.write(request.content) 
             local.close()
  
@@ -46,7 +45,6 @@ class Pdf:
         pdf_stream = io.BytesIO(pdf_data)
         laparams = LAParams()
         resource_manager = PDFResourceManager(caching=True)
-        output_type = 'text'
         codec = 'utf-8'
         output_stream = io.BytesIO()
         pagenos = set()
@@ -80,8 +78,8 @@ class Pdf:
         if not self.text:
             return False
 
-        #ADDRESS: find pythonic way of doing replacement on multiple needle/search terms for all newlines
-        #ADDRESS: should be using r'' string format?
+        #TODO: find pythonic way of doing replacement on multiple needle/search terms for all newlines
+        #TODO: should be using r'' string format?
         # Replace newlines with spaces, then create newlines at instances of 'http'
         text = re.sub('(\n|\r|&#xD)', '', self.text)
         text = re.sub('http', '\nhttp', text)

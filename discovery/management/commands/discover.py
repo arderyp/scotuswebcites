@@ -1,14 +1,21 @@
+import traceback
+
+import time
 from django.conf import settings
 from django.core.mail import send_mail
 from django.core.management.base import NoArgsCommand
 from discovery.Discovery import Discovery
+from discovery.Logger import Logger
 
 class Command(NoArgsCommand):
     def handle_noargs(self, **options):
         try:
+            print('\nRunning discovery. Logging to logs/%s.log\n' % time.strftime('%Y%m%d'))
             job = Discovery()
             job.run()
+            job.send_email_report()
         except:
+            Logger.error(traceback.format_exc())
             self.send_error_email()
 
     def send_error_email(self):

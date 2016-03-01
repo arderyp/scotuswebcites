@@ -9,7 +9,6 @@
            <th>Opinion</th>
            <th>Justice</th>
            <th>Published</th>
-           <th>Revised</th>
            <th>Web Citations</th>
          </tr>
        </thead>
@@ -23,13 +22,6 @@
          </td>
          <td>{{ opinion.justice.name }}</td>
          <td>{{ opinion.published|yyyymmdd }}</td>
-         <td>
-             {% if opinion.revised_date %}
-                <a href="{{ opinion.revised_pdf_url }}" title="View Revised Opinion">
-                    {{ opinion.revised_date|yyyymmdd }}
-                </a>
-             {% endif %}
-         </td>
          <td>
            {% if opinion.citation_count %}
              <a href="/citations/{{ opinion.id  }}" title="view opinion citations" target="_blank">

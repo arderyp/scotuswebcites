@@ -1,15 +1,14 @@
 #!/bin/bash
 
-## If you are using virtualenv / virtualenvwrapper, you can use the logic below
+## If you are using virtualenv, you can uncomment the 'source' line below and edit the path
+## You will also need to customize the path in PYTHON_PATH
 ## You will want to rename this file 'discover.sh' and add it to your crontab
-## You will also need to update the path in the 'source' line and in the 'PYTHONPATH' line to reflect your local paths.
 
-source /home/user/.virtualenvs/scotus/bin/activate
+#source /home/user/.virtualenvs/scotuswebcites.io/bin/activate
 
 DJANGO_SETTINGS_MODULE=scotus.settings
-PYTHONPATH=/home/user/scotus
+PYTHON_PATH="/home/user/scotuswebcites.io"
 export DJANGO_SETTINGS_MODULE
-export PYTHONPATH
+export PYTHON_PATH
 
-echo;echo 'RUNNING DISCOVERY';echo
-python $PYTHONPATH/manage.py discover
+python $PYTHON_PATH/manage.py discover

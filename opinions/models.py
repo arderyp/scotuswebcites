@@ -3,7 +3,7 @@
 from django.db import models
 from scotus import settings
 from discovery.Pdf import Pdf
-from justices.models import Justice
+from discovery.Logger import Logger
 from citations.models import Citation
 
 class Opinion(models.Model):
@@ -17,8 +17,6 @@ class Opinion(models.Model):
     docket = models.CharField(max_length=20)
     part = models.CharField(max_length=20)
     justice = models.ForeignKey('justices.Justice')
-    revised_date = models.DateField('date revised', blank=True, null=True)
-    revised_pdf_url = models.URLField(max_length=255, blank=True, null=True)
 
     def __init__(self, *args, **kwargs):
         self.local_pdf = False
@@ -32,40 +30,18 @@ class Opinion(models.Model):
 
     def already_exists(self):
         if Opinion.objects.filter(
-            name=unicode(self.name),
-            pdf_url=unicode(self.pdf_url),
-            published=unicode(self.published),
-            category=unicode(self.category),
-            reporter=unicode(self.reporter),
-            docket=unicode(self.docket),
-            justice=unicode(self.justice),
-            part=unicode(self.part)):
+            name=self.name,
+            pdf_url=self.pdf_url,
+            published=self.published,
+            category=self.category,
+            reporter=self.reporter,
+            docket=self.docket,
+            justice=self.justice,
+            part=self.part):
 
             return True
 
         return False
-
-    # TODO Should this be removed now that there is a revised field?
-    # def was_republished(self):
-    #     prevs = Opinion.objects.filter(name=self.name, justice=self.justice)
-    #
-    #     if prevs:
-    #         self.republished = True
-    #
-    #         for prev in prevs:
-    #             self.previous_publications.append(prev)
-    #
-    #             # Gather previous citations
-    #             for previous in Citation.objects.filter(opinion__name=self.name).exclude(opinion_id=self.id):
-    #
-    #                 # prevous scraped
-    #                 self.previous_publication_citations.append(previous.scraped)
-    #
-    #                 # previous validated
-    #                 if previous.validated != '0':
-    #                     self.previous_publication_citations.append(previous.validated)
-    #
-    #     return self.republished
 
     def get_local_pdf(self):
         if not self.id:
@@ -91,12 +67,15 @@ class Opinion(models.Model):
             self.pdf.scrape_urls()
 
     def ingest_citations(self):
+        self.ingested_citation_count = 0
+
         for url in self.pdf.urls:
             if url in self.previous_publication_citations:
-                print '--Skipping previously discovered citation for %s: %s' % (self.name, url)
+                Logger.info('--Skipping previously discovered citation for %s: %s' % (self.name, url))
                 continue
 
-            print '++Ingesting citation: %s' % url
+            Logger.info('++Ingesting citation: %s' % url)
+
             new_citation = Citation(
                 opinion=Opinion(self.id),
                 scraped=url,
@@ -105,3 +84,4 @@ class Opinion(models.Model):
             new_citation.yyyymmdd = self.published.strftime("%Y%m%d")
             new_citation.get_statuses()
             new_citation.save()
+            self.ingested_citation_count += 1

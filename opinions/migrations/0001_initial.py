@@ -23,8 +23,6 @@ class Migration(migrations.Migration):
                 ('reporter', models.CharField(max_length=50, null=True, blank=True)),
                 ('docket', models.CharField(max_length=20)),
                 ('part', models.CharField(max_length=20)),
-                ('revised_date', models.DateField(null=True, verbose_name=b'date revised', blank=True)),
-                ('revised_pdf_url', models.URLField(max_length=255, null=True, blank=True)),
                 ('justice', models.ForeignKey(to='justices.Justice')),
             ],
         ),
