@@ -2,18 +2,14 @@
 
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
-from django.contrib.auth import authenticate
-from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
-from django.contrib.auth.forms import AuthenticationForm
 
 def logout(request):
-    response = auth_logout(request)
+    auth_logout(request)
     return HttpResponseRedirect('/')
 
 def download_csv(request):
     from citations.models import Citation
-    from scotus import settings
     from django.http import HttpResponse
     from datetime import datetime
     import csv
@@ -52,12 +48,10 @@ def download_csv(request):
 
 
 def overview(request):
-    from datetime import datetime
-    from time import time, mktime
+    from time import time
     from opinions.models import Opinion
     from citations.models import Citation
     from django.db.models import Count
-    from datetime import timedelta
     from django.http import HttpRequest
 
     template = 'overview.html'
