@@ -35,7 +35,7 @@ root_password = getpass('\n\nPlease enter your mysql root user password (this wi
 try:
     os.environ['DJANGO_SETTINGS_MODULE'] = 'scotus.settings'
     import MySQLdb
-    from django.contrib.auth.models import User
+    #from django.contrib.auth.models import User
     database_connection = db = MySQLdb.connect(host=host, port=port, user='root', passwd=root_password)
     cursor = database_connection.cursor()
 except MySQLdb.OperationalError:
@@ -63,10 +63,12 @@ if raw_input('Is this a production environment? ') in positive:
     is_production = True
     domain = raw_input("Our production domain is scotuswebcites.io, what's yours? ")
 else:
+    is_production = False
     domain = False
 if raw_input('Do you want to enable Perma.cc archiving? ') in positive:
     perma_api_key = raw_input('Please enter your Perma.cc API key: ')
 else:
+    perma_api_key = False
     print('Disabling Perma.cc.  You can always manually enable it later via %s' % settings)
 if raw_input('Would you like to use a gmail account to sent system emails? ') in positive:
     configure_gmail = True
@@ -92,21 +94,25 @@ with open('%s.dist' % settings, 'r') as dist:
                 line = line.replace('YOUR_CONTACT_EMAIL', email)
             elif 'YOUR_SECRET_KEY' in line:
                 line = line.replace('YOUR_SECRET_KEY', generate_random_alpha_numeric_string(75))
-            elif configure_gmail:
+
+            if configure_gmail:
                 if 'YOUR_GMAIL_ADDRESS' in line:
                     line = line.replace('YOUR_GMAIL_ADDRESS', gmail_address)
                 elif 'YOUR_GMAIL_PASSWORD' in line:
                     line = line.replace('YOUR_GMAIL_PASSWORD', gmail_password)
-            elif perma_api_key:
+
+            if perma_api_key:
                 if '#ENABLE_PERMA_CC' in line:
                     line = line.replace('False', 'True')
                 elif 'PERMA_CC_API_KEY' in line:
                     line = line.replace('PERMA_CC_API_KEY', perma_api_key)
-            elif is_production:
+
+            if is_production:
                 if 'DEBUG' in line:
                     line = line.replace('True', 'False')
                 elif 'ALLOWED_HOSTS' in line and domain:
                     line = line.replace('[]', "['%s']" % domain)
+
             output.write(line)
 print('Created %s file with your new credentials.\n\n' % settings)
 
@@ -134,6 +140,8 @@ while django_password != verify:
     django_password = getpass("\n\nThe passwords did not match.  Hopefully this means it is complicated!\n"
                               "Let's try this again.  Please enter the password: ")
     verify = getpass('\nPlease enter the password again: ')
+
+from django.contrib.auth.models import User
 user = User.objects.create_user(username=django_user, email=email, password=django_password)
 
 print('\n\nAll done!\n\n')
