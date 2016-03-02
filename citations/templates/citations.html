@@ -18,7 +18,7 @@
               <a class='anchor' name='{{ citation.id }}'></a>
               {% if citation.verify_date %} 
                 {% if citation.perma %}
-                  <a target="_blank" href="{{ citation.perma }}" title="view application capture">
+                  <a target="_blank" href="{{ citation.perma }}" title="view archived capture">
                     <span class="label label-info label-as-badge">
                       {{ citation.verify_date|date:"Y.m.d" }}
                     </span>
@@ -64,7 +64,7 @@
                 {% endif %}
               {% endif %}
 
-              <a href="{{ citation.opinion.pdf_url  }}" title="Cited in '{{ citation.opinion.name }}'" target="_blank">
+              <a href="{{ citation.opinion.pdf_url  }}" title="cited in '{{ citation.opinion.name }}'" target="_blank">
                 <span class="glyphicon glyphicon-book"></span>
               </a>
             </td>

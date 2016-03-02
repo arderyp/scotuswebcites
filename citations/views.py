@@ -73,7 +73,7 @@ def verify(request, citation_id):
                 if validated != citation.scraped or scrape_evaluation != citation.scrape_evaluation: 
                     citation.get_statuses()
 
-                # If citation is non-404, check if ondemand captures are enabled
+                # If citation is non-404, check if on demand captures are enabled
                 if citation.status != 'u':
                     citation.get_ondemand_captures()
 
