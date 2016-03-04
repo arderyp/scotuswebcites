@@ -10,5 +10,6 @@ urlpatterns = [
     url('', include('citations.urls')),
     url('', include('opinions.urls')),
     url('', include('justices.urls')),
+    url('', include('subscribers.urls')),
     url(r'^admin/', include(admin.site.urls)),
 ]

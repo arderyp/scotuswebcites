@@ -1,4 +1,7 @@
 $(document).ready(function(){
+    // Dissolve flash messages
+    $('.flash-dissolve').delay(4000).fadeOut(800)
+
     // Hide messages for sessions with js disabled
     $('.js-disabled').hide();
 

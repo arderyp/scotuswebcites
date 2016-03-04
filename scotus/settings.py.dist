@@ -47,6 +47,7 @@ PROJECT_APPS = [
     'opinions',
     'justices',
     'discovery',
+    'subscribers',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + PROJECT_APPS
@@ -140,7 +141,6 @@ PERMA = {
 
 
 # Login handling
-LDAP_ENABLED = False
 LOGIN_URL = '/login'
 LOGIN_REDIRECT_URL = '/'
 

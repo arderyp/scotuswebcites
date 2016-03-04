@@ -30,6 +30,15 @@
 </head>
 
 <body>
+    {# FLASH MESSAGES #}
+    {% if messages %}
+        {% for msg in messages %}
+            <div class="alert alert-{{msg.level_tag}} flash-dissolve text-center" role="alert">
+                <stong>{{msg.message}}</stong>
+            </div>
+        {% endfor %}
+	{% endif %}
+
     {# NAVBAR #}
     <nav class="navbar navbar-default  navbar-fixed-top" role="navigation">
       <div class="container">
@@ -54,6 +63,13 @@
             {% else %}
               <li><a href="/login">Login</a></li>
             {% endif %}
+            <li>
+                <form method="post" action="/signup">
+                    {% csrf_token %}
+                    <input type="text" name="email">
+                    <input class="btn btn-primary" type="submit" value="Subscribe" />
+                </form>
+            </li>
           </ul>
         </div>
       </div>

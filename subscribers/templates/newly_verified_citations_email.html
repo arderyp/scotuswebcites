@@ -1,0 +1,38 @@
+<p>
+    Ahoy SCOTUS explorer!
+</p>
+<p>
+    We just wanted to let you know that the following new citations have been discovered and verified:
+</p>
+<table style="border-collapse:collapse; border:1px solid black;">
+    <thead>
+    <th style="border:1px solid black;">Opinion</th>
+    <th style="border:1px solid black;">Citation URI</th>
+    <th style="border:1px solid black;">Perma Link</th>
+    </thead>
+    <tbody>
+    {% for citation in citations %}
+        <tr>
+            <td style="border:1px solid black; padding: 5px;">{{ citation.opinion.name }}</td>
+            <td style="border:1px solid black; padding: 5px;">{{ citation.validated }}</td>
+            <td style="border:1px solid black; padding: 5px;">
+                {% if citation.perma %}
+                    {{ citation.perma }}
+                {% else %}
+                    None available
+                {% endif %}
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+<p>
+    Thanks for using our service!
+</p>
+
+<small>
+    {% if domain %}
+        <a href="{{ domain }}{% url 'unsubscribe' subscriber.hash_key %}">Unsubscribe</a> |
+    {% endif %}
+    <a href="mailto:{{ contact_email }}">Contact Us</a>
+</small>
