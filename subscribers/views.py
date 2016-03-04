@@ -16,7 +16,7 @@ def sign_up(request):
             proceed = True
             valid_email = True
             email = request.POST.get('email', '')
-            subscriber = Subscriber.objects.get(email=email)
+            subscriber = Subscriber.objects.filter(email=email)
             if subscriber and subscriber.subscribed:
                 proceed = False
                 flash_type = messages.SUCCESS
