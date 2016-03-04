@@ -16,12 +16,13 @@ def sign_up(request):
             proceed = True
             valid_email = True
             email = request.POST.get('email', '')
-            subscriber = Subscriber.objects.filter(email=email)
-            if subscriber and subscriber.subscribed:
-                proceed = False
-                flash_type = messages.SUCCESS
-                flash_message = 'Good news, it looks like you are already subscribed!'
-            elif not subscriber:
+            if Subscriber.objects.filter(email=email):
+                subscriber =  Subscriber.objects.get(email=email)
+                if subscriber.subscribed:
+                    proceed = False
+                    flash_type = messages.SUCCESS
+                    flash_message = 'Good news, it looks like you are already subscribed!'
+            else:
                 try:
                     subscriber = Subscriber(email=email)
                     subscriber.save()
