@@ -31,10 +31,15 @@ class Citation(models.Model):
         default=u'a'
     )
     validated = models.URLField(max_length=255, null=True)
-    verify_date = models.DateTimeField(u'date verified', null=True)
+    verify_date = models.DateTimeField(u'date verified by admin', null=True)
     memento = models.URLField(max_length=255, null=True)
     webcite = models.URLField(max_length=255, null=True)
     perma = models.URLField(max_length=255, null=True)
+    notified_subscribers = models.DateTimeField(
+        u'date subscribers notified of validated citation url',
+        blank=True,
+        null=True
+    )
 
     def get_statuses(self):
 
@@ -119,7 +124,8 @@ class Citation(models.Model):
         except:
             return
 
-        
+
+    #TODO proper error handling here
     def perma_api_capture(self):
         if not settings.PERMA['enabled']:
             return
@@ -127,9 +133,14 @@ class Citation(models.Model):
         import json
         from requests import post
 
+        note = 'This url was cited in US Supreme Court opinion "%s", which was published on %s' % (
+            self.opinion.name,
+            self.opinion.published.strftime('%Y.%m.%d'),
+        )
         data = {
             'url': self.validated,
-            'title': 'SCOTUS Opinion Citation',
+            'title': 'Cited in "%s"' % self.opinion.name,
+            'notes': note,
         }
         headers = {
             'Content-type': 'application/json',
@@ -137,6 +148,7 @@ class Citation(models.Model):
         }
 
         try:
+            # Create the perma link
             response = post(
                 settings.PERMA['api_query'] % settings.PERMA['api_key'],
                 data=json.dumps(data),
