@@ -15,4 +15,7 @@ def create_hash():
 class Subscriber(models.Model):
     email = models.EmailField(unique=True)
     subscribed = models.BooleanField(default=False)
-    hash_key = models.CharField(max_length=20, default=create_hash(), unique=True)
+    hash_key = models.CharField(max_length=20, unique=True)
+
+    def _set_hash(self):
+        self.hash_key = create_hash()

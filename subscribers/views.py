@@ -17,7 +17,7 @@ def sign_up(request):
             valid_email = True
             email = request.POST.get('email', '')
             if Subscriber.objects.filter(email=email):
-                subscriber =  Subscriber.objects.get(email=email)
+                subscriber = Subscriber.objects.get(email=email)
                 if subscriber.subscribed:
                     proceed = False
                     flash_type = messages.SUCCESS
@@ -25,6 +25,7 @@ def sign_up(request):
             else:
                 try:
                     subscriber = Subscriber(email=email)
+                    subscriber._set_hash()
                     subscriber.save()
                 except:
                     valid_email = False
