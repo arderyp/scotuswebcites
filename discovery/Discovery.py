@@ -102,7 +102,7 @@ class Discovery:
                         # Create new opinion record from row data
                         self.discovered_opinions.append(Opinion(
                             category=category,
-                            reporter=row_data['-R'] if '-R' in row_data else None,
+                            reporter=row_data['R-'] if 'R-' in row_data else None,
                             published=self.convert_date_string(row_data['Date']),
                             docket=row_data['Docket'],
                             name=row_data['Name'],
@@ -117,7 +117,7 @@ class Discovery:
                             Logger.info('Discovered REVISION: %s' % row_data['Name'])
                             self.discovered_opinions.append(Opinion(
                                 category=category,
-                                reporter=row_data['R-'] if '-R' in row_data else None,
+                                reporter=row_data['R-'] if 'R-' in row_data else None,
                                 published=self.convert_date_string(row_data['Revised']),
                                 docket=row_data['Docket'],
                                 name='%s [REVISION]' % row_data['Name'],
@@ -161,7 +161,6 @@ class Discovery:
     def _send_email_report(self):
         if settings.EMAIL_HOST_USER != 'YOUR_GMAIL_ADDRESS':
             if self.new_opinions or self.new_justices or self.ingested_citations_count or self.failed_scrapes:
-                Logger.info('*****DEBUG: ingested_citations_count type = %s' % type(self.ingested_citations_count))
                 subject = '[scotuswebcites] New Data Discovered'
                 recipient = settings.CONTACT_EMAIL
                 sender = settings.EMAIL_HOST_USER
