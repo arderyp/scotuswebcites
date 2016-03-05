@@ -1,0 +1,51 @@
+<!--Build Distribution Chart-->
+<script>
+    $('#citation_distribution').highcharts({
+        title: {
+            text: '',
+        },
+        chart: {
+            type: 'line',
+            height: 520,
+        },
+        credits: {
+            enabled: false,
+        },
+        xAxis: {
+            type: 'datetime',
+            min: {{ earliest }},
+            max: {{ latest }},
+            title: {
+                text: '',
+            },
+            plotLines: [{
+                color: '#F206FF',
+                dashStyle: 'dot',
+                value: {{ nyt_publication }},
+                width: 2,
+                label: {
+                    //text: '<a href="{{ cite_nyt }}">NYT Publication</a>',
+                    text: '<strong>NYT Publication</strong>',
+                },
+            }],
+        },
+        yAxis: {
+            min: 0,
+            maxPadding: 0,
+            title: {
+                text: ''
+            },
+        },
+        series: [
+            {
+                color: '#7cb5ec',
+                name: 'Web Citations',
+                data: {{ citation_distribution }},
+            }, {
+                color: '#f45b5b',
+                name: 'Opinions',
+                data: {{ opinion_distribution }},
+            }
+        ]
+    });
+</script>

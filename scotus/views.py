@@ -5,6 +5,7 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.contrib.auth import logout as auth_logout
 
+
 def logout(request):
     auth_logout(request)
     return HttpResponseRedirect(settings.LOGIN_REDIRECT_URL)
@@ -52,7 +53,6 @@ def overview(request):
     from time import time
     from opinions.models import Opinion
     from citations.models import Citation
-    from django.db.models import Count
     from django.http import HttpRequest
 
     template = 'overview.html'
@@ -73,23 +73,35 @@ def overview(request):
         'cite_github': 'https://github.com/arderyp/scotuswebcites.io',
     }
 
-    # Get citation distribution data
-    context['citation_distribution'] = []
-    for opinion in Opinion.objects.values('published').annotate(citation_count=Count('citation')):
-        unix_date = int(opinion['published'].strftime('%s'))
+    # Calculate opinion and citation distributions
+    distributions = {}
+    for opinion in Opinion.objects.all():
+        citations = len(opinion.citation_set.all())
+        unix_date = int(opinion.published.strftime('%s'))
         js_date = unix_date * 1000
-        context['citation_distribution'].append([js_date, opinion['citation_count']])
+        if js_date in distributions:
+            distributions[js_date]['opinions'] += 1
+            distributions[js_date]['citations'] += citations
+        else:
+            distributions[js_date] = {'opinions': 1, 'citations': citations}
 
-    sorted_data = sorted(context['citation_distribution'], key=lambda x: x[0])
+    opinion_data = [[date, data['opinions']] for date, data in distributions.iteritems()]
+    citation_data = [[date, data['citations']] for date, data in distributions.iteritems()]
 
-    if sorted_data:
-        earliest = sorted_data[0][0] - js_month
-        latest = sorted_data[-1][0] + js_month
+    # Sort data chronologically
+    opinion_data = sorted(opinion_data, key=lambda x: x[0])
+    citation_data = sorted(citation_data, key=lambda x: x[0])
+
+    if opinion_data:
+        earliest = opinion_data[0][0] - js_month
+        latest = opinion_data[-1][0] + js_month
     else:
         # No scraping has been done yet, set dates manually, charts will be blank
         earliest = 1262304000
         latest = time()
 
+    context['citation_distribution'] = citation_data
+    context['opinion_distribution'] = opinion_data
     context['earliest'] = earliest - js_month
     context['latest'] = latest + js_month
 
