@@ -1,0 +1,64 @@
+<p>
+    Hello SCOTUS Web Cites admin,
+</p>
+<p>
+    This email is being sent to inform you that the following data has been discovered by your scraper:
+</p>
+
+<table style="border-collapse:collapse; border:1px solid black;">
+    <tbody>
+    <tr>
+        <td style="border:1px solid black; padding: 5px;">
+            <strong>New Opinions</strong>
+        </td>
+        <td style="border:1px solid black; padding: 5px;">
+            {{ new_opinions_count }}
+        </td>
+    </tr>
+
+    <tr>
+        <td style="border:1px solid black; padding: 5px;">
+            <strong>New Citations</strong>
+        </td>
+        <td style="border:1px solid black; padding: 5px;">
+            {{ ingested_citations_count }}
+        </td>
+    </tr>
+
+    <tr>
+        <td style="border:1px solid black; padding: 5px;">
+            <strong>New Justices</strong>
+        </td>
+        <td style="border:1px solid black; padding: 5px;">
+            {% if new_justices %}
+                <ul>
+                    {% for name in new_justices %}
+                        <li>{{ name }}</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                (none)
+            {% endif %}
+        </td>
+    </tr>
+
+    {% if failed_scrapes %}
+        <p>
+            The scrapped failed to parse and scrape the following opinions.  We've seen poorly
+            formatted opinions before, and will continue working to handle them.  For now, however,
+            please review these opinions manually to see if they have any web citations and, if so,
+            please add the citations to the database manually:
+        </p>
+
+        <ul>
+            {% for name in failed_scrapes %}
+                <li>{{ name }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    </tbody>
+</table>
+
+<p>
+    Thanks for using our service!
+</p>

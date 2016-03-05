@@ -2,10 +2,12 @@
 
 import lxml.html
 import traceback
+from dateutil import parser
 
 from django.utils import timezone
-from django.core.mail import send_mail
-from dateutil import parser
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import get_template
+from django.template import Context
 
 from scotus import settings
 from discovery.Pdf import Url
@@ -115,7 +117,7 @@ class Discovery:
                             Logger.info('Discovered REVISION: %s' % row_data['Name'])
                             self.discovered_opinions.append(Opinion(
                                 category=category,
-                                reporter=row_data['-R'] if '-R' in row_data else None,
+                                reporter=row_data['R-'] if '-R' in row_data else None,
                                 published=self.convert_date_string(row_data['Revised']),
                                 docket=row_data['Docket'],
                                 name='%s [REVISION]' % row_data['Name'],
@@ -156,25 +158,21 @@ class Discovery:
                 opinion.ingest_citations()
                 self.ingested_citations_count += opinion.ingested_citation_count
 
-    def send_email_report(self):
+    def _send_email_report(self):
         if settings.EMAIL_HOST_USER != 'YOUR_GMAIL_ADDRESS':
             if self.new_opinions or self.new_justices or self.ingested_citations_count or self.failed_scrapes:
-                message = 'New Opinions:\t%d\nNew Citations:\t%d\nNew Justices:\t%s\n' % (
-                    len(self.new_opinions),
-                    self.ingested_citations_count,
-                    ', '.join(self.new_justices) if self.new_justices else '(none)',
-                )
-
-                if self.failed_scrapes:
-                    message += '\nFailed to scrape %d opinion PDFs. Check them for citations and ' \
-                               'add to the database manually if need be:\n\n' % len(self.failed_scrapes)
-
-                    for name in self.failed_scrapes:
-                        message += '\t%s\n' % name
-
-                send_mail(
-                    '[scotuswebcites] New Data Discovered',
-                    message,
-                    settings.EMAIL_HOST_USER,
-                    [settings.CONTACT_EMAIL]
-                )
+                Logger.info('*****DEBUG: ingested_citations_count type = %s' % type(self.ingested_citations_count))
+                subject = '[scotuswebcites] New Data Discovered'
+                recipient = settings.CONTACT_EMAIL
+                sender = settings.EMAIL_HOST_USER
+                context = Context({
+                    'new_opinions_count': str(len(self.new_opinions)),
+                    'ingested_citations_count': str(self.ingested_citations_count),
+                    'new_justices': self.new_justices,
+                    'failed_scrapes': self.failed_scrapes,
+                })
+                body = get_template('discovery_report_email.html').render(context)
+                Logger.info('+sending discovery report email from %s to %s' % (sender, recipient))
+                msg = EmailMultiAlternatives(subject, body, sender, [recipient])
+                msg.attach_alternative(body, "text/html")
+                msg.send()

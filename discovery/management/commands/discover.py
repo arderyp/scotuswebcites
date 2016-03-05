@@ -13,7 +13,7 @@ class Command(NoArgsCommand):
             print('\nRunning discovery. Logging to logs/%s.log\n' % time.strftime('%Y%m%d'))
             job = Discovery()
             job.run()
-            job.send_email_report()
+            job._send_email_report()
         except:
             Logger.error(traceback.format_exc())
             self.send_error_email()

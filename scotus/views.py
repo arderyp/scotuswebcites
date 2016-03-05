@@ -93,7 +93,3 @@ def overview(request):
     context['latest'] = latest + js_month
 
     return render(request, template, context)
-
-def philip(request):
-    raise Exception('REFERER: %s' % request.META.get('HTTP_REFERER'))
-    #return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
