@@ -43,8 +43,8 @@ class Citation(models.Model):
 
     def get_statuses(self):
 
-        # If not ORM query object, yyyymmdd must be set manually before
-        # calling this method
+        # If not ORM query object, yyyymmdd must be set manually
+        # before calling this method
         if self.opinion.published is not None:
             self.yyyymmdd = self.opinion.published.strftime("%Y%m%d")
         elif not hasattr(self, 'yyyymmdd'):
@@ -70,36 +70,49 @@ class Citation(models.Model):
             self.memento = memento_url
 
     def csv_row(self):
-        ST = Citation.STATUSES
-        st = self.status
-        SE = Citation.SCRAPE_EVALUATIONS
-        se = self.scrape_evaluation
+        """Return pertinent data for csv report.
 
-        self.st = [x[1] for x in ST if x[0] == st][0]
-        self.se = [x[1] for x in SE if x[0] == se][0]
+        All emtpy/null values are converted to blank strings (''),
+        and all date/datetime objects are converted to yyyy-mm-dd
+        format. All data is ultimately encoded before being written,
+        which turns out to be necessary.
+        """
+        from datetime import date, datetime
 
-        return [
-            self.scraped.encode('utf8') if self.scraped else '',
-            self.validated.encode('utf8') if self.validated else '',
-            self.verify_date.encode('utf8') if self.verify_date else '',
-            self.se,
-            self.st,
-            self.memento.encode('utf8') if self.memento else '',
-            self.webcite.encode('utf8') if self.webcite else '',
-            self.perma.encode('utf8') if self.perma else '',
-            self.opinion.name.encode('utf8'),
-            self.opinion.justice.name.encode('utf8'),
-            self.opinion.category.encode('utf8') if self.opinion.category else '',
-            self.opinion.published.strftime('%Y-%m-%d').encode('utf8'),
-            self.opinion.discovered.strftime('%Y-%m-%d').encode('utf8'),
-            self.opinion.pdf_url.encode('utf8'),
-            self.opinion.reporter.encode('utf8') if self.opinion.reporter else '',
-            self.opinion.docket.encode('utf8'),
-            self.opinion.part.encode('utf8') if self.opinion.part else '',
+        self.status_string = [x[1] for x in Citation.STATUSES if x[0] == self.status][0]
+        self.evaluation_string = [x[1] for x in Citation.SCRAPE_EVALUATIONS if x[0] == self.scrape_evaluation][0]
+
+        data = [
+            self.scraped,
+            self.validated,
+            self.verify_date,
+            self.evaluation_string,
+            self.status_string,
+            self.memento,
+            self.webcite,
+            self.perma,
+            self.opinion.name,
+            self.opinion.justice.name,
+            self.opinion.category,
+            self.opinion.published,
+            self.opinion.discovered,
+            self.opinion.pdf_url,
+            self.opinion.reporter,
+            self.opinion.docket,
+            self.opinion.part,
         ]
 
-    #TODO: add pertinent metadat to via api queries below
-    #TODO: handle try exceptions more fully
+        # Standardize and encode fields is necessary to print csv data
+        encoded_data = []
+        for item in data:
+            if not item:
+                item = ''
+            elif isinstance(item, date) or isinstance(item, datetime):
+                item = item.strftime('%Y-%m-%d')
+            encoded_data.append(item.encode('utf8'))
+
+        return encoded_data
+
     def get_ondemand_captures(self):
         if not self.validated:
             return
@@ -124,8 +137,7 @@ class Citation(models.Model):
         except:
             return
 
-
-    #TODO proper error handling here
+    #TODO more robust proper error handling in try/except
     def perma_api_capture(self):
         if not settings.PERMA['enabled']:
             return
