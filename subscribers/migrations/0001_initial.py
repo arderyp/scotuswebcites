@@ -14,9 +14,9 @@ class Migration(migrations.Migration):
             name='Subscriber',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('email', models.EmailField(max_length=254)),
-                ('subscribed', models.BooleanField()),
-                ('hash_key', models.CharField(default=b'7657ebdd60ce68ff25ccfbeefdda97', unique=True, max_length=10)),
+                ('email', models.EmailField(unique=True, max_length=254)),
+                ('subscribed', models.BooleanField(default=False)),
+                ('hash_key', models.CharField(default=b'21fed02dca181a2ac463', unique=True, max_length=20)),
             ],
         ),
     ]
