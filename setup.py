@@ -64,7 +64,7 @@ if raw_input('Is this a production environment? ') in positive:
     domain = raw_input("Our production domain is scotuswebcites.io, what's yours? ")
 else:
     is_production = False
-    domain = False
+    domain = 'localhost:8000'
 if raw_input('Do you want to enable Perma.cc archiving? ') in positive:
     perma_api_key = raw_input('Please enter your Perma.cc API key: ')
 else:
@@ -94,6 +94,8 @@ with open('%s.dist' % settings, 'r') as dist:
                 line = line.replace('YOUR_CONTACT_EMAIL', email)
             elif 'YOUR_SECRET_KEY' in line:
                 line = line.replace('YOUR_SECRET_KEY', generate_random_alpha_numeric_string(75))
+            elif 'ALLOWED_HOSTS' in line and domain:
+                line = line.replace('[]', "['%s']" % domain)
 
             if configure_gmail:
                 if 'YOUR_GMAIL_ADDRESS' in line:
@@ -107,11 +109,8 @@ with open('%s.dist' % settings, 'r') as dist:
                 elif 'PERMA_CC_API_KEY' in line:
                     line = line.replace('PERMA_CC_API_KEY', perma_api_key)
 
-            if is_production:
-                if 'DEBUG' in line:
-                    line = line.replace('True', 'False')
-                elif 'ALLOWED_HOSTS' in line and domain:
-                    line = line.replace('[]', "['%s']" % domain)
+            if is_production and 'DEBUG' in line:
+                line = line.replace('True', 'False')
 
             output.write(line)
 print('Created %s file with your new credentials.\n\n' % settings)

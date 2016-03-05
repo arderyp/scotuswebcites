@@ -1,3 +1,23 @@
+#memento-logo {
+  height: 30px;
+  width: 30px;
+}
+
+#perma-logo {
+  height: 10px;
+  width: 17px;
+}
+
+#webcite-logo {
+  height: 14px;
+  width: 14px;
+}
+
+#scotus-seal {
+  position: relative;
+  top: -6px;
+}
+
 #overview {
   float: left;
   width: 100%;
@@ -33,21 +53,6 @@ input#id_validated {
 .load-wheel {
   font-style: italic;
   font-size:10px;
-}
-
-#memento-logo {
-  height: 30px;
-  width: 30px;    
-}
-
-#perma-logo {
-  height: 10px;
-  width: 17px;
-}
-
-#webcite-logo {
-  height: 14px;
-  width: 14px;
 }
 
 td.centered {

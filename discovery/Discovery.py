@@ -169,6 +169,7 @@ class Discovery:
                     'ingested_citations_count': str(self.ingested_citations_count),
                     'new_justices': self.new_justices,
                     'failed_scrapes': self.failed_scrapes,
+                    'domain': settings.ALLOWED_HOSTS[0] if settings.ALLOWED_HOSTS else False,
                 })
                 body = get_template('discovery_report_email.html').render(context)
                 Logger.info('+sending discovery report email from %s to %s' % (sender, recipient))

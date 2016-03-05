@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 
+from django.conf import settings
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.contrib.auth import logout as auth_logout
 
 def logout(request):
     auth_logout(request)
-    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    return HttpResponseRedirect(settings.LOGIN_REDIRECT_URL)
 
 def download_csv(request):
     from citations.models import Citation

@@ -64,7 +64,8 @@
                 {% endif %}
               {% endif %}
 
-              <a href="{{ citation.opinion.pdf_url  }}" title="cited in '{{ citation.opinion.name }}'" target="_blank">
+              <a href="{{ citation.opinion.pdf_url  }}"
+                 title='Cited on {{ citation.opinion.published|yyyymmdd }} in "{{ citation.opinion.name }}"' target="_blank">
                 <span class="glyphicon glyphicon-book"></span>
               </a>
             </td>

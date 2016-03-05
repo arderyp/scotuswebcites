@@ -2,7 +2,13 @@
     Hello SCOTUS Web Cites admin,
 </p>
 <p>
-    This email is being sent to inform you that the following data has been discovered by your scraper:
+    This email is being sent to inform you that new data has been discovered by your scraper.
+    {% if domain %}
+        Please <a href="{{ domain }}/login">log in</a> to verify any new citations.  If you
+        forgot to write you user <i>name</i> down, you may access it through the database's
+        auth_user table.  Please <a href="{{ domain }}/logout">logout</a> when you are done
+        verifying the citations.
+    {% endif %}
 </p>
 
 <table style="border-collapse:collapse; border:1px solid black;">
@@ -42,22 +48,24 @@
         </td>
     </tr>
 
-    {% if failed_scrapes %}
-        <p>
-            The scrapped failed to parse and scrape the following opinions.  We've seen poorly
-            formatted opinions before, and will continue working to handle them.  For now, however,
-            please review these opinions manually to see if they have any web citations and, if so,
-            please add the citations to the database manually:
-        </p>
-
-        <ul>
-            {% for name in failed_scrapes %}
-                <li>{{ name }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
     </tbody>
 </table>
+
+{% if failed_scrapes %}
+    <br>
+    <p>
+        PLEASE NOTE: The Discovery tool failed to parse and scrape the following opinions.  We've
+        seen poorly formatted opinion PDFs before, and will continue working to handle them.  For
+        now, however, please review these opinions manually to see if they have any web citations
+        and, if so, please add the citations to the database manually:
+    </p>
+
+    <ul>
+        {% for name in failed_scrapes %}
+            <li>{{ name }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
 
 <p>
     Thanks for using our service!

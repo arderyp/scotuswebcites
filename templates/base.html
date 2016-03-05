@@ -41,28 +41,40 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand">U.S. Supreme Court Web Citations</a>
+          <a href="http://www.supremecourt.gov/opinions/opinions.aspx" class="navbar-brand" title="View SCOTUS Opinions Page" target="_blank">
+            <img src="/static/img/Seal_of_the_United_States_Supreme_Court.svg" id="scotus-seal" height="30" width="30" />
+          </a>
+          <a class="navbar-brand">
+              U.S. Supreme Court Web Citations
+          </a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li class="{% if request.path == '/' %}active{% endif %}"><a href="/">Overview</a></li>
-            <li class="{% if '/citations/' in request.path %}active{% endif %}"><a href="/citations">Citations</a></li>
-            <li class="{% if '/opinions/' in request.path %}active{% endif %}"><a href="/opinions">Opinions</a></li>
-            <li class="{% if '/justices/' in request.path %}active{% endif %}"><a href="/justices">Justices</a></li>
-            <li><a href="/csv">Download Data</a></li>
-            {% if request.user.is_authenticated %}
-              <li><a href="/logout">Logout</a></li>
-            {% else %}
-              <li><a href="/login">Login</a></li>
-            {% endif %}
+            <li class="{% if request.path == '/' %}active{% endif %}">
+                <a href="/" title="Project Overview">Overview</a>
+            </li>
+            <li class="{% if '/citations/' in request.path %}active{% endif %}">
+                <a href="/citations" title="View Citations List">Citations</a>
+            </li>
+            <li class="{% if '/opinions/' in request.path %}active{% endif %}">
+                <a href="/opinions" title="View Opinions List">Opinions</a>
+            </li>
+            <li class="{% if '/justices/' in request.path %}active{% endif %}">
+                <a href="/justices" title="View Justices List">Justices</a>
+            </li>
+            <li>
+                <a href="/csv" title="Download CSV Dump Of Our Database">Download Data</a>
+            </li>
           </ul>
-            <form class="navbar-form navbar-left" method="post" action="/signup">
-                {% csrf_token %}
-                <div class="form-group">
-                    <input type="text" name="email" placeholder="email@example.com">
-                </div>
-                <button type="submit" class="btn btn-info">Subscribe</button>
-            </form>
+          <form class="navbar-form navbar-left" method="post" action="/signup">
+            {% csrf_token %}
+            <div class="form-group">
+              <input type="text" name="email" placeholder="email@example.com">
+            </div>
+            <button type="submit" class="btn btn-info" title="Get Email Notifications When New Data Is Discovered">
+                Subscribe
+            </button>
+          </form>
         </div>
       </div>
     </nav>    
