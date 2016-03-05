@@ -71,5 +71,9 @@ td.centered {
 }
 
 .flash-dissolve {
-  margin-top: 60px;
+  position: fixed;
+  top: 15;
+  width: 100%;
+  left: 0;
+  z-index: 3000;
 }

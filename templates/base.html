@@ -30,14 +30,6 @@
 </head>
 
 <body>
-    {# FLASH MESSAGES #}
-    {% if messages %}
-        {% for msg in messages %}
-            <div class="alert alert-{{msg.level_tag}} flash-dissolve text-center" role="alert">
-                <stong>{{msg.message}}</stong>
-            </div>
-        {% endfor %}
-	{% endif %}
 
     {# NAVBAR #}
     <nav class="navbar navbar-default  navbar-fixed-top" role="navigation">
@@ -76,11 +68,23 @@
     </nav>    
 
     <br><br><br>
-     <div class="container">
-      <div class="row">
-        {% block content %}{% endblock %}
-      </div>
-     </div>
+
+    {# FLASH MESSAGES #}
+    {% if messages %}
+        {% for msg in messages %}
+            <div class="alert alert-{{msg.level_tag}} flash-dissolve text-center" role="alert">
+             {#<div class="philip">#}
+                <stong>{{msg.message}}</stong>
+            </div>
+        {% endfor %}
+	{% endif %}
+
+    {# MAIN BODY CONTENT FROM EXTENDING TEMPLATE #}
+    <div class="container">
+        <div class="row">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
 </body>
 
 </html>

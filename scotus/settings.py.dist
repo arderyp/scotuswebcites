@@ -142,7 +142,7 @@ PERMA = {
 
 # Login handling
 LOGIN_URL = '/login'
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/citations'
 
 # Custom user agent for network requests
 USER_AGENT = 'scotuswebcites.io [https://github.com/arderyp/scotuswebcites.io]' 

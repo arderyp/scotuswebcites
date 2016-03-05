@@ -40,7 +40,7 @@ def sign_up(request):
                 flash_message = 'It looks like you submitted an invalid email address'
         messages.add_message(request, flash_type, flash_message)
 
-    return HttpResponseRedirect('/')
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
 def subscribe(request, hash_key):

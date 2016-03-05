@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from citations.models import Citation
 from django.http import HttpResponseRedirect
 from django.utils import timezone
+from django.contrib import messages
 from .forms import VerifyCitationForm
 
 
@@ -80,6 +81,9 @@ def verify(request, citation_id):
                 citation.verify_date = timezone.now()
                 citation.scrape_evaluation = scrape_evaluation
                 citation.save()
+
+                # Create success flash message
+                messages.add_message(request, messages.SUCCESS, 'Successfully verified citation!')
 
                 return HttpResponseRedirect('/citations/#%s' % citation.id)
 

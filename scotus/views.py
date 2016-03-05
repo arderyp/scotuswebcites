@@ -6,7 +6,7 @@ from django.contrib.auth import logout as auth_logout
 
 def logout(request):
     auth_logout(request)
-    return HttpResponseRedirect('/')
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 def download_csv(request):
     from citations.models import Citation
@@ -93,3 +93,7 @@ def overview(request):
     context['latest'] = latest + js_month
 
     return render(request, template, context)
+
+def philip(request):
+    raise Exception('REFERER: %s' % request.META.get('HTTP_REFERER'))
+    #return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
