@@ -25,6 +25,7 @@
 
 #rot_distribution {
   float: right;
+  height: 300px;
 }
 
 #login-form {

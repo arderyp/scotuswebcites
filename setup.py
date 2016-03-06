@@ -67,8 +67,10 @@ else:
     domain = 'localhost:8000'
 if raw_input('Do you want to enable Perma.cc archiving? ') in positive:
     perma_api_key = raw_input('Please enter your Perma.cc API key: ')
+    perma_base_folder_id = raw_input('Please enter your Perma.cc base folder ID: ')
 else:
     perma_api_key = False
+    perma_base_folder_id = False
     print('Disabling Perma.cc.  You can always manually enable it later via %s' % settings)
 if raw_input('Would you like to use a gmail account to sent system emails? ') in positive:
     configure_gmail = True
@@ -108,6 +110,8 @@ with open('%s.dist' % settings, 'r') as dist:
                     line = line.replace('False', 'True')
                 elif 'PERMA_CC_API_KEY' in line:
                     line = line.replace('PERMA_CC_API_KEY', perma_api_key)
+                elif 'PERMA_CC_BASE_FOLDER_ID' in line:
+                    line = line.replace('PERMA_CC_BASE_FOLDER_ID', perma_base_folder_id)
 
             if is_production and 'DEBUG' in line:
                 line = line.replace('True', 'False')

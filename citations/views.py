@@ -1,9 +1,12 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from citations.models import Citation
 from django.http import HttpResponseRedirect
 from django.utils import timezone
 from django.contrib import messages
+
+from scotus import settings
+from citations.models import Citation
+from archive.Perma import Perma
 from .forms import VerifyCitationForm
 
 
@@ -16,6 +19,7 @@ def index(request):
     }
 
     return render(request, template, context)
+
 
 def justice_opinions_citations(request, justice_id):
     template = 'citations.html'
@@ -37,6 +41,7 @@ def justice_opinions_citations(request, justice_id):
 
         return render(request, template, context)
 
+
 def opinion_citations(request, opinion_id):
     template = 'citations.html'
     citations = Citation.objects.filter(opinion_id=opinion_id)
@@ -50,6 +55,7 @@ def opinion_citations(request, opinion_id):
     }
 
     return render(request, template, context)
+
 
 @login_required()
 def verify(request, citation_id):
@@ -74,12 +80,16 @@ def verify(request, citation_id):
                 if validated != citation.scraped or scrape_evaluation != citation.scrape_evaluation: 
                     citation.get_statuses()
 
-                # If citation is non-404, check if on demand captures are enabled
-                if citation.status != 'u':
-                    citation.get_ondemand_captures()
-
                 citation.verify_date = timezone.now()
                 citation.scrape_evaluation = scrape_evaluation
+
+                # Archive the citation if archiving enabled
+                if citation.status != 'u':
+                    if settings.PERMA['enabled']:
+                        archiver = Perma()
+                        archiver.archive_citation(citation)
+                        citation.perma = archiver.get_archive_url()
+
                 citation.save()
 
                 # Create success flash message
@@ -94,7 +104,10 @@ def verify(request, citation_id):
             }
 
         except Exception:
-            # Somehow attempted to validate citation not in DB
+            if settings.DEBUG:
+                import traceback
+                raise Exception(traceback.format_exc())
+
             context = {
                 'error': 'No citation with id %s' % request.POST['citation_id'],
             } 
@@ -102,11 +115,7 @@ def verify(request, citation_id):
     else:
         try:
             citation = Citation.objects.get(id=citation_id)
-            form = VerifyCitationForm(
-                initial = {
-                    'validated': citation.scraped,
-                }
-            )
+            form = VerifyCitationForm(initial={'validated': citation.scraped})
             context = {
                 'citation': citation,
                 'form': form,
@@ -115,6 +124,7 @@ def verify(request, citation_id):
             return redirect(request)
 
     return render(request, template, context)
+
 
 def get_citations_by_status(request, status):
     template = 'citations.html'
@@ -125,6 +135,7 @@ def get_citations_by_status(request, status):
     }
 
     return render(request, template, context)
+
 
 def redirect(request, *args):
     return HttpResponseRedirect('/citations/')

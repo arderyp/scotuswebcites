@@ -48,6 +48,7 @@ PROJECT_APPS = [
     'justices',
     'discovery',
     'subscribers',
+    'archive',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + PROJECT_APPS
@@ -134,9 +135,8 @@ WEBCITE = {
 }
 PERMA = {
     'enabled': False,	#ENABLE_PERMA_CC (don't delete this comment, it is used in setup.py)
-    'archive_base': 'https://perma.cc',
     'api_key': 'PERMA_CC_API_KEY',
-    'api_query': 'https://api.perma.cc/v1/archives/?api_key=%s'
+    'base_folder_id': 'PERMA_CC_BASE_FOLDER_ID',
 }
 
 
