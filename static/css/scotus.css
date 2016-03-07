@@ -78,8 +78,14 @@ td.centered {
 
 .flash-dissolve {
   position: fixed;
-  top: 15;
+  top: 60;
   width: 100%;
   left: 0;
   z-index: 3000;
+}
+
+table.floatThead-table {
+    border-top: none;
+    border-bottom: none;
+    background-color: #fff;
 }

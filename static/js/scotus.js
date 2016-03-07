@@ -10,6 +10,9 @@ $(document).ready(function(){
         $('div.load-wheel').show();
     });
 
-    //Move overview div down so displays under the chart
+    // Move overview div down so displays under the chart
     $('.overview').css( 'top', '275px');
+
+    // Use sticky table header if table on page
+    $(".sticky-header").floatThead({scrollingTop:50});
 });
