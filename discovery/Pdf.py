@@ -2,19 +2,14 @@
 
 import re
 import io
-import os
 
-from django.utils import timezone
-from scotus import settings
 from discovery.Url import Url
 
-from datetime import datetime
 from pdfminer.pdfpage import PDFPage
 from pdfminer.layout import LAParams
 from pdfminer.converter import TextConverter
 from pdfminer.pdfinterp import PDFResourceManager
 from pdfminer.pdfinterp import PDFPageInterpreter
-
 
 class Pdf:
     def __init__(self, url=False, local_file=False):
@@ -75,25 +70,23 @@ class Pdf:
         self.text = output_stream.getvalue().decode('utf8')
 
     def extract_urls_from_text(self):
-        if not self.text:
-            return False
+        if self.text:
+            #TODO: find pythonic way of doing replacement on multiple needle/search terms for all newlines
+            #TODO: should be using r'' string format?
+            # Replace newlines with spaces, then create newlines at instances of 'http'
+            text = re.sub('(\n|\r|&#xD)', '', self.text)
+            text = re.sub('http', '\nhttp', text)
+            lines = text.split('\n')
 
-        #TODO: find pythonic way of doing replacement on multiple needle/search terms for all newlines
-        #TODO: should be using r'' string format?
-        # Replace newlines with spaces, then create newlines at instances of 'http'
-        text = re.sub('(\n|\r|&#xD)', '', self.text)
-        text = re.sub('http', '\nhttp', text)
-        lines = text.split('\n')
+            # Loop over newlines created, url should be first element
+            for line in lines:
+                if line.startswith('http'):
+                    url = self.extract_url_from_line(line)
 
-        # Loop over newlines created, url should be first element
-        for line in lines:
-            if line.startswith('http'):
-                url = self.extract_url_from_line(line)
-
-                # Some opinions cite the same link multiple times. Add if not
-                # already in list
-                if not url in self.urls:
-                    self.urls.append(url)
+                    # Some opinions cite the same link multiple times. Add if not
+                    # already in list
+                    if not url in self.urls:
+                        self.urls.append(url)
 
     def extract_url_from_line(self, line):
         # Many of the cited urls have poor formatting, such as spaces
@@ -102,6 +95,9 @@ class Pdf:
         # weirdness is so inconsistent that we can't systematically
         # fix everything at the moment, which is why a user must verify
         # all scraped links
+
+        #TODO instead os setting these dictionary each time this function is called,
+        # why not store them as static properties on the Url class?
         common_endings = [
             'com',
             'gov',

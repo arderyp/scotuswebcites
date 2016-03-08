@@ -11,14 +11,31 @@ def generate_random_alpha_numeric_string(length):
     """Return random alphanumeric string that is 'length' (int) characters long"""
     return ''.join(random.choice(string.ascii_uppercase + string.digits) for i in range(length))
 
+positive = ['yes', 'y']
+settings = 'scotus/settings.py'
 
 # Handle requirements
-positive = ['yes', 'y']
-proceed = raw_input('\n\nHave you already installed pip and set up mysql on this machine, '
-                    'and is the latter running right now? ')
+proceed = raw_input('\n\nTo get setup properly, you will need to have already installed pip and MySQL on this machine, '
+                    'then you will need to present following bits of information, in order:\n\n'
+                    '\t* your local MySQL root password\n'
+                    '\t* your personal email address (used by the app to send you data ingest updates)\n'
+                    '\t* public domain name (only if this is a production install)\n'
+                    '\t* perma.cc API key (optional)\n'
+                    '\t* perma.cc shared folder id (necessary if using API key)\n'
+                    '\t* public gmail address and password from which the application will contact subscribers (optional)\n'
+                    '\t* long, strong, random password for admin account\n'
+                    '\nIf you do not have this information now, it would be best to gather it and then re-run this '
+                    ' process by answering "no" or "n" here.  Would you like to proceed? ')
 if proceed not in positive:
-    print('Please take care of that and then run this script again.\n\n')
+    print('\n\nGo gather your info! If you have any questions, feel free to ask on the github page. See you soon.\n\n')
     sys.exit()
+proceed = raw_input('\n\nJust to double check, have you already installed pip and set up mysql on this machine, '
+                    'and is the latter running right now?  Be honest... ')
+if proceed not in positive:
+    print('\n\nPlease take care of that and then run this script again.\n\n')
+    sys.exit()
+
+
 print('\n\nInstalling application requirements...')
 try:
     os.system('pip install -r requirements.txt')
@@ -35,14 +52,13 @@ root_password = getpass('\n\nPlease enter your mysql root user password (this wi
 try:
     os.environ['DJANGO_SETTINGS_MODULE'] = 'scotus.settings'
     import MySQLdb
-    #from django.contrib.auth.models import User
     database_connection = db = MySQLdb.connect(host=host, port=port, user='root', passwd=root_password)
     cursor = database_connection.cursor()
 except MySQLdb.OperationalError:
     print('ERROR: Could not connect as user root on localhost via port 3306 with '
           'provided password.  Please try again.\n\n')
     sys.exit()
-password = getpass("Please enter the new MySQL password to be used for this application's user: ")
+password = generate_random_alpha_numeric_string(50)
 queries = ['CREATE DATABASE %s DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci' % application,
            "CREATE USER '%s'@'%s' IDENTIFIED BY '%s'" % (application, host, password),
            "GRANT ALL PRIVILEGES ON %s.* TO '%s'@'%s'" % (application, application, host)
@@ -53,11 +69,11 @@ try:
 except MySQLdb.OperationalError:
     print('ERROR: failed to set up user and database.')
     sys.exit()
-print('Created new %s database accessible via full privileges to new %s user using '
-      'your provided password' % (application, application))
+print('Created new local MySQL database.  If you wish to connect manually, please '
+      'see %s for the credentials, which have been customized '
+      'for your specific instance of this application.' % settings)
 
 # Determine custom environment settings
-settings = 'scotus/settings.py'
 email = raw_input('\n\nPlease enter your email address: ')
 if raw_input('Is this a production environment? ') in positive:
     is_production = True
@@ -67,10 +83,10 @@ else:
     domain = 'localhost:8000'
 if raw_input('Do you want to enable Perma.cc archiving? ') in positive:
     perma_api_key = raw_input('Please enter your Perma.cc API key: ')
-    perma_base_folder_id = raw_input('Please enter your Perma.cc base folder ID: ')
+    perma_shared_folder_id = raw_input('Please enter your Perma.cc shared folder ID: ')
 else:
     perma_api_key = False
-    perma_base_folder_id = False
+    perma_shared_folder_id = False
     print('Disabling Perma.cc.  You can always manually enable it later via %s' % settings)
 if raw_input('Would you like to use a gmail account to sent system emails? ') in positive:
     configure_gmail = True
@@ -110,8 +126,8 @@ with open('%s.dist' % settings, 'r') as dist:
                     line = line.replace('False', 'True')
                 elif 'PERMA_CC_API_KEY' in line:
                     line = line.replace('PERMA_CC_API_KEY', perma_api_key)
-                elif 'PERMA_CC_BASE_FOLDER_ID' in line:
-                    line = line.replace('PERMA_CC_BASE_FOLDER_ID', perma_base_folder_id)
+                elif 'PERMA_CC_SHARED_FOLDER_ID' in line:
+                    line = line.replace('PERMA_CC_SHARED_FOLDER_ID', perma_shared_folder_id)
 
             if is_production and 'DEBUG' in line:
                 line = line.replace('True', 'False')

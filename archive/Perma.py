@@ -28,21 +28,20 @@ class Perma(object):
         self.folder_id = False
 
     def archive_citation(self, citation):
-        """Create perma.cc archive and move it to citation's opinion foler"""
+        """Create perma.cc archive and move it to citation's opinion folder"""
 
         endpoint = '%s/archives/?api_key=%s' % (self.API_BASE, self.KEY)
         self.citation = citation
+        self._set_opinion_folder_id()
         response = post(
             endpoint,
             data=json.dumps(self._get_post_data_archive()),
             headers=self._get_headers_dict(),
         )
         response_dict = json.loads(response.text)
-        if 'guid' in response_dict:
-            self.archive_id = response_dict['guid']
-            self._move_citation_to_opinion_folder()
-        else:
-            # The perma.cc archive could not be created.  This could be due to an API limit.
+
+        # The perma.cc archive could not be created.  This could be due to an API limit.
+        if not 'guid' in response_dict:
             raise Exception('ERROR: The perma.cc archive could not be created.  You may have hit '
                             'an API threshold, or encountered some other issue. Please review the '
                             'following error and contact perma.cc if it appears to be related to an '
@@ -58,10 +57,11 @@ class Perma(object):
     def _get_post_data_archive(self):
         """Return data necessary to create archive"""
 
-        if self.citation and self.citation.validated:
+        if self.citation and self.citation.validated and self.folder_id:
             return {
                 'url': self.citation.validated,
                 'notes': self._get_note(),
+                'folder': self.folder_id,
             }
 
     def _get_post_data_folder(self):
@@ -87,22 +87,7 @@ class Perma(object):
             'Accept': 'application/json',
         }
 
-    def _move_citation_to_opinion_folder(self):
-        """Move newly created perma link to citation's opinion folder"""
-
-        if self.archive_id:
-            self._set_opinion_folder_id()
-            endpoint = '%s/folders/%s/archives/%s/?api_key=%s' % (
-                self.API_BASE,
-                self.folder_id,
-                self.archive_id,
-                self.KEY
-            )
-            put(endpoint)
-
     def _set_opinion_folder_id(self):
-        """Set folder_id"""
-
         if PermaFolder.objects.filter(opinion__name=self.citation.opinion.name):
             # A folder for this citation's opinion already exists
             self.folder_id = PermaFolder.objects.get(opinion__name=self.citation.opinion.name).folder_id
@@ -111,15 +96,16 @@ class Perma(object):
             self._create_opinion_folder()
 
     def _create_opinion_folder(self):
-        """Create new perma.cc folder for opinion, then create corresponding local database record"""
-
         if not self.folder_id:
+            # Create new folder on perma.cc
             endpoint = '%s/folders/%s/folders/?api_key=%s' % (self.API_BASE, self.PARENT_FOLDER, self.KEY)
             response = post(
                 endpoint,
                 data=json.dumps(self._get_post_data_folder()),
                 headers=self._get_headers_dict(),
             )
+
+            # Create corresponding local database record for new folder on perma.cc
             response_dict = json.loads(response.text)
             self.folder_id = response_dict['id']
             folder = PermaFolder(

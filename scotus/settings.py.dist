@@ -138,7 +138,7 @@ WEBCITE = {
 PERMA = {
     'enabled': False,	#ENABLE_PERMA_CC (don't delete this comment, it is used in setup.py)
     'api_key': 'PERMA_CC_API_KEY',
-    'base_folder_id': 'PERMA_CC_BASE_FOLDER_ID',
+    'shared_folder_id': 'PERMA_CC_SHARED_FOLDER_ID',
 }
 
 
