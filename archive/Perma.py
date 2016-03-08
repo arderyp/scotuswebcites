@@ -40,8 +40,10 @@ class Perma(object):
         )
         response_dict = json.loads(response.text)
 
-        # The perma.cc archive could not be created.  This could be due to an API limit.
-        if not 'guid' in response_dict:
+        if 'guid' in response_dict:
+            self.archive_id = response_dict['guid']
+        else:
+            # The perma.cc archive could not be created.  This could be due to an API limit.
             raise Exception('ERROR: The perma.cc archive could not be created.  You may have hit '
                             'an API threshold, or encountered some other issue. Please review the '
                             'following error and contact perma.cc if it appears to be related to an '
