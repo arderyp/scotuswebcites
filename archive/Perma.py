@@ -17,7 +17,7 @@ class Perma(object):
     """
 
     KEY = settings.PERMA['api_key']
-    PARENT_FOLDER = settings.PERMA['base_folder_id']
+    PARENT_FOLDER = settings.PERMA['shared_folder_id']
     URL_BASE = 'https://perma.cc'
     API_BASE = 'https://api.perma.cc/v1'
 
