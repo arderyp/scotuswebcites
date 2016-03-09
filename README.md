@@ -1,4 +1,4 @@
-# United States Supreme Court 
+# Supreme Court of the United States : opinions
 ###### web citation discovery, presentation, and validation
 
 #### Setup

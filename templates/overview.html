@@ -19,7 +19,7 @@
             in United States Supreme Court opinions point to resources that are no longer accessible
             via the cited URI.<sup><a href="{{ cite_nyt  }}" target="_blank">1</a></sup> This phenomenon is known as
             <i>link rot</i> and it occurs when web content is either moved on, or removed from, its hosting
-            server, at which point all links referancing the content's original URI location immediately
+            server, at which point all links referencing the content's original URI location immediately
             break.<sup><a href="{{ cite_wiki }}" target="blank">2</a></sup> Consequently, an attempt to visit such a link
             results in the familiar <i>Page not found</i> 404 error.
         </p>
@@ -36,19 +36,19 @@
         </p>
 
         <p>
-            In additiona to link rot, web citations may suffer a related form of degeneration known as
+            In addition to link rot, web citations may suffer a related form of degeneration known as
             <i>reference rot</i>, whereby a cited URI remains active while the content to which it refers
-            shifts over time.<sup><a href="{{ cite_aba }} target="blank"">4</a></sup>  While machanisms like Harvard's
-            Perma.cc project offer solutions to these shortcoming of referncial web citations, they are
+            shifts over time.<sup><a href="{{ cite_aba }} target="blank"">4</a></sup>  While mechanisms like Harvard's
+            Perma.cc project offer solutions to these shortcoming of referential web citations, they are
             new technologies designed to address an historically new problem.  Until a new standard is
-            set and adopted by the wider academic community, the issues of link rot and referance rot will
+            set and adopted by the wider academic community, the issues of link rot and reference rot will
             continue to erode the foundation of modern academic and legal research.
         </p>
 
         <p>
             This reality demonstrates the need for active preservation of known and future web citations
             that follow the traditional structure of providing a simple URI link without an archival
-            qaulity perma-link or handle to maintain long term accessibility.  One proactive approach is
+            quality perma-link or handle to maintain long term accessibility.  One proactive approach is
             to monitor major academic and legal publications for new web citations and, upon discovery of
             a new citation, crawl the referenced content with an archival quality web crawler such as
             <a href="{{ cite_heritrix }}" target="blank">Heritrix</a>.  As content can change or disappear rapidly,
@@ -64,11 +64,15 @@
             citations.  That the opinions are initially published in PDF format presents
             challenges, as some citations span over multiple lines and/or pages, which makes uniform and
             flawless discovery of web citation strings extremely difficult.  To combat this obstacle, each
-            citation must be validated by a human before being sent to the Library of Congress' in-house
-            instance of Heritrix for harvesting.
-            Upon discovery, all new citations are logged in the database and presented via the application's citation
-            <a href="citations/">interface</a>.  If the application discovers valid web archive captures of a citation
-            in the <a href="http://timetravel.mementoweb.org/about/">Memento project</a> timegate, the "Archives" column will
+            citation must be validated by a human. If the citation URI is available on the live web when out admins
+            validate it, this application will make an immediate archival snapshot of the site using Perma.cc's
+            very handy <a href="https://perma.cc/docs/developer" target="_blank">API</a>. The system will also
+            send out emails to our subscribers upon validation of new citations.  This allows any other institutions
+            interested in archiving these citations for their own collections (redundancy is our friend!) to recieve
+            a quick and easy stream URI's to archive, as they are published.  This data is also publically
+            presented via the application's <a href="citations/">citation interface</a>.  If the application discovers
+            valid web archive captures of a citation in the
+            <a href="http://timetravel.mementoweb.org/about/">Memento timegate</a>, the "Archives" column will
             display a link off to the Memento results relative to the source opinion's published date.
         </p>
 
@@ -76,9 +80,11 @@
             If you have JavaScript enabled in your browser, you will see chart at the top of this page
             that outlines the distribution of web citations in Supreme Court opinions over time.  Additionally,
             the gauge below that line chart provides a dynamic overview of the link rot that has affected
-            the known supreme court web citations. Our data is freely available in csv format via the
-            <a href="csv">Download Data</a> link at the top of the page.  The code for this applications
-            is also free available on <a href="{{ cite_github }}" target="blank">GitHub</a>.
+            the known supreme court web citations.  The link statuses taken into consideration for the link
+            rot chart are the statuses of the links <i>at their time of discovery by this application</i>.
+            Our data is freely available in csv format via the <a href="csv">Download Data</a> link at the
+            top of the page.  The code for this applications is also free available on
+            <a href="{{ cite_github }}" target="_blank">GitHub</a>.
         </p>
     </div>
 
