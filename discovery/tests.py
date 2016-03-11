@@ -5,6 +5,7 @@ from scotus import settings
 from discovery.Pdf import Pdf
 from discovery.Pdf import Url
 
+
 class PdfTestCase(TestCase):
     def test_urls_as_expected(self):
         """Expected urls are scraped"""
@@ -55,8 +56,7 @@ class PdfTestCase(TestCase):
         for document, citations in checks.iteritems():
             pdf = Pdf()
             pdf.local_file = test_dir + document
-            pdf.extract_text()
-            pdf.extract_urls_from_text()
+            pdf.scrape_urls()
             if self.assertEqual(pdf.urls, citations):
                 print
 
