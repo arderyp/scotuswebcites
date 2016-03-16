@@ -70,7 +70,7 @@ def overview(request):
         'cite_perma': 'http://perma.cc',
         'cite_heritrix': 'https://en.wikipedia.org/wiki/Heritrix',
         'cite_scotus': 'http://www.supremecourt.gov/opinions/opinions.aspx',
-        'cite_github': 'https://github.com/arderyp/scotuswebcites.io',
+        'cite_github': 'https://github.com/arderyp/scotuswebcites',
     }
 
     # Calculate opinion and citation distributions

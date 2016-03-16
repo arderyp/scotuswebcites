@@ -15,8 +15,8 @@ To follow the directions below, you will also need to install [pip](http://pypi.
 used to fetch the application requirements. Once that's taken care of, an mysql is installed and configured with
 a root user account, move into the directory where you want to store this application and then run the following:
 ```
-git clone git@github.com:arderyp/scotuswebcites.io.git
-cd scotuswebcites.io
+git clone git@github.com:arderyp/scotuswebcites.git
+cd scotuswebcites
 ./setup.py
 ``` 
 
