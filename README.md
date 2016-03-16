@@ -66,7 +66,7 @@ PERMA = {
 
 Simply change ```False``` to ```True``` for the services that you want to enable.  If you'd like to enable perma.cc,
 you will need to put the API key that you generated in place of ```PERMA_CC_API_KEY```, and your shared folder_id
-in place of 'PERMA_CC_SHARED_FOLDER_ID'.
+in place of 'PERMA_CC_SHARED_FOLDER_ID'. If you don't know what these are, contact someone at perma.cc for assistance.
 
 Whether or not you have enabled archiving, you will need to validate citatons that are dicovered.  The scraper and
 the Opinion PDFs are imperfect, which means that some web citations are scraped improperly.  Consequently,
