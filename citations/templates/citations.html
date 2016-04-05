@@ -8,6 +8,14 @@
 {% endblock %}
 
 {% block content %}
+    {% if user.is_authenticated %}
+        <span class="pull-right">
+            <a class="btn btn-success" href="/notifysubscribers" title="notify subscribers" role="button">
+                Notify Subscribers
+            </a>
+        </span>
+    {% endif %}
+
     {% include "citation-filters.html" %}
 
     <table class="table table-responsive sticky-header">

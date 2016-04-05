@@ -1,10 +1,12 @@
 from django.conf import settings
-from django.contrib import messages
-from django.template import Context
-from django.core.mail import send_mail
 from django.http import HttpResponseRedirect
+from django.core.mail import send_mail
 from django.core.mail import EmailMultiAlternatives
+from django.core.management import call_command
+from django.template import Context
 from django.template.loader import get_template
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 
 from subscribers.models import Subscriber
 
@@ -58,7 +60,6 @@ def sign_up(request):
 
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
-
 def subscribe(request, hash_key):
     subscriber = Subscriber.objects.get(hash_key=hash_key)
     if subscriber and not subscriber.subscribed:
@@ -83,6 +84,11 @@ def unsubscribe(request, hash_key):
             'You have successfully unsubscribed. Thanks for using our service!'
         )
     return HttpResponseRedirect('/')
+
+@login_required()
+def notify_subscribers(request):
+    call_command('notifysubscribers')
+    return HttpResponseRedirect('/citations/')
 
 def _send_confirmation_email(request, subscriber):
     url_base = request.build_absolute_uri('/')
