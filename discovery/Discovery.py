@@ -9,7 +9,7 @@ from django.core.mail import EmailMultiAlternatives
 from django.template.loader import get_template
 from django.template import Context
 
-from scotus import settings
+from scotuswebcites import settings
 from discovery.Pdf import Url
 from discovery.Logger import Logger
 from opinions.models import Opinion

@@ -4,7 +4,7 @@ from django.http import HttpResponseRedirect
 from django.utils import timezone
 from django.contrib import messages
 
-from scotus import settings
+from scotuswebcites import settings
 from citations.models import Citation
 from archive.Perma import Perma
 from .forms import VerifyCitationForm

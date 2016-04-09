@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django.db import models
-from scotus import settings
+from scotuswebcites import settings
 from discovery.Url import Url
 
 

@@ -6,7 +6,7 @@
 
 #source /home/user/.virtualenvs/scotuswebcites.io/bin/activate
 
-DJANGO_SETTINGS_MODULE=scotus.settings
+DJANGO_SETTINGS_MODULE=scotuswebcites.settings
 PYTHON_PATH="/home/user/scotuswebcites.io"
 export DJANGO_SETTINGS_MODULE
 export PYTHON_PATH

@@ -1,6 +1,6 @@
 from django.core.management.base import NoArgsCommand
 from django.core.management import call_command
-from scotus import settings
+from scotuswebcites import settings
 import os
 import glob
 

@@ -65,7 +65,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.security.SecurityMiddleware',
 )
 
-ROOT_URLCONF = 'scotus.urls'
+ROOT_URLCONF = 'scotuswebcites.urls'
 
 TEMPLATES = [
     {
@@ -85,7 +85,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'scotus.wsgi.application'
+WSGI_APPLICATION = 'scotuswebcites.wsgi.application'
 
 
 # Database

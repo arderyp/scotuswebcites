@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django.test import TestCase
-from scotus import settings
+from scotuswebcites import settings
 from discovery.Pdf import Pdf
 from discovery.Pdf import Url
 

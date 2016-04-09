@@ -1,7 +1,7 @@
 import json
 from requests import post, put
 
-from scotus import settings
+from scotuswebcites import settings
 from archive.models import PermaFolder
 from opinions.models import Opinion
 

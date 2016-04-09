@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django.db import models
-from scotus import settings
+from scotuswebcites import settings
 from discovery.Pdf import Pdf
 from discovery.Logger import Logger
 from citations.models import Citation

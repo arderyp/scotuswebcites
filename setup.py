@@ -12,7 +12,7 @@ def generate_random_alpha_numeric_string(length):
     return ''.join(random.choice(string.ascii_uppercase + string.digits) for i in range(length))
 
 positive = ['yes', 'y']
-settings = 'scotus/settings.py'
+settings = 'scotuswebcites/settings.py'
 
 # Handle requirements
 proceed = raw_input('\n\nTo get setup properly, you will need to have already installed pip and MySQL on this machine, '
@@ -50,7 +50,7 @@ host = 'localhost'
 root_password = getpass('\n\nPlease enter your mysql root user password (this will not be saved '
                         'or stored anywhere), then hit enter: ')
 try:
-    os.environ['DJANGO_SETTINGS_MODULE'] = 'scotus.settings'
+    os.environ['DJANGO_SETTINGS_MODULE'] = 'scotuswebcites.settings'
     import MySQLdb
     database_connection = db = MySQLdb.connect(host=host, port=port, user='root', passwd=root_password)
     cursor = database_connection.cursor()
@@ -101,7 +101,6 @@ else:
           'system emails will not be sent and may cause system errors.')
 
 # Create fresh custom settings.py file
-settings = 'scotus/settings.py'
 if os.path.isfile(settings):
     os.remove(settings)
 with open('%s.dist' % settings, 'r') as dist:
