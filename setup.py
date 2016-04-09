@@ -61,8 +61,8 @@ except MySQLdb.OperationalError:
 password = generate_random_alpha_numeric_string(50)
 queries = ['CREATE DATABASE %s DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci' % application,
            "CREATE USER '%s'@'%s' IDENTIFIED BY '%s'" % (application, host, password),
-           "GRANT ALL PRIVILEGES ON %s.* TO '%s'@'%s'" % (application, application, host)
-           "GRANT ALL PRIVILEGES ON test_%s.* TO '%s'@'%s'" % (application, application, host)
+           "GRANT ALL PRIVILEGES ON %s.* TO '%s'@'%s'" % (application, application, host),
+           "GRANT ALL PRIVILEGES ON test_%s.* TO '%s'@'%s'" % (application, application, host),
            ]
 try:
     for query in queries:
