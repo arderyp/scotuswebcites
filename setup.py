@@ -78,7 +78,7 @@ print('Created new local MySQL database.  If you wish to connect manually, pleas
 email = raw_input('\n\nPlease enter your email address: ')
 if raw_input('Is this a production environment? ') in positive:
     is_production = True
-    domain = raw_input("Our production domain is scotuswebcites.io, what's yours? ")
+    domain = raw_input("Our production domain is scotuswebcites.berkeley.edu, what's yours? ")
 else:
     is_production = False
     domain = 'localhost:8000'

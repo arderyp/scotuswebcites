@@ -4,10 +4,10 @@
 ## You will also need to customize the path in PYTHON_PATH
 ## You will want to rename this file 'discover.sh' and add it to your crontab
 
-#source /home/user/.virtualenvs/scotuswebcites.io/bin/activate
+#source /home/user/.virtualenvs/scotuswebcites/bin/activate
 
 DJANGO_SETTINGS_MODULE=scotuswebcites.settings
-PYTHON_PATH="/home/user/scotuswebcites.io"
+PYTHON_PATH="/home/user/scotuswebcites"
 export DJANGO_SETTINGS_MODULE
 export PYTHON_PATH
 
