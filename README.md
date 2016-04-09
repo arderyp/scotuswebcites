@@ -2,7 +2,8 @@
 ###### web citation discovery, presentation, and validation
 
 #### Setup
-Out of the box, this application depends on a mysql backend, and the instructions below cater to that dependency.
+I recommend using python 2.7.10+ to run this application.  You will also need the standard python development libraries.
+installed. Out of the box, this application depends on a mysql backend, and the instructions below cater to that dependency.
 You can easily use another database backend, see the
 [Django documentation](https://docs.djangoproject.com/en/1.8/ref/settings/#databases) for instructions.
 Likewise, to run the application in production, you should also install and configure a web server, such a
