@@ -89,7 +89,7 @@ else:
     perma_api_key = False
     perma_shared_folder_id = False
     print('Disabling Perma.cc.  You can always manually enable it later via %s' % settings)
-if raw_input('Would you like to use a gmail account to sent system emails? ') in positive:
+if raw_input('Would you like to use a gmail account to send system emails? ') in positive:
     configure_gmail = True
     gmail_address = raw_input("Please enter the gmail address that you'd like to use: ")
     gmail_password = getpass("Please enter the password associated with this account: ")
