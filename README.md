@@ -82,11 +82,12 @@ manage.py notifysubscribers
 ```
 
 You may also set up a cron job to handle this automatically by utilizing ```scripts/notifysubscribers.sh.dist```, following
-the same basic instructions provided for ``scripts/discovery.sh.dist``` noted above.  If you choose to do so, you may want to stagger the
+the same basic instructions provided for `scripts/discovery.sh.dist` noted above.  If you choose to do so, you may want to stagger the
 discovery process to run every other hour, and have the notification process run every hour in between, which
 will give you (the admin) an hour to verify newly discovered citations before your runs the notification process.
 This is a long enough period to let you get your work done, but hopeuflly a
 short enough period that the cited website has not changed since your scraper discovered it.
+See the [wiki](https://github.com/arderyp/scotuswebcites/wiki) for an example cron setup.
 
 
 Lastly, all discovered opinion PDFs will be saved in the
