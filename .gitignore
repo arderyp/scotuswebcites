@@ -4,3 +4,4 @@
 .idea
 scotuswebcites/settings.py
 scripts/discover.sh
+scripts/notifysubscribers.sh
