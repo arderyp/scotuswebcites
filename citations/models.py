@@ -56,10 +56,13 @@ class Citation(models.Model):
         request = Url.get(working_url)
 
         if not request or request.status_code == 404:
+            # invalid resource
             self.status = 'u'
-
-        # 300 status codes aren't captured, so must compare before and after urls
+        elif request.status_code // 100 == 2:
+            # valid 2xx response
+            self.status = 'a'
         elif request and (request.url != working_url):
+            # 3xx status codes aren't captured, so must compare before and after urls
             if request.url != working_url + '/':
                 if request.url.split('://')[1] != working_url.split('://')[1]:
                     self.status = 'r'
