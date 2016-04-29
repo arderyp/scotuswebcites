@@ -115,13 +115,19 @@ def verify(request, citation_id):
     else:
         try:
             citation = Citation.objects.get(id=citation_id)
-            form = VerifyCitationForm(initial={'validated': citation.scraped})
-            context = {
-                'citation': citation,
-                'form': form,
-            } 
         except Exception:
             return redirect(request)
+
+        # Make sure not already validated
+        if citation.verify_date:
+            messages.add_message(request, messages.WARNING, 'This citation has already been verified')
+            return HttpResponseRedirect('/citations/#%s' % citation.id)
+
+        form = VerifyCitationForm(initial={'validated': citation.scraped})
+        context = {
+            'citation': citation,
+            'form': form,
+        }
 
     return render(request, template, context)
 
