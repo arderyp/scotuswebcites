@@ -27,7 +27,7 @@
         <p>
             The <i>New York Times</i> article draws upon Harvard University's research into the validity
             of legal citations in both Harvard Law Review publications and U.S. Supreme Court
-            opinions.<sup><a href="{{ cite_harvard }}" target="blank">3</a></sup>  The two data sets yeilded
+            opinions.<sup><a href="{{ cite_harvard }}" target="blank">3</a></sup>  The two data sets yielded
             discouragingly high percentages of link rot in their respective citations.  In response to
             these findings, and the general tendency for link rot to expand over time as content
             is eventually removed from or moved within the web, Harvard created
@@ -40,7 +40,7 @@
             <i>reference rot</i>, whereby a cited URI remains active while the content to which it refers
             shifts over time.<sup><a href="{{ cite_aba }} target="blank"">4</a></sup>  While mechanisms like Harvard's
             Perma.cc project offer solutions to these shortcoming of referential web citations, they are
-            new technologies designed to address an historically new problem.  Until a new standard is
+            new technologies designed to address a historically new problem.  Until a new standard is
             set and adopted by the wider academic community, the issues of link rot and reference rot will
             continue to erode the foundation of modern academic and legal research.
         </p>
@@ -63,16 +63,16 @@
             will then convert each opinion PDF into plain-text, which it then parses and searches for web
             citations.  That the opinions are initially published in PDF format presents
             challenges, as some citations span over multiple lines and/or pages, which makes uniform and
-            flawless discovery of web citation strings extremely difficult.  To combat this obstacle, each
-            citation must be validated by a human. If the citation URI is available on the live web when out admins
+            flawless discovery of web citation strings extremely difficult.  To combat this obstacle, each scraped
+            citation must be validated by a human. If the citation URI is available on the live web when our admins
             validate it, this application will make an immediate archival snapshot of the site using Perma.cc's
             very handy <a href="https://perma.cc/docs/developer" target="_blank">API</a>. The system will also
             send out emails to our subscribers upon validation of new citations.  This allows any other institutions
-            interested in archiving these citations for their own collections (redundancy is our friend!) to recieve
-            a quick and easy stream URI's to archive, as they are published.  This data is also publically
+            interested in archiving these citations for their own collections (redundancy is our friend!) to receive
+            a quick and easy stream URI's to archive, as they are published.  This data is also publicly
             presented via the application's <a href="citations/">citation interface</a>.  If the application discovers
             valid web archive captures of a citation in the
-            <a href="http://timetravel.mementoweb.org/about/">Memento timegate</a>, the "Archives" column will
+            <a href="http://timetravel.mementoweb.org/about/">Memento timegate</a>, the "Memento" column will
             display a link off to the Memento results relative to the source opinion's published date.
         </p>
 
@@ -82,7 +82,7 @@
             has been added to the SCOTUS website, which intends to address the issue of link rot within the opinions.
             Unfortunately, while this information is better than no information, it is still of limited use.  In
             addition to listing each url citation, the court includes a PDF document that depicts the state of
-            the cited website as it appeared when the opinion was published.  Unfortunately, the site could have
+            the cited website as it appeared when the opinion was published.  Unfortunately, the website could have
             changed between the time at which a justice viewed and decided to cite it, and the time at which
             the opinion is published.  This issue is solved neither by this new section of the SCOTUS website,
             nor this web application.  However, this application excels over SCOTUS's own citation data by releasing
@@ -95,9 +95,9 @@
         </p>
 
         <p>
-            If you have JavaScript enabled in your browser, you will see chart at the top of this page
+            If you have JavaScript enabled in your browser, you will see a chart at the top of this page
             that outlines the distribution of web citations in Supreme Court opinions over time.  Additionally,
-            the gauge below that line chart provides a dynamic overview of the link rot that has affected
+            the gauge chart below that line chart provides a dynamic overview of the link rot that has affected
             the known supreme court web citations.  The link statuses taken into consideration for the link
             rot chart are the statuses of the links <i>at their time of discovery by this application</i>.
             Our data is freely available in csv format via the <a href="csv">Download Data</a> link at the
