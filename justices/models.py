@@ -21,7 +21,8 @@ class Justice(models.Model):
     id = models.CharField(max_length=5, primary_key=True)
     name = models.CharField(max_length=50) 
 
-    def get_counts(self):
+    def set_counts(self):
+        """Initialize opinion_count and citation_average_count properties"""
         from opinions.models import Opinion
         from citations.models import Citation
 
@@ -29,9 +30,9 @@ class Justice(models.Model):
         self.citation_count = Citation.objects.filter(opinion_id__justice_id=self.id).count()
 
         if self.citation_count:
-            average_count = self.citation_count / float(self.opinion_count)
+            average = self.citation_count / float(self.opinion_count)
 
             # Format to 2 decimal places
-            self.average_count = float("%.2f" % average_count)
+            self.citation_average_count = float("%.2f" % average)
         else:
-            self.average_count = 0
+            self.citation_average_count = 0
