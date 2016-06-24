@@ -8,8 +8,16 @@
     {% csrf_token %}
     <input type='hidden' name='citation_id' value='{{ citation.id }}' />
     <ul class="list-group">
+        <li class="list-group-item">Citation Status:
+            <span class="label label-default label-as-badge status-{{ citation.status }}">
+                {{ citation.status }}
+            </span>
+        </li>
         <li class="list-group-item">Opinion: <a href="{{ citation.opinion.pdf_url }}" target="_blank">{{ citation.opinion.name }}</a></li>
-        <li class="list-group-item">Scraped Citation: <a href="{{ citation.scraped }}" target="_blank">{{ citation.scraped }}</a></li>
+        <li class="list-group-item">
+            Scraped Citation: &nbsp;
+            <a href="{{ citation.scraped }}" target="_blank">{{ citation.scraped }}</a>
+        </li>
         <li class="list-group-item">Validated Citation: {{ form.validated }}</li>
         <li class="list-group-item">
             Scrape Evaluation: {{ form.scrape_evaluation }}

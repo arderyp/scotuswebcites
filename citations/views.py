@@ -75,13 +75,9 @@ def verify(request, citation_id):
 
             if form.is_valid():
                 citation.validated = validated
-
-                # Don't waste time checking validated citation if matched scraped
-                if validated != citation.scraped or scrape_evaluation != citation.scrape_evaluation: 
-                    citation.get_statuses()
-
                 citation.verify_date = timezone.now()
                 citation.scrape_evaluation = scrape_evaluation
+                citation.get_statuses()
 
                 # Archive the citation if archiving enabled
                 if citation.status != 'u':
