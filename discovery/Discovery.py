@@ -75,14 +75,20 @@ class Discovery:
                     # Parse data from rows in table
                     for cell in row.xpath('td'):
                         cell_label = column_labels[cell_count]
+                        text = cell.text_content().strip()
+
+                        # Skip rows with empty first cell, these
+                        # can appear at the start of a new cycle
+                        # when scotus adds new date pages that
+                        # do not yet have records
+                        if cell_count == 0 and not text:
+                            break
+
+                        row_data[cell_label] = text if text else None
                         if cell.xpath('a') or cell_label == 'Revised':
-                            text = cell.xpath('a/text()')[0] if cell.xpath('a/text()') else None
-                            href = cell.xpath('a/@href')[0] if cell.xpath('a/@href') else None
-                            row_data[cell_label] = text
-                            row_data[cell_label + '_Url'] = href
-                        else:
-                            cell_text = cell.xpath('text()')
-                            row_data[cell_label] = cell_text[0].strip() if cell_text else None
+                            href = cell.xpath('a/@href')
+                            row_data[cell_label + '_Url'] = href[0] if href else None
+
                         cell_count += 1
 
                     if row_data:
