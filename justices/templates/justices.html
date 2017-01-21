@@ -2,49 +2,55 @@
 {% load staticfiles %}
 
 {% block javascript %}
-    <script src="{% static 'js/jquery.floatThead.min.js' %}"></script>
+<script src="{% static 'js/jquery.floatThead.min.js' %}"></script>
 {% endblock %}
 
 {% block content %}
+<div class="container">
+  <div class="row">
     <table class="table table-striped sticky-header">
+      <thead>
+      <tr>
+        <th>Justice</th>
+        <th>Published Opinions</th>
+        <th>Total Web Citations</th>
+        <th>Average Web Citations Per Opinion</th>
+      </tr>
+      </thead>
+      <tbody>
+        {% for justice in justices %}
+          <tr>
 
-        <thead>
-        <tr>
-            <th>Justice</th>
-            <th>Published Opinions</th>
-            <th>Total Web Citations</th>
-            <th>Average Web Citations Per Opinion</th>
-        </tr>
-        </thead>
+            <td>{{ justice.name }}</td>
 
-        <tbody>
-            {% for justice in justices %}
-                <tr>
-                    <td>{{ justice.name }}</td>
-                    <td>
-                        {% if justice.opinion_count %}
-                            <a href="/opinions/{{ justice.id  }}" title="view justice opinions">
-                                <span class="label label-primary label-as-badge">{{ justice.opinion_count }}</span>
-                            </a>
-                        {% else %}
-                        <span class="label label-default label-as-badge">{{ justice.opinion_count }}</span>
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if justice.citation_count %}
-                            <a href="/citations/{{ justice.id  }}" title="view justice citations">
-                                <span class="label label-primary label-as-badge">{{ justice.citation_count  }}</span>
-                            </a>
-                        {% else %}
-                            <span class="label label-default label-as-badge">{{ justice.citation_count  }}</span>
-                        {% endif %}
-                    </td>
-                    <td>
-                        {{ justice.citation_average_count }}
-                    </td>
-                </tr>
-            {% endfor %}
-        </tbody>
+            <td>
+              {% if justice.opinion_count %}
+                <a href="/opinions/{{ justice.id  }}" title="view justice opinions">
+                  <span class="label label-primary label-as-badge">{{ justice.opinion_count }}</span>
+                </a>
+              {% else %}
+                <span class="label label-default label-as-badge">{{ justice.opinion_count }}</span>
+              {% endif %}
+            </td>
 
+            <td>
+              {% if justice.citation_count %}
+                <a href="/citations/{{ justice.id  }}" title="view justice citations">
+                  <span class="label label-primary label-as-badge">{{ justice.citation_count  }}</span>
+                </a>
+              {% else %}
+                <span class="label label-default label-as-badge">{{ justice.citation_count  }}</span>
+              {% endif %}
+            </td>
+
+            <td>
+              {{ justice.citation_average_count }}
+            </td>
+
+          </tr>
+        {% endfor %}
+      </tbody>
     </table>
+  </div>
+</div>
 {% endblock %}

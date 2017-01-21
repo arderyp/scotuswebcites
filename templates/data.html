@@ -2,28 +2,34 @@
 {% load staticfiles %}
 
 {% block javascript %}
-    <script src="{% static 'js/highcharts.js' %}"></script>
-    <script src="{% static 'js/grid-light.js' %}"></script>
+<script src="{% static 'js/highcharts.js' %}"></script>
+<script src="{% static 'js/grid-light.js' %}"></script>
 {% endblock %}
 
 {% block css %}{% endblock %}
 
 {% block content %}
-    <noscript>
-        <div class="alert alert-warning text-center" role="alert">
-          <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-          Please enable javascript in your broswer to experience full site features
-        </div>
-    </noscript>
+<div class="container-fluid">
+  <div class="row">
     <div id="citation_distribution" class="chart"></div>
+  </div>
+</div>
+<div class="container">
+  <div class="row">
+    <noscript>
+      <div class="alert alert-warning text-center" role="alert">
+        <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+        Please enable javascript in your broswer to experience full site features
+      </div>
+    </noscript>
     <div id="overview">
-        <div id="rot_distribution" class="chart"></div>
-        <h2>Blah Blah Blah</h2>
-        <p>some stuff here</p>
-        <p><a href="/csv" class="btn btn-primary" title="Analyze Our Data">Download</a></p>
+      <div id="rot_distribution" class="chart"></div>
+      <h2>Blah Blah Blah</h2>
+      <p>some stuff here</p>
+      <p><a href="/csv" class="btn btn-primary" title="Analyze Our Data">Download</a></p>
     </div>
-
-{% include "charts/distribution.html" %}
-{% include "charts/linkrot.html" %}
-
+    {% include "charts/distribution.html" %}
+    {% include "charts/linkrot.html" %}
+  </div>
+</div>
 {% endblock %}

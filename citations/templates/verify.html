@@ -1,54 +1,55 @@
 {% extends "base.html" %}
 
 {% block content %}
-<br>
-
 <!--Present Form-->
-<form method="post" action="/citations/verify/{{ citation.id  }}">
-    {% csrf_token %}
-    <input type='hidden' name='citation_id' value='{{ citation.id }}' />
-    <ul class="list-group">
+<div class="container">
+  <div class="row">
+    <form method="post" action="/citations/verify/{{ citation.id  }}">
+      {% csrf_token %}
+      <input type='hidden' name='citation_id' value='{{ citation.id }}' />
+      <ul class="list-group">
         <li class="list-group-item">Citation Status:
-            <span class="label label-default label-as-badge status-{{ citation.status }}">
-                {{ citation.status }}
-            </span>
+          <span class="label label-default label-as-badge status-{{ citation.status }}">
+            {{ citation.status }}
+          </span>
         </li>
         <li class="list-group-item">Opinion: <a href="{{ citation.opinion.pdf_url }}" target="_blank">{{ citation.opinion.name }}</a></li>
         <li class="list-group-item">
             Scraped Citation: &nbsp;
-            <a href="{{ citation.scraped }}" target="_blank">{{ citation.scraped }}</a>
+          <a href="{{ citation.scraped }}" target="_blank">{{ citation.scraped }}</a>
         </li>
         <li class="list-group-item">Validated Citation: {{ form.validated }}</li>
         <li class="list-group-item">
             Scrape Evaluation: {{ form.scrape_evaluation }}
-            <input class="btn btn-primary" type="submit" value="Verify" />
-   
-            <!--Show loading wheel when click verify, if js enabled-->
-            <div class='load-wheel' style="display:none">
-                <br>
-                <img src="/static/img/loading.gif" id="loading-indicator" /> Checking status of validated citation, please be patient...
-            </div>
+          <input class="btn btn-primary" type="submit" value="Verify" />
 
-            <!--Show patient message if js disabled-->
-            <div class='js-disabled'>
-                * Verification will take a few seconds, as we validate the status and archive acessibility of the verified link. Please be patient.
-            </div>
+          <!--Show loading wheel when click verify, if js enabled-->
+          <div class='load-wheel' style="display:none">
+            <br>
+            <img src="/static/img/loading.gif" id="loading-indicator" /> Checking status of validated citation, please be patient...
+          </div>
+
+          <!--Show patient message if js disabled-->
+          <div class='js-disabled'>
+            * Verification will take a few seconds, as we validate the status and archive acessibility of the verified link. Please be patient.
+          </div>
         </li>
-    </ul>
-</form>
+      </ul>
+    </form>
 
-<!--Report Errors-->
-{% if form.errors %}
-  <br>
-  {% for field in form %}
-    {% if field.errors %}
-      <div class="alert alert-danger" role="alert">
-        {% for error in field.errors %}
-          {{ field.label }}: {{ error }}
-        {% endfor %}
-      </div>
-      {% endif %}
-  {% endfor %}
-{% endif %}
-
+    <!--Report Errors-->
+    {% if form.errors %}
+      <br>
+      {% for field in form %}
+        {% if field.errors %}
+          <div class="alert alert-danger" role="alert">
+            {% for error in field.errors %}
+              {{ field.label }}: {{ error }}
+            {% endfor %}
+          </div>
+          {% endif %}
+      {% endfor %}
+    {% endif %}
+  </div>
+</div>
 {% endblock %}

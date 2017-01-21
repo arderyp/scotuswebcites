@@ -1,57 +1,56 @@
 <!--Build LinkRot Chart-->
 <script>
-    Highcharts.setOptions(
-        {
-            colors: [
-                '#90ed7d',
-                '#f7a35c',
-                '#434348',
-            ]
-        }
-    );
-    $('#rot_distribution').highcharts({
-        title: {
-            text: 'Citation<br>Link Rot',
-            align: 'center',
-            verticalAlign: 'middle',
-            y: 50,
-        },
-        chart: {
-            plotBackgroundColor: null,
-            plotBorderWidth: 0,
-            plotShadow: false,
-            height: 400,
-            width:400,
-        },
-        credits: {
-            enabled: false,
-        },
-        plotOptions: {
-             pie: {
-                 startAngle: -90,
-                 endAngle: 90,
-                 center: ['50%', '75%'],
-                 dataLabels: {
-                     enabled: true,
-                     distance: -50,
-                     style: {
-                         fontWeight: 'bold',
-                         color: 'white',
-                         textShadow: '0px 1px 2px black',
-                     },
-                 },
-             }
-        },
-        series: [{
-            type: 'pie',
-            name: 'Web Citations',
-            innerSize: '50%',
-            data: [
-                ['<a href="{{ base }}citations/available">available</a>', {{ available }}],
-                ['<a href="{{ base }}citations/redirect">redirect</a>', {{ redirected }}],
-                ['<a href="{{ base }}citations/unavailable">unavailable</a>', {{ unavailable }}],
-            ],
-        }],
-
-    });
+  Highcharts.setOptions(
+    {
+      colors: [
+        '#90ed7d',
+        '#f7a35c',
+        '#434348',
+      ]
+    }
+  );
+  $('#rot_distribution').highcharts({
+    title: {
+      text: 'Citation<br>Link Rot',
+      align: 'center',
+      verticalAlign: 'middle',
+      y: 50,
+    },
+    chart: {
+      plotBackgroundColor: null,
+      plotBorderWidth: 0,
+      plotShadow: false,
+      height: 400,
+      width:400,
+    },
+    credits: {
+      enabled: false,
+    },
+    plotOptions: {
+       pie: {
+         startAngle: -90,
+         endAngle: 90,
+         center: ['50%', '75%'],
+         dataLabels: {
+           enabled: true,
+           distance: -50,
+           style: {
+             fontWeight: 'bold',
+             color: 'white',
+             textShadow: '0px 1px 2px black',
+           },
+         },
+       }
+    },
+    series: [{
+      type: 'pie',
+      name: 'Web Citations',
+      innerSize: '50%',
+      data: [
+        ['<a href="{{ base }}citations/available">available</a>', {{ available }}],
+        ['<a href="{{ base }}citations/redirect">redirect</a>', {{ redirected }}],
+        ['<a href="{{ base }}citations/unavailable">unavailable</a>', {{ unavailable }}],
+      ],
+    }],
+  });
 </script>
