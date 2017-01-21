@@ -58,10 +58,12 @@ def data(request):
     from time import time
     from opinions.models import Opinion
     from citations.models import Citation
+    from django.http import HttpRequest
 
     template = 'data.html'
     js_month = 2678400000
     context = {
+        'base': HttpRequest.build_absolute_uri(request).strip('data/'),
         'go_live_date': 1462086000000,
         'available': Citation.objects.filter(status='a').count(),
         'unavailable': Citation.objects.filter(status='u').count(),

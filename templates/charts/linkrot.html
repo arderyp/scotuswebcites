@@ -11,30 +11,32 @@
   );
   $('#rot_distribution').highcharts({
     title: {
-      text: 'Availability<br>Upon Discovery',
-      align: 'center',
+      text: 'Availability<br>Upon<br>Discovery',
+      //align: 'center',
       verticalAlign: 'middle',
-      y: 50,
+      //y: 50,
+      y: -15,
     },
     chart: {
       plotBackgroundColor: null,
       plotBorderWidth: 0,
       plotShadow: false,
-      height: 400,
-      width:400,
+      height: 450,
+      width:450,
     },
     credits: {
       enabled: false,
     },
     plotOptions: {
        pie: {
-         startAngle: -90,
-         endAngle: 90,
-         center: ['50%', '75%'],
+         //startAngle: -90,
+         //endAngle: 90,
+         //center: ['50%', '75%'],
          dataLabels: {
            enabled: true,
            distance: -50,
            style: {
+             fontSize: '14px',
              fontWeight: 'bold',
              color: 'white',
              textShadow: '0px 1px 2px black',
@@ -47,9 +49,9 @@
       name: 'Web Citations',
       innerSize: '50%',
       data: [
-        ['<a href="{{ base }}citations/available">available</a>', {{ available }}],
-        ['<a href="{{ base }}citations/redirect">redirected</a>', {{ redirected }}],
-        ['<a href="{{ base }}citations/unavailable">unavailable</a>', {{ unavailable }}],
+        ['<a href="{{ base }}/citations/available">available</a>', {{ available }}],
+        ['<a href="{{ base }}/citations/redirect">redirected</a>', {{ redirected }}],
+        ['<a href="{{ base }}/citations/unavailable">unavailable</a>', {{ unavailable }}],
       ],
     }],
   });

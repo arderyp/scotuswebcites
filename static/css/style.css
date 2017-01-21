@@ -39,18 +39,15 @@ footer {
   top: -6px;
 }
 #data-text {
-  float: left;
-  width: 100%;
   font-family: 'Libre Baskerville', serif;
   font-size: 20px;
+}
+#rot_distribution {
+  margin-top: 45px;
 }
 #data-text h2 {
   font-size: 48px; margin-top: 2em;
   margin-bottom: 0.5em;
-}
-#rot_distribution {
-  float: right;
-  height: 300px;
 }
 #login-form {
   width: 200px;

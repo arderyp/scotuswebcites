@@ -21,14 +21,14 @@
     <noscript>
       <div class="alert alert-warning text-center" role="alert">
         <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-        Please enable javascript in your broswer to experience full site features
+        Please enable javascript in your broswer to view our distribution charts
       </div>
     </noscript>
-    <div id="data-text">
-      <div id="rot_distribution" class="chart"></div>
+
+    <div id="data-text" class="col-md-8">
       <h2>Analyzing Our Data</h2>
       <p>
-        The primary goal of this project is archiving critical web citations
+        Our primary goal is to archive critical web citations
         for prosperity's sake. Above is a graph of the distribution of opinion
         publications and web citations over time. The gauge to the right represents
         the availability of web citations as we discover them. But the sky is the
@@ -37,8 +37,14 @@
       </p>
       <p><a id="download-data" href="/csv" class="btn btn-primary" title="Analyze Our Data">Download Data</a></p>
     </div>
-    {% include "charts/distribution.html" %}
-    {% include "charts/linkrot.html" %}
+    <div class="col-md-4">
+      <div id="rot_distribution" class="chart"></div>
+    </div>
   </div>
 </div>
+{% endblock %}
+
+{% block javascript_bottom %}
+{% include "charts/distribution.html" %}
+{% include "charts/linkrot.html" %}
 {% endblock %}
