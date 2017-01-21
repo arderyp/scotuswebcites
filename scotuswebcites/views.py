@@ -50,27 +50,22 @@ def download_csv(request):
 
 
 def overview(request):
+    context = {}
+    template = 'overview.html'
+    return render(request, template, context)
+
+def data(request):
     from time import time
     from opinions.models import Opinion
     from citations.models import Citation
-    from django.http import HttpRequest
 
-    template = 'overview.html'
+    template = 'data.html'
     js_month = 2678400000
     context = {
-        'base': HttpRequest.build_absolute_uri(request),
         'nyt_publication': 1379995200000,
         'available': Citation.objects.filter(status='a').count(),
         'unavailable': Citation.objects.filter(status='u').count(),
         'redirected': Citation.objects.filter(status='r').count(),
-        'cite_nyt': 'http://www.nytimes.com/2013/09/24/us/politics/in-supreme-court-opinions-clicks-that-lead-nowhere.html?_r=0',
-        'cite_wiki': 'https://en.wikipedia.org/wiki/Link_rot',
-        'cite_harvard': 'https://blogs.law.harvard.edu/futureoftheinternet/2013/09/22/perma/',
-        'cite_aba': 'http://www.abajournal.com/magazine/article/link_rot_is_degrading_legal_research_and_case_cites/',
-        'cite_perma': 'http://perma.cc',
-        'cite_heritrix': 'https://en.wikipedia.org/wiki/Heritrix',
-        'cite_scotus': 'http://www.supremecourt.gov/opinions/opinions.aspx',
-        'cite_github': 'https://github.com/arderyp/scotuswebcites',
     }
 
     # Calculate opinion and citation distributions

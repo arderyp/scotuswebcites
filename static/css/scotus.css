@@ -1,3 +1,31 @@
+body {
+  padding-top: 100px;
+  padding-bottom: 20px;
+}
+nav {
+  padding-top: 10px;
+}
+.footer {
+  padding-right: 15px;
+  padding-left: 15px;
+  padding-top: 19px;
+  color: #777;
+  text-align: center;
+  border-top: 1px solid #e5e5e5;
+}
+@media screen and (min-width: 768px) {
+  .footer {
+    padding-right: 0;
+    padding-left: 0;
+  }
+}
+footer {
+  margin-top: 12em;
+}
+
+
+
+
 #memento-logo {
   height: 30px;
   width: 30px;
@@ -31,9 +59,6 @@
 #login-form {
   width: 200px;
   height: 200px;
-  position: absolute;
-  top:0;
-  bottom: 0;
   left: 0;
   right: 0;
   margin: auto;

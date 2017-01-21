@@ -24,7 +24,7 @@
                     <td>
                         {% if justice.opinion_count %}
                             <a href="/opinions/{{ justice.id  }}" title="view justice opinions">
-                                <span class="label label-info label-as-badge">{{ justice.opinion_count }}</span>
+                                <span class="label label-primary label-as-badge">{{ justice.opinion_count }}</span>
                             </a>
                         {% else %}
                         <span class="label label-default label-as-badge">{{ justice.opinion_count }}</span>
@@ -33,7 +33,7 @@
                     <td>
                         {% if justice.citation_count %}
                             <a href="/citations/{{ justice.id  }}" title="view justice citations">
-                                <span class="label label-info label-as-badge">{{ justice.citation_count  }}</span>
+                                <span class="label label-primary label-as-badge">{{ justice.citation_count  }}</span>
                             </a>
                         {% else %}
                             <span class="label label-default label-as-badge">{{ justice.citation_count  }}</span>

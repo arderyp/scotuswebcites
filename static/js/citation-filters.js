@@ -11,7 +11,7 @@ $(document).ready(function() {
     for (var i = 0; i < filters.length; i++) {
         filter = filters[i];
         filter.badge.text(filter.count);
-        filter.badge.addClass((filter.count) ? 'label label-info label-as-badge' : 'badge');
+        filter.badge.addClass((filter.count) ? 'label label-primary label-as-badge' : 'badge');
     }
 
     $('#javascript-filters').show();

@@ -1,6 +1,8 @@
 # Supreme Court of the United States : opinions
 ###### web citation discovery, presentation, and validation
 
+https://scotus.law.berkeley.edu/
+
 #### Setup
 I recommend using python 2.7.10+ to run this application.  You will also need the standard python development libraries 
 installed. Out of the box, this application depends on a mysql backend, and the instructions below cater to that dependency.
@@ -94,16 +96,3 @@ Lastly, all discovered opinion PDFs will be saved in the
 `docs/pdfs` directory for safe keeping.  All discovery and notification logs are written to
 `logs/`, and each day gets it's  own log file.  That's it!  If you encounter any bugs or experience issues
 setting up the application, feel free to open a ticket on this repository for further assistance.
-
-
-#### Overview Screen
-![](https://github.com/arderyp/scotuswebcites/blob/master/static/img/screen_shots/overview_screen.png)
-
-#### Citations Screen
-![](https://github.com/arderyp/scotuswebcites/blob/master/static/img/screen_shots/citations_screen.png)
-
-#### Opinions Screen
-![](https://github.com/arderyp/scotuswebcites/blob/master/static/img/screen_shots/opinions_screen.png)
-
-#### Justices Screen
-![](https://github.com/arderyp/scotuswebcites/blob/master/static/img/screen_shots/justices_screen.png)

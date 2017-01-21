@@ -1,0 +1,73 @@
+.marketing {
+  padding-right: 15px;
+  padding-left: 15px;
+}
+@media (min-width: 768px) {
+  .overview-container {
+    max-width: 730px;
+  }
+}
+.container-narrow > hr {
+  margin: 30px 0;
+}
+.jumbotron {
+  text-align: center;
+  border-bottom: 1px solid #e5e5e5;
+}
+.jumbotron .btn {
+  padding: 14px 24px;
+  font-size: 21px;
+}
+.marketing {
+  margin: 40px 0;
+}
+.marketing p + h4 {
+  margin-top: 28px;
+}
+@media screen and (min-width: 768px) {
+  .marketing {
+    padding-right: 0;
+    padding-left: 0;
+  }
+  .jumbotron {
+    border-bottom: 0;
+  }
+}
+#scotusCarousel .item {
+  height: 400px; font-family: 'Special Elite';
+  font-size: 36px;
+}
+#scotusCarousel .item .quote {
+  font-size: 96px;
+  position: absolute;
+}
+#sl1 p.footnote {
+  font-size: 14px;
+  border-top: 1px solid #333;
+  padding-top: 1em;
+}
+#sl1 p.footnote span.number {
+  margin: 0 2em;
+  position: relative;
+  top: -3px;
+}
+#scotusCarousel #sl2 {
+  font-size: 30px;
+}
+#scotusCarousel .carousel-indicators li {
+  border: 1px solid #ccc;
+}
+
+#about {
+  font-family: 'Libre Baskerville', serif;
+  font-size: 20px;
+}
+#about h2 {
+  font-size: 48px; margin-top: 2em;
+  margin-bottom: 0.5em;
+}
+/*
+footer {
+  margin-top: 12em;
+}
+*/
