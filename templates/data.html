@@ -6,7 +6,9 @@
 <script src="{% static 'js/grid-light.js' %}"></script>
 {% endblock %}
 
-{% block css %}{% endblock %}
+{% block css %}
+<link href='https://fonts.googleapis.com/css?family=Libre+Baskerville|Special+Elite' rel='stylesheet' type='text/css'>
+{% endblock %}
 
 {% block content %}
 <div class="container-fluid">
@@ -24,9 +26,16 @@
     </noscript>
     <div id="data-text">
       <div id="rot_distribution" class="chart"></div>
-      <h2>Blah Blah Blah</h2>
-      <p>some stuff here</p>
-      <p><a href="/csv" class="btn btn-primary" title="Analyze Our Data">Download</a></p>
+      <h2>Analyzing Our Data</h2>
+      <p>
+        The primary goal of this project is archiving critical web citations
+        for prosperity's sake. Above is a graph of the distribution of opinion
+        publications and web citations over time. The gauge to the right represents
+        the availability of web citations as we discover them. But the sky is the
+        limit, and the rest is up to you! Download a csv dump of our database
+        and keep us posted on the interesting things that you do with it!
+      </p>
+      <p><a id="download-data" href="/csv" class="btn btn-primary" title="Analyze Our Data">Download Data</a></p>
     </div>
     {% include "charts/distribution.html" %}
     {% include "charts/linkrot.html" %}

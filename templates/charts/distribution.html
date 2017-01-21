@@ -21,11 +21,15 @@
       plotLines: [{
         color: '#F206FF',
         dashStyle: 'dot',
-        value: {{ nyt_publication }},
+        value: {{ go_live_date }},
         width: 2,
         label: {
           //text: '<a href="{{ cite_nyt }}">NYT Publication</a>',
-          text: '<strong>New York Times Publication</strong>',
+          text: '<strong>Web Citation Discovery Begins</strong>',
+          style: {
+            color: 'purple',
+            fontSize:'18px',
+          }
         },
       }],
     },

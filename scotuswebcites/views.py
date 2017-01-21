@@ -62,7 +62,7 @@ def data(request):
     template = 'data.html'
     js_month = 2678400000
     context = {
-        'nyt_publication': 1379995200000,
+        'go_live_date': 1462086000000,
         'available': Citation.objects.filter(status='a').count(),
         'unavailable': Citation.objects.filter(status='u').count(),
         'redirected': Citation.objects.filter(status='r').count(),

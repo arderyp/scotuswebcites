@@ -41,6 +41,12 @@ footer {
 #data-text {
   float: left;
   width: 100%;
+  font-family: 'Libre Baskerville', serif;
+  font-size: 20px;
+}
+#data-text h2 {
+  font-size: 48px; margin-top: 2em;
+  margin-bottom: 0.5em;
 }
 #rot_distribution {
   float: right;
@@ -52,6 +58,9 @@ footer {
   left: 0;
   right: 0;
   margin: auto;
+}
+#download-data {
+  margin-top: 20px;
 }
 .anchor {
   display: block;

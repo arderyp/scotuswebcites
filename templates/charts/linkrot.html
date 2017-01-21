@@ -11,7 +11,7 @@
   );
   $('#rot_distribution').highcharts({
     title: {
-      text: 'Citation<br>Link Rot',
+      text: 'Availability<br>Upon Discovery',
       align: 'center',
       verticalAlign: 'middle',
       y: 50,
@@ -48,7 +48,7 @@
       innerSize: '50%',
       data: [
         ['<a href="{{ base }}citations/available">available</a>', {{ available }}],
-        ['<a href="{{ base }}citations/redirect">redirect</a>', {{ redirected }}],
+        ['<a href="{{ base }}citations/redirect">redirected</a>', {{ redirected }}],
         ['<a href="{{ base }}citations/unavailable">unavailable</a>', {{ unavailable }}],
       ],
     }],
