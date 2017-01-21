@@ -9,7 +9,7 @@ nav {
   padding-right: 15px;
   padding-left: 15px;
   padding-top: 19px;
-  color: #777;
+  color: #ccc;
   text-align: center;
   border-top: 1px solid #e5e5e5;
 }
@@ -20,42 +20,32 @@ nav {
   }
 }
 footer {
-  margin-top: 12em;
+  margin-top: 80px;
 }
-
-
-
-
 #memento-logo {
   height: 30px;
   width: 30px;
 }
-
 #perma-logo {
   height: 10px;
   width: 17px;
 }
-
 #webcite-logo {
   height: 14px;
   width: 14px;
 }
-
 #scotus-seal {
   position: relative;
   top: -6px;
 }
-
-#overview {
+#data-text {
   float: left;
   width: 100%;
 }
-
 #rot_distribution {
   float: right;
   height: 300px;
 }
-
 #login-form {
   width: 200px;
   height: 200px;
@@ -63,44 +53,35 @@ footer {
   right: 0;
   margin: auto;
 }
-
 .anchor {
   display: block;
   position: relative;
   top: -75px;
   visibility: hidden;
 }
-
 input#id_validated {
   width: 1000px;
 }
-
 .js-disabled,
 .load-wheel {
   font-style: italic;
   font-size:10px;
 }
-
 td.centered {
   text-align: center;
 }
-
 .label-as-badge {
     border-radius: 1em;
 }
-
 .status-a {
     background-color: #90ed7d;
 }
-
 .status-r {
     background-color: #f7a35c;
 }
-
 .status-u {
     background-color: #434348;
 }
-
 .flash-dissolve {
   position: fixed;
   top: 60;
@@ -108,9 +89,8 @@ td.centered {
   left: 0;
   z-index: 3000;
 }
-
 table.floatThead-table {
-    border-top: none;
-    border-bottom: none;
-    background-color: #fff;
+  border-top: none;
+  border-bottom: none;
+  background-color: #fff;
 }
