@@ -42,6 +42,11 @@ footer {
   font-family: 'Libre Baskerville', serif;
   font-size: 20px;
 }
+#broughtToYouBy {
+  margin-top: 2em;
+  font-size: 90%;
+  font-style: italic;
+}
 #rot_distribution {
   margin-top: 45px;
 }
