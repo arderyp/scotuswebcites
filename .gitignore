@@ -2,6 +2,7 @@
 *.swp
 *.DS_Store
 .idea
+static/admin
 scotuswebcites/settings.py
 scripts/discover.sh
 scripts/notifysubscribers.sh

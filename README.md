@@ -20,6 +20,7 @@ a root user account, move into the directory where you want to store this applic
 ```
 git clone git@github.com:arderyp/scotuswebcites.git
 cd scotuswebcites
+./manage.py collectstatic
 ./setup.py
 ``` 
 
