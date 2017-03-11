@@ -4,14 +4,14 @@
 
 <p>
   We have received a request for this email address to be subscribed to the {{ url_base }} SCOTUS
-  web citation monitoring service. If You did not make this request, please ignore this email.
+  web citation monitoring service. If you did not submit this request, please ignore this email.
   Otherwise, please
   <a href="{{ url_base }}{% url 'subscribe' subscriber.hash_key %}">click here</a>
   to confirm you subscription.  After you confirm your subscription, you will recieve notification
   emails whenever we verify a scraped citation link.  As we know some of you may be interested
-  in archiving these resources, we hope to verify links as quickly after they are discovered
-  as we can, with the ultimate hope of minimizing the gap between citation publications and your
-  crawling of the resources as much as possible.  If at any time you wish to remove youself from
+  in archiving these resources as well, we hope to verify citations quickly after discovering them
+  in order to minimize the gap between publication and our/your
+  archiving.  If you wish to remove youself from
   the subscription list, you are free to
   <a href="{{ url_base }}{% url 'unsubscribe' subscriber.hash_key %}">unsubscribe</a>
   at any time.  This unsubscribe link will be included in all future correspondences as well.
