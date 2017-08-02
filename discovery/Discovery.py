@@ -28,6 +28,7 @@ class Discovery:
         self.BASE = 'http://www.supremecourt.gov'
         self.OPINIONS_BASE = self.BASE + '/opinions/'
         self.OPINIONS_MAIN_PAGE = self.OPINIONS_BASE + 'opinions.aspx'
+        self.START_TERM = 11  # 2011
         self.YYYYMMDD = timezone.now().strftime('%Y%m%d')
 
     def run(self):
@@ -46,13 +47,35 @@ class Discovery:
         return parser.parse(date_string).date()
 
     def fetch_opinion_category_urls(self):
+        """Find opinion page urls to scrape.
+
+        We loop over the side navigation menu to find the
+        appropriate slip, relating, and chambers urls for
+        the current term. The chambers url is actually a
+        static url that doesn't change each term. The slip
+        and relating sections get a new url each term; so,
+        my need to dynamically generate the historic urls
+        by determining the current term, and generating all
+        urls from the 2011 term to the current."""
         request = Url.get(self.OPINIONS_MAIN_PAGE)
 
         if request and request.status_code == 200:
             html = lxml.html.fromstring(request.text)
-            search = "//div[@class='panel-body dslist2']/ul/li/a/@href"
-            for category in html.xpath(search):
-                self.category_urls.append(self.OPINIONS_BASE + category)
+            search = "//ul[@class='sidenav-list']/li/a/@href"
+            for href in html.xpath(search):
+                if 'in-chambers' in href:
+                    # The new SCOTUS site houses all chambers opinions
+                    # on a single page now, so we don't need to dynamically
+                    # generate chambers urls for previous terms.
+                    self.category_urls.append(self.OPINIONS_BASE + href)
+                elif 'slipopinion' in href or 'relatingtoorders' in href:
+                    # Generate slip and relating urls for each term between
+                    # starting term (2011) and current term
+                    href_parts = href.rsplit('/', 1)
+                    current_term = int(href_parts[1])
+                    term_range = range(self.START_TERM, current_term + 1)
+                    for term in term_range:
+                        self.category_urls.append('%s%s/%d' % (self.OPINIONS_BASE, href_parts[0], term))
             
     def get_opinions_from_categories(self):
         table_rows = "//table[@class='table table-bordered']/tr"
