@@ -1,17 +1,17 @@
 from django.utils import timezone
 from django.conf import settings
-from django.core.management.base import NoArgsCommand
+from django.core.management.base import BaseCommand
 from django.template.loader import get_template
-from django.template import Context
 from django.core.mail import EmailMultiAlternatives
 from subscribers.models import Subscriber
 from citations.models import Citation
 from discovery.Logger import Logger
 
-class Command(NoArgsCommand):
+
+class Command(BaseCommand):
     help = 'Notify subscribers about newly validated citations'
 
-    def handle_noargs(self, **options):
+    def handle(self, *args, **options):
         Logger.info("RUNNING NOTIFY SUBSCRIBERS FUNCTION: %s" % timezone.now())
         newly_verified_citations = Citation.objects.filter(
             validated__isnull=False,
@@ -36,13 +36,13 @@ class Command(NoArgsCommand):
         if settings.EMAIL_HOST_USER != 'YOUR_GMAIL_ADDRESS':
             Logger.info('+sending subscriber notification to %s' % subscriber.email)
             html = get_template('newly_verified_citations_email.html')
-            context = Context({
+            template_parameters = {
                 'subscriber': subscriber,
                 'domain': settings.ALLOWED_HOSTS[0] if settings.ALLOWED_HOSTS else False,
                 'citations': citations,
                 'contact_email': settings.EMAIL_HOST_USER if settings.EMAIL_HOST_USER else False
-            })
-            body = html.render(context)
+            }
+            body = html.render(template_parameters)
             subject = '[scotuswebcites] New citations discovered and verified'
             sender = settings.EMAIL_HOST_USER
             recipient = subscriber.email

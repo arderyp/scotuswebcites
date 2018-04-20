@@ -64,9 +64,10 @@ class PdfTestCase(TestCase):
 class UrlTestCase(TestCase):
     def test_request(self):
         """Expected request returns"""
-        checks = {'http://www.google.com': 200,
-                  'www.google.com': 200,
-                  'http://kjhkjhkjhkjhkjhkjhkjhkjhkjhkjh.com': False,
+        checks = {
+            'http://www.google.com': 200,
+            'www.google.com': 200,
+            'http://kjhkjhkjhkjhkjhkjhkjhkjhkjhkjh.com': False,
         }
 
         for url, response in checks.iteritems():

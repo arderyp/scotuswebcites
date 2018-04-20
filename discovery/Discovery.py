@@ -3,12 +3,9 @@
 import lxml.html
 import traceback
 from dateutil import parser
-
 from django.utils import timezone
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import get_template
-from django.template import Context
-
 from scotuswebcites import settings
 from discovery.Pdf import Url
 from discovery.Logger import Logger
@@ -193,14 +190,14 @@ class Discovery:
                 subject = '[scotuswebcites] New Data Discovered'
                 recipient = settings.CONTACT_EMAIL
                 sender = settings.EMAIL_HOST_USER
-                context = Context({
+                template_parameters = {
                     'new_opinions_count': str(len(self.new_opinions)),
                     'ingested_citations_count': str(self.ingested_citations_count),
                     'new_justices': self.new_justices,
                     'failed_scrapes': self.failed_scrapes,
                     'domain': settings.ALLOWED_HOSTS[0] if settings.ALLOWED_HOSTS else False,
-                })
-                body = get_template('discovery_report_email.html').render(context)
+                }
+                body = get_template('discovery_report_email.html').render(template_parameters)
                 Logger.info('+sending discovery report email from %s to %s' % (sender, recipient))
                 msg = EmailMultiAlternatives(subject, body, sender, [recipient])
                 msg.attach_alternative(body, "text/html")

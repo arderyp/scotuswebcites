@@ -1,14 +1,14 @@
 import time
 import traceback
-
 from django.conf import settings
 from django.core.mail import send_mail
-from django.core.management.base import NoArgsCommand
+from django.core.management.base import BaseCommand
 from discovery.Discovery import Discovery
 from discovery.Logger import Logger
 
-class Command(NoArgsCommand):
-    def handle_noargs(self, **options):
+
+class Command(BaseCommand):
+    def handle(self, *args, **options):
         try:
             print('\nRunning discovery. Logging to logs/%s.log\n' % time.strftime('%Y%m%d'))
             job = Discovery()

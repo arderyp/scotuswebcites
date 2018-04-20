@@ -3,11 +3,9 @@ from django.http import HttpResponseRedirect
 from django.core.mail import send_mail
 from django.core.mail import EmailMultiAlternatives
 from django.core.management import call_command
-from django.template import Context
 from django.template.loader import get_template
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-
 from subscribers.models import Subscriber
 
 
@@ -60,6 +58,7 @@ def sign_up(request):
 
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
+
 def subscribe(request, hash_key):
     subscriber = Subscriber.objects.get(hash_key=hash_key)
     if subscriber and not subscriber.subscribed:
@@ -73,6 +72,7 @@ def subscribe(request, hash_key):
         )
     return HttpResponseRedirect('/')
 
+
 def unsubscribe(request, hash_key):
     subsciber = Subscriber.objects.get(hash_key=hash_key)
     if subsciber and subsciber.subscribed:
@@ -85,26 +85,29 @@ def unsubscribe(request, hash_key):
         )
     return HttpResponseRedirect('/')
 
+
 @login_required()
 def notify_subscribers(request):
     call_command('notifysubscribers')
     return HttpResponseRedirect('/citations/')
 
+
 def _send_confirmation_email(request, subscriber):
     url_base = request.build_absolute_uri('/')
     html = get_template('confirm_subscription_email.html')
-    context = Context({
+    template_parameters = {
         'subscriber': subscriber,
         'url_base': url_base.rstrip('/'),
         'contact_email': settings.EMAIL_HOST_USER if settings.EMAIL_HOST_USER else False
-    })
-    body = html.render(context)
+    }
+    body = html.render(template_parameters)
     subject = '[scotuswebcites] Subscriber confirmation'
     sender = settings.EMAIL_HOST_USER
     recipient = subscriber.email
     msg = EmailMultiAlternatives(subject, body, sender, [recipient])
     msg.attach_alternative(body, "text/html")
     msg.send()
+
 
 def _notify_admin_of_new_subscriber(email_address):
     if settings.EMAIL_HOST_USER != 'YOUR_GMAIL_ADDRESS':

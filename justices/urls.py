@@ -1,10 +1,7 @@
-from django.conf.urls import include
 from django.conf.urls import url
-from django.contrib import admin
+from justices import views
 
 urlpatterns = [
-    url(r'^justices/$', 'justices.views.index', name='justices'),
-
-    # Redirects
-    url(r'^justices/(.*)$', 'justices.views.redirect', name='justices'),
+    url(r'^justices/$', views.index, name='justices'),
+    url(r'^justices/(.*)$', views.redirect, name='justices'),
 ]
