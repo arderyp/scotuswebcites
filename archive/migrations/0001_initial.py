@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
             name='PermaFolder',
             fields=[
                 ('folder_id', models.BigIntegerField(serialize=False, primary_key=True)),
-                ('opinion', models.ForeignKey(to='opinions.Opinion')),
+                ('opinion', models.ForeignKey(to='opinions.Opinion', on_delete=models.CASCADE)),
             ],
         ),
     ]

@@ -23,7 +23,7 @@ class Migration(migrations.Migration):
                 ('reporter', models.CharField(max_length=50, null=True, blank=True)),
                 ('docket', models.CharField(max_length=20)),
                 ('part', models.CharField(max_length=20)),
-                ('justice', models.ForeignKey(to='justices.Justice')),
+                ('justice', models.ForeignKey(to='justices.Justice', on_delete=models.CASCADE)),
             ],
         ),
     ]

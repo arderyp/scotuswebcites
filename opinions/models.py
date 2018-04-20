@@ -6,6 +6,7 @@ from discovery.Pdf import Pdf
 from discovery.Logger import Logger
 from citations.models import Citation
 
+
 class Opinion(models.Model):
 
     category = models.CharField(max_length=100)
@@ -16,7 +17,10 @@ class Opinion(models.Model):
     reporter = models.CharField(max_length=50, blank=True, null=True)
     docket = models.CharField(max_length=20)
     part = models.CharField(max_length=20)
-    justice = models.ForeignKey('justices.Justice')
+    justice = models.ForeignKey(
+        'justices.Justice',
+        on_delete=models.CASCADE,
+    )
 
     def __init__(self, *args, **kwargs):
         self.local_pdf = False

@@ -18,7 +18,10 @@ class Citation(models.Model):
     )
     MEMENTO = 'http://timetravel.mementoweb.org/list'
 
-    opinion = models.ForeignKey('opinions.Opinion')
+    opinion = models.ForeignKey(
+        'opinions.Opinion',
+        on_delete=models.CASCADE,
+    )
     scraped = models.URLField(max_length=255)
     scrape_evaluation = models.CharField(
         max_length=2,

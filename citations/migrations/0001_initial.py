@@ -24,7 +24,7 @@ class Migration(migrations.Migration):
                 ('webcite', models.URLField(max_length=255, null=True)),
                 ('perma', models.URLField(max_length=255, null=True)),
                 ('notified_subscribers', models.DateTimeField(null=True, verbose_name='date subscribers notified of validated citation url', blank=True)),
-                ('opinion', models.ForeignKey(to='opinions.Opinion')),
+                ('opinion', models.ForeignKey(to='opinions.Opinion', on_delete=models.CASCADE)),
             ],
         ),
     ]
