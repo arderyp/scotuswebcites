@@ -1,7 +1,7 @@
 from django.conf.urls import include
 from django.conf.urls import url
 from django.contrib import admin
-from django.contrib.auth.views import login
+from django.contrib.auth.views import LoginView
 from scotuswebcites import views
 
 
@@ -10,7 +10,7 @@ urlpatterns = [
     url(r'^data/$', views.data, name='data'),
     url(r'^csv$', views.download_csv, name='csv'),
     url(r'^logout$', views.logout, name='logout'),
-    url(r'^login/$', login, name='login'),
+    url(r'^login/$', LoginView.as_view(), name='login'),
     url('', include('citations.urls')),
     url('', include('opinions.urls')),
     url('', include('justices.urls')),
