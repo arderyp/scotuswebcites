@@ -10,16 +10,27 @@ from discovery.Logger import Logger
 class Command(BaseCommand):
     def handle(self, *args, **options):
         try:
-            print('\nRunning discovery. Logging to logs/%s.log\n' % time.strftime('%Y%m%d'))
+            print(
+                '\nRunning discovery. Logging to logs/%s.log\n'
+                % time.strftime('%Y%m%d')
+            )
             job = Discovery()
             job.run()
             job._send_email_report()
-        except:
+        except Exception, e:
             Logger.error(traceback.format_exc())
-            self.send_error_email()
+            error = 'TYPE: %s\nARGS: %s\nMESSAGE: %s' % (
+                type(e).__name__,
+                e.args,
+                e.message
+            )
+            self.send_error_email(error)
 
-    def send_error_email(self):
+    def send_error_email(self, error):
         if settings.EMAIL_HOST_USER != 'YOUR_GMAIL_ADDRESS':
             subject = '[scotuswebcites] Scraper Error Notice'
-            message = 'Your scotuswebcites discovery scraper encountered an error.  Please check server logs for details.'
+            message = (
+                'Your scotuswebcites discovery scraper encountered an error:'
+                '\n\n%s\n\n Please check server logs for more details.' % error
+            )
             send_mail(subject, message, settings.EMAIL_HOST_USER, [settings.CONTACT_EMAIL])

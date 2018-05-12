@@ -14,19 +14,33 @@ from justices.models import Justice
 
 
 class Discovery:
+    TABLE_HEADER_FORMATS = [
+        ['R-', 'Date', 'Docket', 'Name', 'Revised', 'J.', 'Pt.'],
+        ['R-', 'Date', 'Docket', 'Name', 'J.', 'Pt.'],
+        ['Date', 'Docket', 'Name', 'Revised', 'J.', 'Pt.'],
+        ['Date', 'Docket', 'Name', 'J.', 'Pt.'],
+        ['Term Year', 'Docket', 'Name', 'Revised', 'J.', 'Pt.'],
+        ['Term Year', 'Date', 'Docket', 'Name', 'Revised', 'J.', 'Pt.'],
+    ]
+
     def __init__(self):
-        self.discovered_opinions = []
-        self.new_opinions = []
-        self.category_urls = []
-        self.pdfs_to_scrape = []
-        self.new_justices = []
-        self.failed_scrapes = []
-        self.ingested_citations_count = 0
         self.BASE = 'http://www.supremecourt.gov'
         self.OPINIONS_BASE = self.BASE + '/opinions/'
         self.OPINIONS_MAIN_PAGE = self.OPINIONS_BASE + 'opinions.aspx'
+        self.PATH_TABLES = "//table[@class='table table-bordered']"
+        self.PATH_TABLE_ROWS = "%s/tr" % self.PATH_TABLES
+        self.PATH_HEADERS = './/th/text()'
         self.START_TERM = 11  # 2011
         self.YYYYMMDD = timezone.now().strftime('%Y%m%d')
+
+        self.category_urls = []
+        self.pdfs_to_scrape = []
+        self.failed_scrapes = []
+        self.discovered_opinions = []
+        self.new_justices = []
+        self.new_opinions = []
+        self.ingested_citations_count = 0
+
 
     def run(self):
         Logger.info('INITIATING DISCOVERY: %s' % timezone.now())
@@ -73,28 +87,62 @@ class Discovery:
                     term_range = range(self.START_TERM, current_term + 1)
                     for term in term_range:
                         self.category_urls.append('%s%s/%d' % (self.OPINIONS_BASE, href_parts[0], term))
-            
-    def get_opinions_from_categories(self):
-        table_rows = "//table[@class='table table-bordered']/tr"
-        header_cells = '%s/th/text()' % table_rows
 
+    def get_cell_labels(self, cells, table_headers):
+        """We shouldn't have to do this, but the SCOTUS site has a
+        persistent problem whereby malformed tables are not uncommon.
+        Sporadically a table with have the header and some rows in the
+        COLUMN_LABELS_LEGACY format, and other rows in the newer
+        COLUMN_LABELS format. Ive contacted the court about this many
+        times, and often times they clear their CDN cache the resolve
+        the problem, but its become such a reoccuring annoyance that
+        I felt the need to implement this workaround. The court hasn't
+        provided any indication in our communication that they have any
+        understanding of the problem or why it is happening.
+        """
+        count_cell = len(cells)
+        count_headers = len(table_headers)
+        acceptable_headers_counts = [len(f) for f in self.TABLE_HEADER_FORMATS]
+        if count_cell != count_headers:
+            cell_data = ', '.join([c.text_content() for c in cells])
+            Logger.warning(
+                'Cell/Header mismatch, found %d headers but %d cells: %s'
+                % (count_headers, count_cell, cell_data)
+            )
+        if count_cell not in acceptable_headers_counts:
+            raise RuntimeError(
+                'Row has an unfamiliar number of cells: %d' % count_cell
+            )
+        for header_format in self.TABLE_HEADER_FORMATS:
+            # First header element must match first element from
+            # expected table_headers, since there are multiple
+            # formats with the same length
+            if len(header_format) == count_cell and header_format[0] == table_headers[0]:
+                return header_format
+        raise RuntimeError('Should never reach this error')
+
+    def get_opinions_from_categories(self):
         for category_url in self.category_urls:
             category = category_url.split('/')[-2]
             request = Url.get(category_url)    
 
             if request and request.status_code == 200:
                 Logger.info('EXTRACTING OPINIONS FROM %s' % category_url)
-
                 html = lxml.html.fromstring(request.text)
-                column_labels = html.xpath(header_cells)
+                table_headers = self.get_table_headers(html)
 
-                for row in html.xpath(table_rows):
+                for row in html.xpath(self.PATH_TABLE_ROWS):
+                    cells = row.xpath('td')
+                    if not cells:
+                        continue
+
                     row_data = {}
                     cell_count = 0
+                    cell_labels = self.get_cell_labels(cells, table_headers)
 
                     # Parse data from rows in table
-                    for cell in row.xpath('td'):
-                        cell_label = column_labels[cell_count]
+                    for cell in cells:
+                        cell_label = cell_labels[cell_count]
                         text = cell.text_content().strip()
 
                         # Skip rows with empty first cell, these
@@ -152,6 +200,23 @@ class Discovery:
                                 part=row_data['Pt.'],
                                 discovered=timezone.now(),
                             ))
+
+    def get_table_headers(self, html):
+
+        headers = False
+        table_count = 1
+        for table in html.xpath(self.PATH_TABLES):
+            headers = table.xpath(self.PATH_HEADERS)
+            if headers not in self.TABLE_HEADER_FORMATS:
+                headers_string = ', '.join(headers)
+                raise RuntimeError(
+                    'Unfamiliar headers in table %d: %s'
+                    % (table_count, headers_string)
+                )
+            table_count += 1
+        if not headers:
+            raise RuntimeError('Table is missing headers')
+        return headers
 
     def ingest_new_opinions(self):
         # Sort opinions by publication date, oldest to newest
