@@ -136,6 +136,7 @@ class Discovery:
                     if not cells:
                         continue
 
+                    revisions = []
                     row_data = {}
                     cell_count = 0
                     cell_labels = self.get_cell_labels(cells, table_headers)
@@ -152,10 +153,19 @@ class Discovery:
                         if cell_count == 0 and not text:
                             break
 
-                        row_data[cell_label] = text if text else None
-                        if cell.xpath('a') or cell_label == 'Revised':
-                            href = cell.xpath('a/@href')
-                            row_data[cell_label + '_Url'] = href[0] if href else None
+                        if cell_label == 'Revised':
+                            # Revised cells can have multiple links
+                            # so we must have special handling for it
+                            for anchor in cell.xpath('a'):
+                                revisions.append({
+                                    'href': anchor.xpath('@href')[0],
+                                    'date_string': anchor.text_content(),
+                                })
+                        else:
+                            row_data[cell_label] = text if text else None
+                            if cell.xpath('a'):
+                                href = cell.xpath('a/@href')
+                                row_data[cell_label + '_Url'] = href[0] if href else None
 
                         cell_count += 1
 
@@ -187,15 +197,17 @@ class Discovery:
                         ))
 
                         # Create opinions for revision, if it exists
-                        if 'Revised' in row_data and row_data['Revised']:
+                        for revision in revisions:
+                            date_string = revision['date_string']
+                            href = revision['href']
                             Logger.info('Discovered REVISION: %s' % row_data['Name'])
                             self.discovered_opinions.append(Opinion(
                                 category=category,
                                 reporter=row_data['R-'] if 'R-' in row_data else None,
-                                published=self.convert_date_string(row_data['Revised']),
+                                published=self.convert_date_string(date_string),
                                 docket=row_data['Docket'],
                                 name='%s [REVISION]' % row_data['Name'],
-                                pdf_url=self.BASE + row_data['Revised_Url'],
+                                pdf_url=self.BASE + href,
                                 justice=Justice(row_data['J.']),
                                 part=row_data['Pt.'],
                                 discovered=timezone.now(),
