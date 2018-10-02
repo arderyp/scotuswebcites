@@ -129,6 +129,12 @@ class Discovery:
             if request and request.status_code == 200:
                 Logger.info('EXTRACTING OPINIONS FROM %s' % category_url)
                 html = lxml.html.fromstring(request.text)
+
+                if not html.xpath(self.PATH_TABLES):
+                    # Its a new term with an empty page, no table yet
+                    Logger.info('SKIPPING BLANK PAGE: %s' % category_url)
+                    continue
+
                 table_headers = self.get_table_headers(html)
 
                 for row in html.xpath(self.PATH_TABLE_ROWS):
