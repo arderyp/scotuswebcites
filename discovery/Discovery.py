@@ -184,10 +184,10 @@ class Discovery:
                             justice = Justice(id=row_data['J.'], name=row_data['J.'])
                             justice.save()
 
-                        # Convert all scraped data to unicode
-                        for label, data in row_data.iteritems():
+                        # Convert all scraped data to uniform unicode string
+                        for label, data in row_data.items():
                             if data:
-                                row_data[label] = unicode(data)
+                                row_data[label] = str(data)
 
                         # Create new opinion record from row data
                         self.discovered_opinions.append(Opinion(
@@ -267,7 +267,7 @@ class Discovery:
                 opinion.ingest_citations()
                 self.ingested_citations_count += opinion.ingested_citation_count
 
-    def _send_email_report(self):
+    def send_email_report(self):
         if settings.EMAIL_HOST_USER != 'YOUR_GMAIL_ADDRESS':
             if self.new_opinions or self.new_justices or self.ingested_citations_count or self.failed_scrapes:
                 subject = '[scotuswebcites] New Data Discovered'

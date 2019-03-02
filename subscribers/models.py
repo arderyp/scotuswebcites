@@ -8,7 +8,8 @@ from django.db import models
 def create_hash():
     """This function generate 10 character long hash"""
     hash_key = hashlib.sha1()
-    hash_key.update(str(time.time()))
+    time_string = str(time.time())
+    hash_key.update(time_string.encode('utf-8'))
     return hash_key.hexdigest()[:20]
 
 

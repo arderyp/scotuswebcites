@@ -10,20 +10,13 @@ from discovery.Logger import Logger
 class Command(BaseCommand):
     def handle(self, *args, **options):
         try:
-            print(
-                '\nRunning discovery. Logging to logs/%s.log\n'
-                % time.strftime('%Y%m%d')
-            )
+            print('\nRunning discovery. Logging to logs/%s.log\n' % time.strftime('%Y%m%d'))
             job = Discovery()
             job.run()
-            job._send_email_report()
-        except Exception, e:
+            job.send_email_report()
+        except Exception as e:
             Logger.error(traceback.format_exc())
-            error = 'TYPE: %s\nARGS: %s\nMESSAGE: %s' % (
-                type(e).__name__,
-                e.args,
-                e.message
-            )
+            error = 'FAILED DISCOVER ERROR: %s' % e
             self.send_error_email(error)
 
     def send_error_email(self, error):

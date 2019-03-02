@@ -2,7 +2,7 @@
 
 import requests
 from time import sleep
-from urlparse import urlparse
+from urllib.parse import urlparse
 
 from scotuswebcites import settings
 from discovery.Logger import Logger

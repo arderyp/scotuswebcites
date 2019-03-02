@@ -23,7 +23,7 @@ def create_justices(apps, schema_editor):
         'T': 'Clarence Thomas',
     }
 
-    for id, name in justices.iteritems():
+    for id, name in justices.items():
         justice = Justice(id=id, name=name)
         justice.save()
 

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import re
-import slate
+import fitz
 from discovery.Url import Url
 
 
@@ -33,19 +32,26 @@ class Pdf:
         if not request or request.status_code != 200:
             return False
 
-        with open(self.local_file, 'w') as local:
-            local.write(request.content) 
+        with open(self.local_file, 'wb') as local:
+            local.write(request.content)
             local.close()
  
         return True
 
     def scrape_urls(self):
+        """Read the PDF, remove newlines, then replace 'http' with
+        '\nhttp', then split by newline.  Now we can walk over each
+        element and run our url extraction method on each line.
+        """
         if self.local_file:
-            with open(self.local_file, 'rb') as binary_input:
-                self.document = slate.PDF(binary_input)
-            for page in self.document:
-                text = re.sub('http', '\nhttp', page.decode('utf8'))
-                lines = text.split('\n')
+            pdf = fitz.open(self.local_file)
+
+            for page in pdf:
+                text_raw = page.getText()
+                text_no_newlines = text_raw.replace('\n', '')
+                text_with_newlines = text_no_newlines.replace('http', '\nhttp')
+                lines = text_with_newlines.split('\n')
+
                 for line in lines:
                     if line.startswith('http'):
                         url = self.extract_url_from_line(line)
@@ -69,23 +75,23 @@ class Pdf:
             words[words.index(word)] = word.strip()
 
         url = words[0]
-        next_word = 1
+        next_word_index = 1
 
         # Process url string
         while True:
-            if len(words) <= next_word:
+            if len(words) <= next_word_index:
                 break
 
-            nxt = words[next_word]
-            if nxt[0] in self.should_stop:
+            next_word = words[next_word_index]
+            if next_word[0] in self.should_stop:
                 break
 
             # Glue next substring onto end of url string
             if url in self.partial_urls or url[-1] in self.punctuation or \
-                nxt[0] in self.punctuation or '/' in nxt or '-' in nxt or '_' in nxt:
+                next_word[0] in self.punctuation or '/' in next_word or '-' in next_word or '_' in next_word:
 
-                url = url + nxt
-                next_word += 1
+                url = url + next_word
+                next_word_index += 1
             else:
                 break
 

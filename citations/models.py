@@ -115,7 +115,7 @@ class Citation(models.Model):
                 item = ''
             elif isinstance(item, date) or isinstance(item, datetime):
                 item = item.strftime('%Y-%m-%d')
-            encoded_data.append(item.encode('utf8'))
+            encoded_data.append(item)
 
         return encoded_data
 

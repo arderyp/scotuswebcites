@@ -10,6 +10,7 @@ def logout(request):
     auth_logout(request)
     return HttpResponseRedirect(settings.LOGIN_REDIRECT_URL)
 
+
 def download_csv(request):
     from citations.models import Citation
     from django.http import HttpResponse
@@ -54,6 +55,7 @@ def overview(request):
     template = 'overview.html'
     return render(request, template, context)
 
+
 def data(request):
     from time import time
     from opinions.models import Opinion
@@ -82,8 +84,8 @@ def data(request):
         else:
             distributions[js_date] = {'opinions': 1, 'citations': citations}
 
-    opinion_data = [[date, data['opinions']] for date, data in distributions.iteritems()]
-    citation_data = [[date, data['citations']] for date, data in distributions.iteritems()]
+    opinion_data = [[date, data['opinions']] for date, data in distributions.items()]
+    citation_data = [[date, data['citations']] for date, data in distributions.items()]
 
     # Sort data chronologically
     opinion_data = sorted(opinion_data, key=lambda x: x[0])

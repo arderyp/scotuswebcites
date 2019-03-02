@@ -7,6 +7,9 @@ from discovery.Pdf import Url
 
 
 class PdfTestCase(TestCase):
+    # Show full diff if any discrepancies when running test
+    maxDiff = None
+
     def test_urls_as_expected(self):
         """Expected urls are scraped"""
         test_dir = settings.BASE_DIR + '/discovery/test_pdfs/'
@@ -51,9 +54,9 @@ class PdfTestCase(TestCase):
         }
 
         # This is actually a bad citation, the '.10' is a period + footnote tag.
-        # But, we can't safely assume that all url stirngs ending in '.#' are bad
+        # But, we can't safely assume that all url strings ending in '.#' are bad
 
-        for document, citations in checks.iteritems():
+        for document, citations in checks.items():
             pdf = Pdf()
             pdf.local_file = test_dir + document
             pdf.scrape_urls()
@@ -70,7 +73,7 @@ class UrlTestCase(TestCase):
             'http://kjhkjhkjhkjhkjhkjhkjhkjhkjhkjh.com': False,
         }
 
-        for url, response in checks.iteritems():
+        for url, response in checks.items():
             if response:
                 request = Url.get(url)
                 self.assertEqual(request.status_code, response)
