@@ -8,12 +8,13 @@ idna==2.7
 lxml==3.4.3
 more-itertools==6.0.0
 mysqlclient==1.4.4
+pkg-resources==0.0.0
 pluggy==0.9.0
 ply==3.11
 protobuf==3.7.0
 py==1.8.0
 pycryptodome==3.7.3
-PyMuPDF==1.14.8
+PyMuPDF==1.16.3
 pytest==4.3.0
 python-dateutil==2.4.2
 pytz==2018.4
