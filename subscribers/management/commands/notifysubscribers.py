@@ -2,10 +2,10 @@ from django.utils import timezone
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.template.loader import get_template
-from django.core.mail import EmailMultiAlternatives
-from subscribers.models import Subscriber
 from citations.models import Citation
 from discovery.Logger import Logger
+from scotuswebcites.mail import send_email
+from subscribers.models import Subscriber
 
 
 class Command(BaseCommand):
@@ -35,17 +35,13 @@ class Command(BaseCommand):
     def _send_email(self, subscriber, citations):
         if settings.EMAIL_HOST_USER != 'YOUR_GMAIL_ADDRESS':
             Logger.info('+sending subscriber notification to %s' % subscriber.email)
-            html = get_template('newly_verified_citations_email.html')
+            template = get_template('newly_verified_citations_email.html')
             template_parameters = {
                 'subscriber': subscriber,
                 'domain': settings.ALLOWED_HOSTS[0] if settings.ALLOWED_HOSTS else False,
                 'citations': citations,
-                'contact_email': settings.EMAIL_HOST_USER if settings.EMAIL_HOST_USER else False
+                'contact_email': settings.SENDER_EMAIL if settings.SENDER_EMAIL else False
             }
-            body = html.render(template_parameters)
+            body = template.render(template_parameters)
             subject = '[scotuswebcites] New citations discovered and verified'
-            sender = settings.EMAIL_HOST_USER
-            recipient = subscriber.email
-            msg = EmailMultiAlternatives(subject, body, sender, [recipient])
-            msg.attach_alternative(body, "text/html")
-            msg.send()
+            send_email(subject, body, subscriber.email)

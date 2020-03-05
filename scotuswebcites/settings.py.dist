@@ -151,4 +151,5 @@ LOGIN_REDIRECT_URL = '/citations'
 # Custom user agent for network requests
 USER_AGENT = 'scotuswebcites [https://github.com/arderyp/scotuswebcites]' 
 CONTACT_EMAIL = 'YOUR_CONTACT_EMAIL'
+SENDER_EMAIL = 'YOUR_GMAIL_ADDRESS'
 REQ_HEADER = {"User-Agent": USER_AGENT, 'From': CONTACT_EMAIL}

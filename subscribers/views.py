@@ -1,19 +1,18 @@
 from django.conf import settings
 from django.http import HttpResponseRedirect
-from django.core.mail import send_mail
-from django.core.mail import EmailMultiAlternatives
 from django.core.management import call_command
 from django.template.loader import get_template
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from subscribers.models import Subscriber
+from scotuswebcites.mail import send_email
 
 
 def sign_up(request):
     if request.method == 'POST':
         new_subscriber = False
 
-        # App gmail not configured yet
+        # App email not configured yet
         if settings.EMAIL_HOST_USER == 'YOUR_GMAIL_ADDRESS':
             flash_type = messages.WARNING
             flash_message = 'It looks like the host is not configured to send emails quite yet'
@@ -94,23 +93,18 @@ def notify_subscribers(request):
 
 def _send_confirmation_email(request, subscriber):
     url_base = request.build_absolute_uri('/')
-    html = get_template('confirm_subscription_email.html')
+    template = get_template('confirm_subscription_email.html')
     template_parameters = {
         'subscriber': subscriber,
         'url_base': url_base.rstrip('/'),
-        'contact_email': settings.EMAIL_HOST_USER if settings.EMAIL_HOST_USER else False
+        'contact_email': settings.SENDER_EMAIL if settings.SENDER_EMAIL else False
     }
-    body = html.render(template_parameters)
+    body = template.render(template_parameters)
     subject = '[scotuswebcites] Subscriber confirmation'
-    sender = settings.EMAIL_HOST_USER
-    recipient = subscriber.email
-    msg = EmailMultiAlternatives(subject, body, sender, [recipient])
-    msg.attach_alternative(body, "text/html")
-    msg.send()
+    send_email(subject, body, subscriber.email)
 
 
 def _notify_admin_of_new_subscriber(email_address):
-    if settings.EMAIL_HOST_USER != 'YOUR_GMAIL_ADDRESS':
-        subject = '[scotuswebcites] New Subscriber Registered'
-        message = 'Congratulations!  You have a new follower: %s' % email_address
-        send_mail(subject, message, settings.EMAIL_HOST_USER, [settings.CONTACT_EMAIL])
+    subject = '[scotuswebcites] New Subscriber Registered'
+    body = 'Congratulations!  You have a new follower: %s' % email_address
+    send_email(subject, body, settings.CONTACT_EMAIL)

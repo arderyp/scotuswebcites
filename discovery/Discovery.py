@@ -4,13 +4,13 @@ import lxml.html
 import traceback
 from dateutil import parser
 from django.utils import timezone
-from django.core.mail import EmailMultiAlternatives
 from django.template.loader import get_template
 from scotuswebcites import settings
 from discovery.Pdf import Url
 from discovery.Logger import Logger
 from opinions.models import Opinion
 from justices.models import Justice
+from scotuswebcites.mail import send_email
 
 
 class Discovery:
@@ -40,7 +40,6 @@ class Discovery:
         self.new_justices = []
         self.new_opinions = []
         self.ingested_citations_count = 0
-
 
     def run(self):
         Logger.info('INITIATING DISCOVERY: %s' % timezone.now())
@@ -271,8 +270,6 @@ class Discovery:
         if settings.EMAIL_HOST_USER != 'YOUR_GMAIL_ADDRESS':
             if self.new_opinions or self.new_justices or self.ingested_citations_count or self.failed_scrapes:
                 subject = '[scotuswebcites] New Data Discovered'
-                recipient = settings.CONTACT_EMAIL
-                sender = settings.EMAIL_HOST_USER
                 template_parameters = {
                     'new_opinions_count': str(len(self.new_opinions)),
                     'ingested_citations_count': str(self.ingested_citations_count),
@@ -281,7 +278,4 @@ class Discovery:
                     'domain': settings.ALLOWED_HOSTS[0] if settings.ALLOWED_HOSTS else False,
                 }
                 body = get_template('discovery_report_email.html').render(template_parameters)
-                Logger.info('+sending discovery report email from %s to %s' % (sender, recipient))
-                msg = EmailMultiAlternatives(subject, body, sender, [recipient])
-                msg.attach_alternative(body, "text/html")
-                msg.send()
+                send_email(subject, body, settings.CONTACT_EMAIL)
