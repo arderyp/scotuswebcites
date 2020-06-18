@@ -278,4 +278,5 @@ class Discovery:
                     'domain': settings.ALLOWED_HOSTS[0] if settings.ALLOWED_HOSTS else False,
                 }
                 body = get_template('discovery_report_email.html').render(template_parameters)
+                Logger.info('+sending discovery report email from %s to %s' % (sender, recipient))
                 send_email(subject, body, settings.CONTACT_EMAIL)
