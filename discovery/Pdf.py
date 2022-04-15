@@ -47,7 +47,7 @@ class Pdf:
             pdf = fitz.open(self.local_file)
 
             for page in pdf:
-                text_raw = page.getText()
+                text_raw = page.get_text()
                 text_no_newlines = text_raw.replace('\n', '')
                 text_with_newlines = text_no_newlines.replace('http', '\nhttp')
                 lines = text_with_newlines.split('\n')
