@@ -1,2 +1,2 @@
 def global_variables(request):
-    return {'VERSION': '3.1.3'}
+    return {'VERSION': '3.1.4'}
