@@ -50,7 +50,7 @@ class Discovery:
         self.ingest_new_opinions()
         Logger.info('INITIATION CITATION SCRAPING AND INGEST')
         self.ingest_new_citations()
-        Logger.info('DISCOVERY COMPLETE')
+        Logger.info('DISCOVERY COMPLETE: %s' % timezone.now())
 
     def convert_date_string(self, date_string):
         """Convert date string into standard date object"""
