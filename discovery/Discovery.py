@@ -15,11 +15,22 @@ from scotuswebcites.mail import send_email
 
 class Discovery:
     TABLE_HEADER_FORMATS = [
+        ['R-', 'Date', 'Docket', 'Name', 'Revised', 'J.', 'Citation'],
         ['R-', 'Date', 'Docket', 'Name', 'Revised', 'J.', 'Pt.'],
+
+        ['R-', 'Date', 'Docket', 'Name', 'J.', 'Citation'],
         ['R-', 'Date', 'Docket', 'Name', 'J.', 'Pt.'],
+
+        ['Date', 'Docket', 'Name', 'Revised', 'J.', 'Citation'],
         ['Date', 'Docket', 'Name', 'Revised', 'J.', 'Pt.'],
+
+        ['Date', 'Docket', 'Name', 'J.', 'Citation'],
         ['Date', 'Docket', 'Name', 'J.', 'Pt.'],
+
+        ['Term Year', 'Docket', 'Name', 'Revised', 'J.', 'Citation'],
         ['Term Year', 'Docket', 'Name', 'Revised', 'J.', 'Pt.'],
+
+        ['Term Year', 'Date', 'Docket', 'Name', 'Revised', 'J.', 'Citation'],
         ['Term Year', 'Date', 'Docket', 'Name', 'Revised', 'J.', 'Pt.'],
     ]
 
@@ -94,7 +105,7 @@ class Discovery:
         COLUMN_LABELS_LEGACY format, and other rows in the newer
         COLUMN_LABELS format. Ive contacted the court about this many
         times, and often times they clear their CDN cache the resolve
-        the problem, but its become such a reoccuring annoyance that
+        the problem, but its become such a reoccurring annoyance that
         I felt the need to implement this workaround. The court hasn't
         provided any indication in our communication that they have any
         understanding of the problem or why it is happening.
@@ -143,19 +154,19 @@ class Discovery:
 
                     revisions = []
                     row_data = {}
-                    cell_count = 0
+                    cell_index = 0
                     cell_labels = self.get_cell_labels(cells, table_headers)
 
                     # Parse data from rows in table
                     for cell in cells:
-                        cell_label = cell_labels[cell_count]
+                        cell_label = cell_labels[cell_index]
                         text = cell.text_content().strip()
 
                         # Skip rows with empty first cell, these
                         # can appear at the start of a new cycle
                         # when scotus adds new date pages that
                         # do not yet have records
-                        if cell_count == 0 and not text:
+                        if cell_index == 0 and not text:
                             break
 
                         if cell_label == 'Revised':
@@ -172,7 +183,7 @@ class Discovery:
                                 href = cell.xpath('a/@href')
                                 row_data[cell_label + '_Url'] = href[0] if href else None
 
-                        cell_count += 1
+                        cell_index += 1
 
                     if row_data:
                         Logger.info('Discovered: %s' % row_data['Name'])
@@ -188,6 +199,8 @@ class Discovery:
                             if data:
                                 row_data[label] = str(data)
 
+                        part = row_data['Pt.'] if 'Pt.' in row_data else row_data['Citation']
+
                         # Create new opinion record from row data
                         self.discovered_opinions.append(Opinion(
                             category=category,
@@ -197,7 +210,7 @@ class Discovery:
                             name=row_data['Name'],
                             pdf_url=self.BASE + row_data['Name_Url'],
                             justice=Justice(row_data['J.']),
-                            part=row_data['Pt.'],
+                            part=part,
                             discovered=timezone.now(),
                         ))
 
@@ -214,7 +227,7 @@ class Discovery:
                                 name='%s [REVISION]' % row_data['Name'],
                                 pdf_url=self.BASE + href,
                                 justice=Justice(row_data['J.']),
-                                part=row_data['Pt.'],
+                                part=part,
                                 discovered=timezone.now(),
                             ))
 
