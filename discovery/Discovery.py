@@ -218,7 +218,7 @@ class Discovery:
                         for revision in revisions:
                             date_string = revision['date_string']
                             href = revision['href']
-                            Logger.info('Discovered REVISION: %s' % row_data['Name'])
+                            Logger.info('Discovered: REVISION: %s' % row_data['Name'])
                             self.discovered_opinions.append(Opinion(
                                 category=category,
                                 reporter=row_data['R-'] if 'R-' in row_data else None,
