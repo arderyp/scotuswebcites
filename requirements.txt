@@ -12,7 +12,7 @@ pluggy==1.0.0
 ply==3.11
 protobuf==3.20.2
 py==1.11.0
-pycryptodome==3.14.1
+pycryptodome==3.19.1
 PyMuPDF==1.19.6
 pytest==7.1.1
 python-dateutil==2.8.2
