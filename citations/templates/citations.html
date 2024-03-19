@@ -29,7 +29,7 @@
       </thead>
       <tbody>
       {% for citation in citations %}
-        <tr>
+        <tr id="{{ citation.id }}">
 
           <td>
             {% if citation.verify_date %}
