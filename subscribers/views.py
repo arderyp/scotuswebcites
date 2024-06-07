@@ -8,68 +8,68 @@ from subscribers.models import Subscriber
 from scotuswebcites.mail import send_email
 
 
-def sign_up(request):
-    if request.method == 'POST':
-        new_subscriber = False
+# def sign_up(request):
+#     if request.method == 'POST':
+#         new_subscriber = False
+#
+#         # App email not configured yet
+#         if settings.EMAIL_HOST_USER == 'YOUR_GMAIL_ADDRESS':
+#             flash_type = messages.WARNING
+#             flash_message = 'It looks like the host is not configured to send emails quite yet'
+#         else:
+#             proceed = True
+#             valid_email = True
+#             email = request.POST.get('email', '')
+#
+#             # Already subscribed
+#             if Subscriber.objects.filter(email=email):
+#                 subscriber = Subscriber.objects.get(email=email)
+#                 if subscriber.subscribed:
+#                     proceed = False
+#                     flash_type = messages.SUCCESS
+#                     flash_message = 'Good news, it looks like you are already subscribed!'
+#             else:
+#                 try:
+#                     # Create database record
+#                     subscriber = Subscriber(email=email)
+#                     subscriber._set_hash()
+#                     subscriber.save()
+#                     new_subscriber = True
+#                 except:
+#                     valid_email = False
+#
+#             if valid_email and proceed:
+#                 try:
+#                     # Success!
+#                     _send_confirmation_email(request, subscriber)
+#                     flash_type = messages.SUCCESS
+#                     flash_message = "Thanks for subscribing! We've sent a confirmation email to %s." % email
+#                 except:
+#                     valid_email = False
+#                     if new_subscriber:
+#                         subscriber.delete()
+#
+#             # Bad email provided
+#             if not valid_email:
+#                 flash_type = messages.WARNING
+#                 flash_message = 'It looks like you submitted an invalid email address'
+#         messages.add_message(request, flash_type, flash_message)
+#
+#     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
-        # App email not configured yet
-        if settings.EMAIL_HOST_USER == 'YOUR_GMAIL_ADDRESS':
-            flash_type = messages.WARNING
-            flash_message = 'It looks like the host is not configured to send emails quite yet'
-        else:
-            proceed = True
-            valid_email = True
-            email = request.POST.get('email', '')
 
-            # Already subscribed
-            if Subscriber.objects.filter(email=email):
-                subscriber = Subscriber.objects.get(email=email)
-                if subscriber.subscribed:
-                    proceed = False
-                    flash_type = messages.SUCCESS
-                    flash_message = 'Good news, it looks like you are already subscribed!'
-            else:
-                try:
-                    # Create database record
-                    subscriber = Subscriber(email=email)
-                    subscriber._set_hash()
-                    subscriber.save()
-                    new_subscriber = True
-                except:
-                    valid_email = False
-
-            if valid_email and proceed:
-                try:
-                    # Success!
-                    _send_confirmation_email(request, subscriber)
-                    flash_type = messages.SUCCESS
-                    flash_message = "Thanks for subscribing! We've sent a confirmation email to %s." % email
-                except:
-                    valid_email = False
-                    if new_subscriber:
-                        subscriber.delete()
-
-            # Bad email provided
-            if not valid_email:
-                flash_type = messages.WARNING
-                flash_message = 'It looks like you submitted an invalid email address'
-        messages.add_message(request, flash_type, flash_message)
-
-    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
-
-
-def subscribe(request, hash_key):
-    subscriber = Subscriber.objects.get(hash_key=hash_key)
-    if subscriber and not subscriber.subscribed:
-        subscriber.subscribed = True
-        subscriber.save()
-        _notify_admin_of_new_subscriber(subscriber.email)
-        messages.add_message(
-            request,
-            messages.SUCCESS,
-            'Thanks for confirming your subscription!'
-        )
-    return HttpResponseRedirect('/')
+# def subscribe(request, hash_key):
+#     subscriber = Subscriber.objects.get(hash_key=hash_key)
+#     if subscriber and not subscriber.subscribed:
+#         subscriber.subscribed = True
+#         subscriber.save()
+#         _notify_admin_of_new_subscriber(subscriber.email)
+#         messages.add_message(
+#             request,
+#             messages.SUCCESS,
+#             'Thanks for confirming your subscription!'
+#         )
+#     return HttpResponseRedirect('/')
 
 
 def unsubscribe(request, hash_key):
@@ -85,10 +85,10 @@ def unsubscribe(request, hash_key):
     return HttpResponseRedirect('/')
 
 
-@login_required()
-def notify_subscribers(request):
-    call_command('notifysubscribers')
-    return HttpResponseRedirect('/citations/')
+# @login_required()
+# def notify_subscribers(request):
+#     call_command('notifysubscribers')
+#     return HttpResponseRedirect('/citations/')
 
 
 def _send_confirmation_email(request, subscriber):
