@@ -11,29 +11,49 @@
   {% endif %}
 </p>
 
+
+
 <table style="border-collapse:collapse; border:1px solid black;">
   <tbody>
   <tr>
+    <th></th>
+    <th>New</th>
+    <th>Dup</th>
+    <th>#ToValidate</th>
+  </tr>
+  <tr>
     <td style="border:1px solid black; padding: 5px;">
-      <strong>New Opinions</strong>
+      Opinion
     </td>
     <td style="border:1px solid black; padding: 5px;">
-      {{ new_opinions_count }}
+      {{ count_opinions_new }}
+    </td>
+    <td style="border:1px solid black; padding: 5px;">
+      {{ count_opinions_duplicate }}
+    </td>
+    <td style="border:1px solid black; padding: 5px;">
+      -
     </td>
   </tr>
 
   <tr>
     <td style="border:1px solid black; padding: 5px;">
-      <strong>New Citations</strong>
+      Citation
     </td>
     <td style="border:1px solid black; padding: 5px;">
-      {{ ingested_citations_count }}
+      {{ count_citations_ingested }}
+    </td>
+    <td style="border:1px solid black; padding: 5px;">
+      {{ count_citations_duplicate }}
+    </td>
+    <td style="border:1px solid black; padding: 5px;">
+      {{ count_citations_to_validate }}
     </td>
   </tr>
 
   <tr>
     <td style="border:1px solid black; padding: 5px;">
-      <strong>New Justices</strong>
+      Justice
     </td>
     <td style="border:1px solid black; padding: 5px;">
       {% if new_justices %}
@@ -43,8 +63,14 @@
           {% endfor %}
         </ul>
       {% else %}
-        (none)
+        0
       {% endif %}
+    </td>
+    <td style="border:1px solid black; padding: 5px;">
+      -
+    </td>
+    <td style="border:1px solid black; padding: 5px;">
+      {{ new_justices|length }}
     </td>
   </tr>
 

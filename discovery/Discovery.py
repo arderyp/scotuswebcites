@@ -8,6 +8,7 @@ from django.template.loader import get_template
 from scotuswebcites import settings
 from discovery.Pdf import Url
 from discovery.Logger import Logger
+from citations.models import Citation
 from opinions.models import Opinion
 from justices.models import Justice
 from scotuswebcites.mail import send_email
@@ -42,7 +43,8 @@ class Discovery:
         self.PATH_TABLE_ROWS = "%s/tr" % self.PATH_TABLES
         self.PATH_HEADERS = './/th/text()'
         self.START_TERM = 11  # 2011
-        self.YYYYMMDD = timezone.now().strftime('%Y%m%d')
+        self.now = timezone.now()
+        self.YYYYMMDD = self.now.strftime('%Y%m%d')
 
         self.category_urls = []
         self.pdfs_to_scrape = []
@@ -50,10 +52,12 @@ class Discovery:
         self.discovered_opinions = []
         self.new_justices = []
         self.new_opinions = []
-        self.ingested_citations_count = 0
+        self.duplicate_opinions = []
+        self.count_citations_ingested = 0
+        self.count_citations_duplicate = 0
 
     def run(self):
-        Logger.info('INITIATING DISCOVERY: %s' % timezone.now())
+        Logger.info('INITIATING DISCOVERY: %s' % self.now)
         Logger.info('[**%s**]' % self.OPINIONS_MAIN_PAGE)
         self.fetch_opinion_category_urls()
         self.get_opinions_from_categories()
@@ -61,7 +65,7 @@ class Discovery:
         self.ingest_new_opinions()
         Logger.info('INITIATION CITATION SCRAPING AND INGEST')
         self.ingest_new_citations()
-        Logger.info('DISCOVERY COMPLETE: %s' % timezone.now())
+        Logger.info('DISCOVERY COMPLETE: %s' % self.now)
 
     def convert_date_string(self, date_string):
         """Convert date string into standard date object"""
@@ -211,7 +215,7 @@ class Discovery:
                             pdf_url=self.BASE + row_data['Name_Url'],
                             justice=Justice(row_data['J.']),
                             part=part,
-                            discovered=timezone.now(),
+                            discovered=self.now,
                         ))
 
                         # Create opinions for revision, if it exists
@@ -228,11 +232,10 @@ class Discovery:
                                 pdf_url=self.BASE + href,
                                 justice=Justice(row_data['J.']),
                                 part=part,
-                                discovered=timezone.now(),
+                                discovered=self.now,
                             ))
 
     def get_table_headers(self, html):
-
         headers = False
         table_count = 1
         for table in html.xpath(self.PATH_TABLES):
@@ -277,15 +280,59 @@ class Discovery:
             if opinion.pdf.urls:
                 Logger.info('Ingesting citations from %s' % opinion.name)
                 opinion.ingest_citations()
-                self.ingested_citations_count += opinion.ingested_citation_count
+                self.count_citations_ingested += opinion.ingested_citation_count
+
+                # Detect duplicate/revised opinion, recycle previous validations and perma links.
+                # The court often touched the same documents many times making working changes but leaving
+                # the same web citations. If the opinion has tons of citations, this causes lots of
+                # duplicate manual labor. Instead, we will simply re-use the perma links we created
+                # for any citations with a direct match from the original opinion.
+                self.revalidate_if_duplicate_opinion(opinion)
+
+    def revalidate_if_duplicate_opinion(self, opinion: Opinion) -> bool :
+        opinion_original = opinion.get_original()
+        if not opinion_original:
+            return False
+
+        self.duplicate_opinions.append(opinion)
+
+        citations_original = {}
+        for citation_original in Citation.objects.filter(opinion_id=opinion_original.id):
+            citations_original[citation_original.scraped] = citation_original
+
+        for citation in Citation.objects.filter(opinion_id=opinion.id):
+            scraped = citation.scraped
+            citation_original = citations_original[scraped] if scraped in citations_original else None
+            if not citation_original:
+                Logger.info('++++Found NEW citation on duplicate opinion %s: %s' % (opinion.name, scraped))
+                continue
+            if not citation_original.perma:
+                Logger.info('++++Re-queuing known non-perma-ed citation on duplicate opinion %s: %s' % (opinion.name, scraped))
+                continue
+            Logger.info('~~~~Revalidating duplicate citation on duplicate opinion %s: %s' % (opinion.name, scraped))
+            citation.memento = citation_original.memento
+            citation.notified_subscribers = self.now
+            citation.perma = citation_original.perma
+            citation.scrape_evaluation = citation_original.scrape_evaluation
+            citation.validated = citation_original.validated
+            citation.verify_date = self.now
+            citation.webcite = citation_original.webcite
+            citation.save()
+            self.count_citations_duplicate += 1
+        return True
 
     def send_email_report(self):
         if settings.EMAIL_HOST_USER != 'YOUR_GMAIL_ADDRESS':
-            if self.new_opinions or self.new_justices or self.ingested_citations_count or self.failed_scrapes:
+            if self.new_opinions or self.new_justices or self.count_citations_ingested or self.failed_scrapes:
+                count_opinions_new = len(self.new_opinions)
+                count_opinions_duplicate = len(self.duplicate_opinions)
                 subject = '[scotuswebcites] New Data Discovered'
                 template_parameters = {
-                    'new_opinions_count': str(len(self.new_opinions)),
-                    'ingested_citations_count': str(self.ingested_citations_count),
+                    'count_opinions_new': str(count_opinions_new),
+                    'count_opinions_duplicate': str(count_opinions_duplicate),
+                    'count_citations_ingested': str(self.count_citations_ingested),
+                    'count_citations_duplicate': str(self.count_citations_duplicate),
+                    'count_citations_to_validate': str(self.count_citations_ingested - self.count_citations_duplicate),
                     'new_justices': self.new_justices,
                     'failed_scrapes': self.failed_scrapes,
                     'domain': settings.ALLOWED_HOSTS[0] if settings.ALLOWED_HOSTS else False,

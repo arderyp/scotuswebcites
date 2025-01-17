@@ -40,12 +40,22 @@ class Opinion(models.Model):
             category=self.category,
             reporter=self.reporter,
             docket=self.docket,
-            justice=self.justice,
-            part=self.part):
-
+            justice=self.justice):
             return True
-
         return False
+
+    def get_original(self):
+        try:
+            return Opinion.objects.filter(
+                name=self.name.strip(' [REVISION]').split(' Revisions: ')[0],
+                published=self.published,
+                category=self.category,
+                reporter=self.reporter,
+                docket=self.docket,
+                justice=self.justice,
+            ).first()
+        except Opinion.DoesNotExist:
+            return None
 
     def get_local_pdf(self):
         if not self.id:

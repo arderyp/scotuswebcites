@@ -33,7 +33,10 @@
 
             <td class="justice-name">{{ opinion.justice.name }}</td>
 
-            <td>{{ opinion.published|yyyymmdd }}</td>
+            <td>
+              {{ opinion.published|yyyymmdd }}
+              <span class="glyphicon glyphicon-info-sign text-info" title="Discovered on {{ opinion.discovered|yyyymmdd }}"></span>
+            </td>
 
             <td>
               {% if opinion.citation_count %}

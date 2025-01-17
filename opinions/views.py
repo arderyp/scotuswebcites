@@ -4,7 +4,7 @@ from django.http import HttpResponseRedirect
 
 def index(request):
     template = 'opinions.html'
-    opinions = Opinion.objects.all().order_by('-published')
+    opinions = Opinion.objects.all().order_by('-published', 'name', '-discovered', 'justice__name')
 
     for opinion in opinions:
         opinion.get_counts_and_update_date()
