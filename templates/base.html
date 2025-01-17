@@ -2,10 +2,10 @@
 {% load static %}
 
 <!DOCTYPE html>
+<html lang="en" dir="ltr">
 <head>
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="Generator" content="Drupal 8 (https://www.drupal.org)" />
   <meta name="MobileOptimized" content="width" />
   <meta name="HandheldFriendly" content="true" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -21,7 +21,7 @@
   <script src="{% static 'js/npm.js' %}"></script>
   <script src="{% static 'js/scotus.js' %}"></script>
   {% block javascript %}{% endblock %}
-   
+
   <!--stylesheets-->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
   <link href="{% static 'css/style.css' %}" media="all" rel="stylesheet">
@@ -91,5 +91,4 @@
 </body>
 
 {% block javascript_bottom %}{% endblock %}
-
 </html>

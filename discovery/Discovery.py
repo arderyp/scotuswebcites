@@ -3,6 +3,8 @@
 import lxml.html
 import traceback
 from dateutil import parser
+from typing import Dict
+from typing import List
 from django.utils import timezone
 from django.template.loader import get_template
 from scotuswebcites import settings
@@ -254,72 +256,102 @@ class Discovery:
     def ingest_new_opinions(self):
         # Sort opinions by publication date, oldest to newest
         self.discovered_opinions.sort(key=lambda o: o.published)
-
         for opinion in self.discovered_opinions:
-            if opinion.already_exists():
+            if self.opinion_already_exists(opinion):
                 Logger.info('Skipping: %s' % opinion.name)
                 continue
-
             Logger.info('Ingesting: %s  %s' % (opinion.name, opinion.pdf_url))
-
             opinion.save()
             self.new_opinions.append(opinion)
+
+    def opinion_already_exists(self, opinion: Opinion) -> bool:
+        return bool(
+            Opinion.objects.filter(
+                name=opinion.name,
+                pdf_url=opinion.pdf_url,
+                published=opinion.published,
+                category=opinion.category,
+                reporter=opinion.reporter,
+                docket=opinion.docket,
+                justice=opinion.justice
+            )
+        )
             
     def ingest_new_citations(self):
         for opinion in self.new_opinions:
-            Logger.info('Downloading: %s  %s' % (opinion.name, opinion.pdf_url))
+            Logger.info('Downloading: %s %s' % (opinion.name, opinion.pdf_url))
             opinion.download()
-            Logger.info('Scraping: %s  %s' % (opinion.name, opinion.local_pdf))
-
+            Logger.info('Scraping: %s %s' % (opinion.name, opinion.local_pdf))
             try:
                 opinion.scrape()
             except:
                 Logger.error(traceback.format_exc())
                 self.failed_scrapes.append(opinion.name)
-
             if opinion.pdf.urls:
-                Logger.info('Ingesting citations from %s' % opinion.name)
-                opinion.ingest_citations()
-                self.count_citations_ingested += opinion.ingested_citation_count
+                self.ingest_new_citations_from_opinion(opinion)
 
+
+    def ingest_new_citations_from_opinion(self, opinion: Opinion):
+        Logger.info('Ingesting citations from %s' % opinion.name)
+        # citations = [];
+        citations_previous = self.get_citation_from_previous_publications(opinion)
+        for url in opinion.pdf.urls:
+            Logger.info('++Ingesting citation: %s' % url)
+            citation = Citation(opinion=Opinion(opinion.id), scraped=url)
+            citation.yyyymmdd = opinion.published.strftime("%Y%m%d")
+            citation_previous = citations_previous[url] if url in citations_previous else None
+            if not citation_previous:
+                # Logger.info('++++Found NEW citation on duplicate opinion %s: %s' % (opinion.name, url))
+                citation.get_statuses()  # check statuses on novel citation url
+            elif not citation_previous.perma:
+                Logger.info('++++Re-queuing known not-previously-perma-ed citation on duplicate opinion %s: %s' % (opinion.name, url))
+                citation.get_statuses()  # check statuses on novel citation url
+            else:
                 # Detect duplicate/revised opinion, recycle previous validations and perma links.
                 # The court often touched the same documents many times making working changes but leaving
                 # the same web citations. If the opinion has tons of citations, this causes lots of
                 # duplicate manual labor. Instead, we will simply re-use the perma links we created
                 # for any citations with a direct match from the original opinion.
-                self.revalidate_if_duplicate_opinion(opinion)
-
-    def revalidate_if_duplicate_opinion(self, opinion: Opinion) -> bool :
-        opinion_original = opinion.get_original()
-        if not opinion_original:
-            return False
-
-        self.duplicate_opinions.append(opinion)
-
-        citations_original = {}
-        for citation_original in Citation.objects.filter(opinion_id=opinion_original.id):
-            citations_original[citation_original.scraped] = citation_original
-
-        for citation in Citation.objects.filter(opinion_id=opinion.id):
-            scraped = citation.scraped
-            citation_original = citations_original[scraped] if scraped in citations_original else None
-            if not citation_original:
-                Logger.info('++++Found NEW citation on duplicate opinion %s: %s' % (opinion.name, scraped))
-                continue
-            if not citation_original.perma:
-                Logger.info('++++Re-queuing known non-perma-ed citation on duplicate opinion %s: %s' % (opinion.name, scraped))
-                continue
-            Logger.info('~~~~Revalidating duplicate citation on duplicate opinion %s: %s' % (opinion.name, scraped))
-            citation.memento = citation_original.memento
-            citation.notified_subscribers = self.now
-            citation.perma = citation_original.perma
-            citation.scrape_evaluation = citation_original.scrape_evaluation
-            citation.validated = citation_original.validated
-            citation.verify_date = self.now
-            citation.webcite = citation_original.webcite
+                Logger.info('~~~~Auto-validating duplicate citation on duplicate opinion %s: %s' % (opinion.name, url))
+                citation.memento = citation_previous.memento
+                citation.notified_subscribers = self.now
+                citation.perma = citation_previous.perma
+                citation.scrape_evaluation = citation_previous.scrape_evaluation
+                citation.status = 'x';
+                citation.validated = citation_previous.validated
+                citation.verify_date = self.now
+                citation.webcite = citation_previous.webcite
+                self.count_citations_duplicate += 1
             citation.save()
-            self.count_citations_duplicate += 1
-        return True
+            self.count_citations_ingested += 1
+
+    # track all unique citations from all previous discoveries of opinion
+    def get_citation_from_previous_publications(self, opinion: Opinion) -> Dict[str, Citation]:
+        citations = {}
+        previous_publications = self.get_previous_publications_of_opinion(opinion)
+        if previous_publications:
+            self.duplicate_opinions.append(opinion)
+        for previous_publication in previous_publications:
+            for citation in Citation.objects.filter(opinion_id=previous_publication.id):
+                scraped = citation.scraped
+                if scraped not in citations:
+                    citations[scraped] = citation
+        return citations
+
+    # return list of early opinion derivations.
+    # the court touches/updates records all the time, duplicating opinions in various drafts.
+    def get_previous_publications_of_opinion(self, opinion: Opinion) -> List[Opinion]:
+        try:
+            return Opinion.objects.filter(
+                name=opinion.name.strip(' [REVISION]').split(' Revisions: ')[0],
+                published=opinion.published,
+                category=opinion.category,
+                reporter=opinion.reporter,
+                docket=opinion.docket,
+                justice=opinion.justice,
+            )
+        except Opinion.DoesNotExist:
+            return []
 
     def send_email_report(self):
         if settings.EMAIL_HOST_USER != 'YOUR_GMAIL_ADDRESS':

@@ -15,6 +15,7 @@ class Citation(models.Model):
         (u'a', u'available'),
         (u'u', u'unavailable'),
         (u'r', u'redirect'),
+        (u'x', u'auto-validated from previous draft of opinion'),
     )
     MEMENTO = 'http://timetravel.mementoweb.org/list'
 
