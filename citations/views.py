@@ -75,11 +75,11 @@ def opinion_citations(request, opinion_id):
 
 @login_required()
 def verify(request, citation_id):
+    error = False
     template = 'verify.html'
 
     if request.method == 'POST':
         try:
-            # Successful update
             citation = Citation.objects.get(id=request.POST['citation_id'])
             scrape_evaluation = request.POST['scrape_evaluation']
             validated = request.POST['validated']
@@ -104,25 +104,18 @@ def verify(request, citation_id):
 
                 citation.save()
 
-                # Create success flash message
+                # Successful update
                 messages.add_message(request, messages.SUCCESS, 'Successfully verified citation!')
-
                 return HttpResponseRedirect('/citations/#%s' % citation.id)
 
-            # Submitted invalidated url
-            context = {
-                'citation': citation,
-                'form': form,
-            }
+            error = 'Your form submission was invalid'
 
-        except Exception:
-            if settings.DEBUG:
-                import traceback
-                raise Exception(traceback.format_exc())
+        except Exception as exception:
+            error = str(exception)
 
-            context = {
-                'error': 'No citation with id %s' % request.POST['citation_id'],
-            } 
+            # if settings.DEBUG:
+            #     import traceback
+            #     raise Exception(traceback.format_exc())
 
     else:
         try:
@@ -136,10 +129,12 @@ def verify(request, citation_id):
             return HttpResponseRedirect('/citations/#%s' % citation.id)
 
         form = VerifyCitationForm(initial={'validated': citation.scraped})
-        context = {
-            'citation': citation,
-            'form': form,
-        }
+
+    context = {
+        'citation': citation,
+        'form': form,
+        'error': error,
+    }
 
     return render(request, template, context)
 

@@ -1,8 +1,16 @@
 {% extends "base.html" %}
 
 {% block content %}
-<!--Present Form-->
 <div class="container">
+  <!--Report Submit Error-->
+  {% if error %}
+    <div class="alert alert-danger">
+      <strong>ERROR:</strong> {{ error|linebreaksbr }}
+    </div>
+  {% endif %}
+
+
+  <!--Present Form-->
   <div class="row">
     <form method="post" action="/citations/verify/{{ citation.id  }}">
       {% csrf_token %}
@@ -37,7 +45,7 @@
       </ul>
     </form>
 
-    <!--Report Errors-->
+    <!--Report Form Errors-->
     {% if form.errors %}
       <br>
       {% for field in form %}

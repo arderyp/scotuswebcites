@@ -44,11 +44,11 @@ class Perma(object):
             self.archive_id = response_dict['guid']
         else:
             # The perma.cc archive could not be created.  This could be due to an API limit.
-            raise Exception('ERROR: The perma.cc archive could not be created.  You may have hit '
-                            'an API threshold, or encountered some other issue. Please review the '
+            error = str(response_dict)
+            raise Exception('The perma.cc archive could not be created.  Please review the '
                             'following error and contact perma.cc if it appears to be related to an '
                             'API limit.  Otherwise, open a ticket on the scotuswebcites github repo '
-                            'and paste this full error in the ticket: %s' % response_dict)
+                            'and paste this full error in the ticket:\n\n%s' % error)
 
     def get_archive_url(self):
         """Return perma.cc archive resource url"""
