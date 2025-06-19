@@ -4,6 +4,6 @@ lxml==4.9.1
 mysqlclient==2.1.0
 python-dateutil==2.8.2
 PyMuPDF==1.19.6
-requests==2.32.0
+requests==2.32.4
 urllib3==2.5.0
 uWSGI==2.0.22
