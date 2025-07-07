@@ -36,7 +36,7 @@ class PdfTestCase(TestCase):
             ],
             'NLRB_v_Noel_Canning.pdf': [
                 u'http://www.nlrb.gov/who-we-are/board/members-nlrb-1935',
-                u'http://georgewbush­whitehouse.archives.gov/news/releases/2001/08/20010831-14.html',
+                u'http://georgewbush-whitehouse.archives.gov/news/releases/2001/08/20010831-14.html',
                 u'http://www.dmnews.com/prc-chairman-gleiman-retires/article/70877',
                 u'http://www.dnfsb.gov/about/board-members/joseph-j-dinunno',
                 u'http://www.ssab.gov/AbouttheBoard/Members.aspx',
@@ -56,17 +56,24 @@ class PdfTestCase(TestCase):
         # This is actually a bad citation, the '.10' is a period + footnote tag.
         # But, we can't safely assume that all url strings ending in '.#' are bad
 
+        print(f'\n  [Testing PDF scrape expectations]')
         for document, citations in checks.items():
+            path = test_dir + document
+            print(f'    {path}')
             pdf = Pdf()
-            pdf.local_file = test_dir + document
+            pdf.local_file = path
             pdf.scrape_urls()
-            if self.assertEqual(pdf.urls, citations):
-                print
+            print(f'      - Asserting count')
+            self.assertEqual(len(citations), len(pdf.urls))
+            for url in citations:
+                print(f'      - Asserting scraped: {url}')
+                self.assertIn(url, pdf.urls)
 
 
 class UrlTestCase(TestCase):
     def test_request(self):
         """Expected request returns"""
+        print(f'\n  [Testing URL response behavior]')
         checks = {
             'http://www.google.com': 200,
             'www.google.com': 200,
@@ -74,6 +81,7 @@ class UrlTestCase(TestCase):
         }
 
         for url, response in checks.items():
+            print(f'      {response}\t{url}')
             if response:
                 request = Url.get(url)
                 self.assertEqual(request.status_code, response)

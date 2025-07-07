@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import fitz
+import unicodedata
 from discovery.Url import Url
 
 
@@ -99,4 +100,55 @@ class Pdf:
             if url.endswith(substring):
                 url = url.rstrip(substring)
 
-        return url
+        return self.clean_controll_characters(url)
+
+    def clean_controll_characters(self, text, replacements=None):
+        """
+        [GEMINI]
+        Cleans text by removing/replacing non-printable/control characters.
+
+        Args:
+            text (str): The input string to clean.
+            replacements (dict, optional): A dictionary mapping characters to replace
+                                           (keys) to their replacement strings (values).
+                                           Defaults to replacing \xad with '-'.
+        Returns:
+            str: The cleaned string.
+        """
+        # Default replacements if none are provided.
+        # This specifically addresses the \xad case.
+        if replacements is None:
+            replacements = {
+                '\xad': '-',  # Replace Soft Hyphen with a regular hyphen
+                '\u200b': '', # Zero Width Space - often best to remove
+                '\u200c': '', # Zero Width Non-Joiner
+                '\u200d': '', # Zero Width Joiner
+            }
+
+        cleaned_chars = []
+        for char in text:
+            # CHECK FOR SPECIFIC REPLACEMENTS
+            if char in replacements:
+                cleaned_chars.append(replacements[char])
+            else:
+                # HANDLE GENERAL NON-PRINTABLE/CONTROL CHARACTERS
+                # 'C' category includes various control characters (Cc, Cf, Co, Cn)
+                # 'Z' category includes various space separators (Zs, Zl, Zp)
+                if unicodedata.category(char)[0] in ('C', 'Z'):
+                    # Keep common, desired whitespace characters
+                    if char in ('\n', '\r', '\t', ' '):
+                        cleaned_chars.append(char)
+                    else:
+                        # For other 'C' or 'Z' characters not in replacements and not common whitespace,
+                        # simply remove them (or replace with a space if preferred)
+                        # For example, a non-breaking space (NBSP) '\xa0' is 'Zs'
+                        # You might want to convert '\xa0' to ' ' (regular space)
+                        # If it's a truly unwanted control character, just skip it.
+                        # As a default, removing is often safest for unknown control chars.
+                        pass # Do nothing, effectively removing the character
+                else:
+                    # This is a regular, printable character; keep it.
+                    cleaned_chars.append(char)
+
+        return "".join(cleaned_chars)
+
