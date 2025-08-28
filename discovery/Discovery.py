@@ -139,103 +139,118 @@ class Discovery:
 
     def get_opinions_from_categories(self):
         for category_url in self.category_urls:
-            category = category_url.split('/')[-2]
-            request = Url.get(category_url)    
+            request = Url.get(category_url)
 
-            if request and request.status_code == 200:
-                Logger.info('EXTRACTING OPINIONS FROM %s' % category_url)
-                html = lxml.html.fromstring(request.text)
+            if self.is_us_report_url(request.url):
+                # Not sure why, but the court website started doing this in some instances instead of
+                # returning 404, 3xx, or blank page. These U.S. Reports pages have gigantic compilation
+                # files consisting of huge collections of opinions that we already have, triggering
+                # massive duplicate discoveries
+                Logger.info('SKIPPING BLIND REDIRECT TO COMPILED U.S. REPORTS URL FROM: %s' % category_url)
+                continue
 
-                if not html.xpath(self.PATH_TABLES):
-                    # Its a new term with an empty page, no table yet
-                    Logger.info('SKIPPING BLANK PAGE: %s' % category_url)
+            if not request:
+                Logger.info('FAILED FETCHING: %s' % category_url)
+                continue
+
+            if request.status_code != 200:
+                Logger.info('SKIPPING NNON-200 STATUS CODE [%d]: %s' % (request.status_code ,category_url))
+                continue
+
+            Logger.info('EXTRACTING OPINIONS FROM %s' % category_url)
+            html = lxml.html.fromstring(request.text)
+
+            if not html.xpath(self.PATH_TABLES):
+                # Its a new term with an empty page, no table yet
+                Logger.info('SKIPPING BLANK PAGE: %s' % category_url)
+                continue
+
+            table_headers = self.get_table_headers(html)
+
+            for row in html.xpath(self.PATH_TABLE_ROWS):
+                cells = row.xpath('td')
+                if not cells:
                     continue
 
-                table_headers = self.get_table_headers(html)
+                revisions = []
+                row_data = {}
+                cell_index = 0
+                cell_labels = self.get_cell_labels(cells, table_headers)
 
-                for row in html.xpath(self.PATH_TABLE_ROWS):
-                    cells = row.xpath('td')
-                    if not cells:
-                        continue
+                # Parse data from rows in table
+                for cell in cells:
+                    cell_label = cell_labels[cell_index]
+                    text = cell.text_content().strip()
 
-                    revisions = []
-                    row_data = {}
-                    cell_index = 0
-                    cell_labels = self.get_cell_labels(cells, table_headers)
+                    # Skip rows with empty first cell, these
+                    # can appear at the start of a new cycle
+                    # when scotus adds new date pages that
+                    # do not yet have records
+                    if cell_index == 0 and not text:
+                        break
 
-                    # Parse data from rows in table
-                    for cell in cells:
-                        cell_label = cell_labels[cell_index]
-                        text = cell.text_content().strip()
+                    if cell_label == 'Revised':
+                        # Revised cells can have multiple links
+                        # so we must have special handling for it
+                        for anchor in cell.xpath('a'):
+                            revisions.append({
+                                'href': anchor.xpath('@href')[0],
+                                'date_string': anchor.text_content(),
+                            })
+                    else:
+                        row_data[cell_label] = text if text else None
+                        if cell.xpath('a'):
+                            href = cell.xpath('a/@href')
+                            row_data[cell_label + '_Url'] = href[0] if href else None
 
-                        # Skip rows with empty first cell, these
-                        # can appear at the start of a new cycle
-                        # when scotus adds new date pages that
-                        # do not yet have records
-                        if cell_index == 0 and not text:
-                            break
+                    cell_index += 1
 
-                        if cell_label == 'Revised':
-                            # Revised cells can have multiple links
-                            # so we must have special handling for it
-                            for anchor in cell.xpath('a'):
-                                revisions.append({
-                                    'href': anchor.xpath('@href')[0],
-                                    'date_string': anchor.text_content(),
-                                })
-                        else:
-                            row_data[cell_label] = text if text else None
-                            if cell.xpath('a'):
-                                href = cell.xpath('a/@href')
-                                row_data[cell_label + '_Url'] = href[0] if href else None
+                if row_data:
+                    Logger.info('Discovered: %s' % row_data['Name'])
 
-                        cell_index += 1
+                    # Validate the justice, or add new record for him/her
+                    if not Justice.objects.filter(id=row_data['J.']):
+                        self.new_justices.append(row_data['J.'])
+                        justice = Justice(id=row_data['J.'], name=row_data['J.'])
+                        justice.save()
 
-                    if row_data:
-                        Logger.info('Discovered: %s' % row_data['Name'])
+                    # Convert all scraped data to uniform unicode string
+                    for label, data in row_data.items():
+                        if data:
+                            row_data[label] = str(data)
 
-                        # Validate the justice, or add new record for him/her
-                        if not Justice.objects.filter(id=row_data['J.']):
-                            self.new_justices.append(row_data['J.'])
-                            justice = Justice(id=row_data['J.'], name=row_data['J.'])
-                            justice.save()
+                    category = category_url.split('/')[-2]
+                    part = row_data['Pt.'] if 'Pt.' in row_data else row_data['Citation']
 
-                        # Convert all scraped data to uniform unicode string
-                        for label, data in row_data.items():
-                            if data:
-                                row_data[label] = str(data)
+                    # Create new opinion record from row data
+                    self.discovered_opinions.append(Opinion(
+                        category=category,
+                        reporter=row_data['R-'] if 'R-' in row_data else None,
+                        published=self.convert_date_string(row_data['Date']),
+                        docket=row_data['Docket'],
+                        name=row_data['Name'],
+                        pdf_url=self.BASE + row_data['Name_Url'],
+                        justice=Justice(row_data['J.']),
+                        part=part,
+                        discovered=self.now,
+                    ))
 
-                        part = row_data['Pt.'] if 'Pt.' in row_data else row_data['Citation']
-
-                        # Create new opinion record from row data
+                    # Create opinions for revision, if it exists
+                    for revision in revisions:
+                        date_string = revision['date_string']
+                        href = revision['href']
+                        Logger.info('Discovered: REVISION: %s' % row_data['Name'])
                         self.discovered_opinions.append(Opinion(
                             category=category,
                             reporter=row_data['R-'] if 'R-' in row_data else None,
-                            published=self.convert_date_string(row_data['Date']),
+                            published=self.convert_date_string(date_string),
                             docket=row_data['Docket'],
-                            name=row_data['Name'],
-                            pdf_url=self.BASE + row_data['Name_Url'],
+                            name='%s [REVISION]' % row_data['Name'],
+                            pdf_url=self.BASE + href,
                             justice=Justice(row_data['J.']),
                             part=part,
                             discovered=self.now,
                         ))
-
-                        # Create opinions for revision, if it exists
-                        for revision in revisions:
-                            date_string = revision['date_string']
-                            href = revision['href']
-                            Logger.info('Discovered: REVISION: %s' % row_data['Name'])
-                            self.discovered_opinions.append(Opinion(
-                                category=category,
-                                reporter=row_data['R-'] if 'R-' in row_data else None,
-                                published=self.convert_date_string(date_string),
-                                docket=row_data['Docket'],
-                                name='%s [REVISION]' % row_data['Name'],
-                                pdf_url=self.BASE + href,
-                                justice=Justice(row_data['J.']),
-                                part=part,
-                                discovered=self.now,
-                            ))
 
     def get_table_headers(self, html):
         headers = False
@@ -258,9 +273,13 @@ class Discovery:
         self.discovered_opinions.sort(key=lambda o: o.published)
         for opinion in self.discovered_opinions:
             if self.opinion_already_exists(opinion):
-                Logger.info('Skipping: %s' % opinion.name)
+                Logger.info('Skipping, already exists: %s' % opinion.name)
                 continue
-            Logger.info('Ingesting: %s  %s' % (opinion.name, opinion.pdf_url))
+            if self.is_us_report_url(opinion.pdf_url):
+                # I don't know why, but some opinion links point to these compiled U.S. Reports
+                Logger.info('Skipping, U.S. Report compilation url: %s : %s' % (opinion.name, opinion.pdf_url))
+                continue
+            Logger.info('Ingesting: %s %s' % (opinion.name, opinion.pdf_url))
             opinion.save()
             self.new_opinions.append(opinion)
 
@@ -372,3 +391,6 @@ class Discovery:
                 body = get_template('discovery_report_email.html').render(template_parameters)
                 Logger.info('+sending discovery report email from %s to %s' % (settings.SENDER_EMAIL, settings.CONTACT_EMAIL))
                 send_email(subject, body, settings.CONTACT_EMAIL)
+
+    def is_us_report_url(self, url: str) -> bool:
+        return url.endswith('USReports.aspx') or '/preliminaryprint/' in url or '/boundvolumes/' in url

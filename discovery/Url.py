@@ -24,7 +24,7 @@ class Url:
                 url = 'http://' + url 
 
             try:
-                return requests.get(url, headers=cls.HEADERS, timeout=cls.TIMEOUT,)
+                return requests.get(url, headers=cls.HEADERS, timeout=cls.TIMEOUT)
             except Exception:
                 pass
        

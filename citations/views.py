@@ -13,27 +13,10 @@ from .forms import VerifyCitationForm
 
 def index(request):
     template = 'citations.html'
-
-    ## On October 28 2024, SCOTUS touched hundreds of old opinions, triggering thousands of "new" citation
-    ## ingests.  I no longer have time to maintain this strictly. It's highly unlikely they were changing
-    ## citation data. As such, the best bet for now is to simply hide these citations, because I can't verify
-    ## them all.  If this happens again, we should add a new "ignore" field to opinions, and batch ignore
-    ## citations for flagged opinions. Yes, this is brute force and intelligent, but I simply don't have the time.
-
-    ## Show all citations
-    # citations = Citation.objects.all().order_by('-opinion__id')
-
-    ## Show only citations from opinions discovered on problem date
-    # citations = Citation.objects.filter(opinion_id__discovered__range=["2024-10-28", "2024-10-29"]).order_by('-opinion__id')
-
-    ## Show all citations EXCEPT those published on problem date when thousand of old files were touched
-    citations = Citation.objects.filter(~Q(opinion_id__discovered__range=["2024-10-28", "2024-10-29"])).order_by('-opinion__id')
-
     context = {
-        'citations': citations,
+        'citations': Citation.objects.all().order_by('-opinion__id'),
         'statuses': dict(Citation.STATUSES),
     }
-
     return render(request, template, context)
 
 
