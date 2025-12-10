@@ -1,8 +1,8 @@
-asgiref==3.7.2
+asgiref==3.8.1
 certifi==2024.7.4
 charset-normalizer==3.3.2
-Django==4.2.27
-django-bootstrap3==21.2
+Django==5.2.9
+django-bootstrap3==25.2
 idna==3.7
 lxml==6.0.0
 mysqlclient==2.1.0
