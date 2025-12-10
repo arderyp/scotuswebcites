@@ -1,5 +1,5 @@
-Django==4.2.27
-django-bootstrap3==21.2
+Django==5.2.9
+django-bootstrap3==25.2
 lxml==6.0.0
 mysqlclient==2.1.0
 python-dateutil==2.8.2
