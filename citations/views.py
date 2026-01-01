@@ -1,20 +1,18 @@
-from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
-from django.db.models import Q
-from django.http import HttpResponseRedirect
-from django.utils import timezone
-from django.contrib import messages
-
-from scotuswebcites import settings
-from citations.models import Citation
-from archive.Perma import Perma
 from .forms import VerifyCitationForm
+from archive.Perma import Perma
+from django.http import HttpResponseRedirect
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.shortcuts import render
+from django.utils import timezone
+from citations.models import Citation
+from scotuswebcites import settings
 
 
 def index(request):
     template = 'citations.html'
     context = {
-        'citations': Citation.objects.all().order_by('-opinion__id'),
+        'citations': _get_citations_with_opinions(),
         'statuses': dict(Citation.STATUSES),
     }
     return render(request, template, context)
@@ -22,37 +20,29 @@ def index(request):
 
 def justice_opinions_citations(request, justice_id):
     template = 'citations.html'
-
-    # Check if filtering by link status instead of justice_id 
     if justice_id in [status for code, status in Citation.STATUSES]:
+        # Check if filtering by link status instead of justice_id
         return get_citations_by_status(request, justice_id)
-
     else:
-        citations = Citation.objects.filter(opinion_id__justice_id=justice_id).order_by('-opinion__id')
-
+        citations = _get_citations_with_opinions().filter(opinion_id__justice_id=justice_id)
         if not citations:
             return redirect(request)
-
         context = {
             'citations': citations,
             'statuses': dict(Citation.STATUSES),
         }
-
         return render(request, template, context)
 
 
 def opinion_citations(request, opinion_id):
     template = 'citations.html'
-    citations = Citation.objects.filter(opinion_id=opinion_id)
-
+    citations = _get_citations_with_opinions().filter(opinion_id=opinion_id)
     if not citations:
         return redirect(request)
-
     context = {
         'citations':citations,
         'statuses': dict(Citation.STATUSES),
     }
-
     return render(request, template, context)
 
 
@@ -124,13 +114,15 @@ def verify(request, citation_id):
 
 def get_citations_by_status(request, status):
     template = 'citations.html'
-    citations = Citation.objects.filter(status=status[0]).order_by('-opinion__id')
     context = {
-        'citations':citations,
+        'citations':_get_citations_with_opinions().filter(status=status[0]).order_by('-opinion__id'),
         'statuses': dict(Citation.STATUSES),
     }
-
     return render(request, template, context)
+
+
+def _get_citations_with_opinions():
+    return Citation.objects.select_related('opinion').all().order_by('-opinion__id')
 
 
 def redirect(request, *args):

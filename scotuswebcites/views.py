@@ -1,9 +1,15 @@
 # -*- coding: utf-8 -*-
 
+import csv
+from django.db.models import Count
 from django.conf import settings
-from django.shortcuts import render
-from django.http import HttpResponseRedirect
 from django.contrib.auth import logout as auth_logout
+from django.http import HttpResponseRedirect
+from django.http import StreamingHttpResponse
+from django.shortcuts import render
+from django.utils import timezone
+from citations.models import Citation
+from opinions.models import Opinion
 
 
 def logout(request):
@@ -11,41 +17,35 @@ def logout(request):
     return HttpResponseRedirect(settings.LOGIN_REDIRECT_URL)
 
 
-def download_csv(request):
-    from citations.models import Citation
-    from django.http import HttpResponse
-    from datetime import datetime
-    import csv
+# A small generator to handle the streaming logic
+def csv_generator(queryset, header):
+    yield header
+    # .iterator() fetches rows in chunks, keeping memory usage low and constant
+    for citation in queryset.iterator(chunk_size=1000):
+        yield citation.csv_row()
 
-    fields_header = [
-        'Scraped Citation',
-        'Validated Citation',
-        'Citation Validation Date',
-        'Scrape Evaluation',
-        'Citation Status',
-        'Memento',
-        'WebCite',
-        'Perma.cc',
-        'Opinion',
-        'Justice',
-        'Category',
-        'Published',
-        'Discovered',
-        'Opinion PDF Url',
-        'Reporter',
-        'Docket',
-        'Part',
+
+def download_csv(request):
+    # 1. Optimize the SQL to pull all related data in ONE join
+    # Follow the chain: Citation -> Opinion -> Justice
+    queryset = Citation.objects.select_related('opinion', 'opinion__justice').all()
+
+    header = [
+        'Scraped Citation', 'Validated Citation', 'Citation Validation Date',
+        'Scrape Evaluation', 'Citation Status', 'Memento', 'WebCite',
+        'Perma.cc', 'Opinion', 'Justice', 'Category', 'Published',
+        'Discovered', 'Opinion PDF Url', 'Reporter', 'Docket', 'Part',
     ]
 
-    # Create the HttpResponse object with the appropriate CSV header.
-    response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="scotus-web-citations.%s.csv' % datetime.now().strftime('%Y%m%d')
+    # 2. Use StreamingHttpResponse so the VM doesn't have to build the
+    # whole file in memory before sending it to the user.
+    response = StreamingHttpResponse(
+        (csv.writer(Echo()).writerow(row) for row in csv_generator(queryset, header)),
+        content_type='text/csv',
+    )
 
-    writer = csv.writer(response, delimiter=',')
-    writer.writerow(fields_header)
-
-    for citation in Citation.objects.all():
-        writer.writerow(citation.csv_row())
+    filename = timezone.now().strftime('%Y%m%d')
+    response['Content-Disposition'] = f'attachment; filename="scotus-web-citations.{filename}.csv"'
 
     return response
 
@@ -57,51 +57,51 @@ def overview(request):
 
 
 def data(request):
-    from time import time
-    from opinions.models import Opinion
-    from citations.models import Citation
-    from django.http import HttpRequest
-
     template = 'data.html'
     js_month = 2678400000
+
+    # 1. Batch status counts (3 fast queries)
+    status_counts = dict(Citation.objects.values_list('status').annotate(total=Count('id')))
+
+    # 2. Get distributions using SQL grouping (1 fast query)
+    # This groups by date and counts opinions and citations in one go
+    stats = Opinion.objects.values('published').annotate(
+        ops=Count('id', distinct=True),
+        cites=Count('citation', distinct=True)
+    ).order_by('published')
+
+    opinion_data = []
+    citation_data = []
+
+    for entry in stats:
+        # Convert date to JS timestamp (ms)
+        js_date = int(entry['published'].strftime('%s')) * 1000
+        opinion_data.append([js_date, entry['ops']])
+        citation_data.append([js_date, entry['cites']])
+
+    # Boundaries
+    if opinion_data:
+        earliest = opinion_data[0][0]
+        latest = opinion_data[-1][0]
+    else:
+        earliest = 1262304000000
+        latest = 1462086000000  # Your go_live_date example
+
     context = {
-        'base': HttpRequest.build_absolute_uri(request).strip('data/'),
+        'available': status_counts.get('a', 0),
+        'unavailable': status_counts.get('u', 0),
+        'redirected': status_counts.get('r', 0),
+        'citation_distribution': citation_data,
+        'opinion_distribution': opinion_data,
+        'earliest': earliest - js_month,
+        'latest': latest + js_month,
         'go_live_date': 1462086000000,
-        'available': Citation.objects.filter(status='a').count(),
-        'unavailable': Citation.objects.filter(status='u').count(),
-        'redirected': Citation.objects.filter(status='r').count(),
     }
 
-    # Calculate opinion and citation distributions
-    distributions = {}
-    for opinion in Opinion.objects.all():
-        citations = len(opinion.citation_set.all())
-        unix_date = int(opinion.published.strftime('%s'))
-        js_date = unix_date * 1000
-        if js_date in distributions:
-            distributions[js_date]['opinions'] += 1
-            distributions[js_date]['citations'] += citations
-        else:
-            distributions[js_date] = {'opinions': 1, 'citations': citations}
-
-    opinion_data = [[date, data['opinions']] for date, data in distributions.items()]
-    citation_data = [[date, data['citations']] for date, data in distributions.items()]
-
-    # Sort data chronologically
-    opinion_data = sorted(opinion_data, key=lambda x: x[0])
-    citation_data = sorted(citation_data, key=lambda x: x[0])
-
-    if opinion_data:
-        earliest = opinion_data[0][0] - js_month
-        latest = opinion_data[-1][0] + js_month
-    else:
-        # No scraping has been done yet, set dates manually, charts will be blank
-        earliest = 1262304000
-        latest = time()
-
-    context['citation_distribution'] = citation_data
-    context['opinion_distribution'] = opinion_data
-    context['earliest'] = earliest - js_month
-    context['latest'] = latest + js_month
-
     return render(request, template, context)
+
+
+# Helper class for StreamingHttpResponse + CSV writer
+class Echo:
+    def write(self, value):
+        return value

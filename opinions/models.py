@@ -3,7 +3,6 @@
 from django.db import models
 from scotuswebcites import settings
 from discovery.Pdf import Pdf
-from citations.models import Citation
 
 
 class Opinion(models.Model):
@@ -24,9 +23,6 @@ class Opinion(models.Model):
     def __init__(self, *args, **kwargs):
         self.local_pdf = False
         super(Opinion, self).__init__(*args, **kwargs)
-
-    def get_counts_and_update_date(self):
-        self.citation_count = Citation.objects.filter(opinion=self.id).count()
 
     def get_local_pdf(self):
         if not self.id:
