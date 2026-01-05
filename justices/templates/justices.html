@@ -2,7 +2,6 @@
 {% load static %}
 
 {% block javascript %}
-<script src="{% static 'js/jquery.floatThead.min.js' %}"></script>
 {% endblock %}
 
 {% block content %}
@@ -12,41 +11,36 @@
       <thead>
       <tr>
         <th>Justice</th>
-        <th>Published Opinions</th>
-        <th>Total Web Citations</th>
-        <th>Average Web Citations Per Opinion</th>
+        <th class="text-right">Opinions</th>
+        <th class="text-right">WebCites</th>
+        <th class="text-right">Average WebCites Per Opinion</th>
       </tr>
       </thead>
       <tbody>
         {% for justice in justices %}
           <tr>
-
             <td>{{ justice.name }}</td>
-
-            <td>
+            <td class="text-right">
               {% if justice.opinion_count %}
                 <a href="/opinions/{{ justice.id  }}" title="view justice opinions">
-                  <span class="label label-primary label-as-badge">{{ justice.opinion_count }}</span>
+                  {{ justice.opinion_count }}
                 </a>
               {% else %}
-                <span class="label label-default label-as-badge">{{ justice.opinion_count }}</span>
+                {{ justice.opinion_count }}
               {% endif %}
             </td>
-
-            <td>
+            <td class="text-right">
               {% if justice.citation_count %}
                 <a href="/citations/{{ justice.id  }}" title="view justice citations">
-                  <span class="label label-primary label-as-badge">{{ justice.citation_count  }}</span>
+                  {{ justice.citation_count }}
                 </a>
               {% else %}
                 <span class="label label-default label-as-badge">{{ justice.citation_count  }}</span>
               {% endif %}
             </td>
-
-            <td>
+            <td class="text-right">
               {{ justice.citation_average_count|floatformat:2 }}
             </td>
-
           </tr>
         {% endfor %}
       </tbody>

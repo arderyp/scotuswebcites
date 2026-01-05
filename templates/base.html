@@ -1,4 +1,3 @@
-{% load bootstrap3 %}
 {% load static %}
 
 <!DOCTYPE html>
@@ -16,10 +15,6 @@
   <link rel="shortcut icon" type="image/png" href="https://www.law.berkeley.edu/favicon.ico"/>
 
   <!--javascript-->
-  <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
-  <script src="{% static 'js/npm.js' %}"></script>
-  <script src="{% static 'js/scotus.js' %}"></script>
   {% if SITE_IMPROVE_SCRIPT_URL %}
     <script async src="{{ SITE_IMPROVE_SCRIPT_URL }}"></script>
   {% endif %}
@@ -27,66 +22,53 @@
   {% block javascript %}{% endblock %}
 
   <!--stylesheets-->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-  <link href="{% static 'css/style.css' %}" media="all" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2.1.1/css/pico.min.css">
+<!--  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2.1.1/css/pico.classless.min.css">-->
+<!--  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2.1.1/css/pico.slim.min.css">-->
+  <link href="{% static 'css/scotuswebcites.css' %}" media="all" rel="stylesheet">
   {% block css %}{% endblock %}
 </head>
 
 <body>
-
-  <!--NAVBAR-->
-  <nav class="navbar navbar-default  navbar-fixed-top" role="navigation">
-    <div class="container">
-      <div class="navbar-header">
-        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
-          <span class="sr-only">Toggle navigation</span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-        <a href="http://www.supremecourt.gov/opinions/opinions.aspx" class="navbar-brand" title="View SCOTUS Opinions Page" target="_blank">
-          <img src="/static/img/Seal_of_the_United_States_Supreme_Court.svg" id="scotus-seal" height="30" width="30" />
-        </a>
-        <a class="navbar-brand">
-          U.S. Supreme Court Web Citations
-        </a>
-      </div>
-      <div class="navbar-collapse collapse">
-        <ul class="nav nav-pills pull-right">
-          <li role="presentation" class="{% if request.path == '/' %}active{% endif %}">
-            <a href="/" title="Project Overview">Overview</a>
-          </li>
-          <li role="presentation"  class="{% if '/citations/' in request.path %}active{% endif %}">
-            <a href="/citations" title="View Citations Data">Citations</a>
-          </li>
-          <li role="presentation"  class="{% if '/opinions/' in request.path %}active{% endif %}">
-            <a href="/opinions" title="View Opinions Data">Opinions</a>
-          </li>
-          <li role="presentation"  class="{% if '/justices/' in request.path %}active{% endif %}">
-            <a href="/justices" title="View Justice Data">Justices</a>
-          </li>
-          <li role="presentation"  class="{% if '/data/' in request.path %}active{% endif %}">
-            <a href="/data/" title="Analyze Our Data">Data</a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav>
+    <nav class="container">
+      <ul>
+        <li><strong>
+          <a href="/">
+            SCOTUS WebCites
+          </a>
+        </strong></li>
+      </ul>
+      <ul>
+        <li>
+          <fieldset id="nav-group" role="group" style="margin-bottom: 0;">
+            <button onclick="location.href='/citations/'" class="outline">Citations</button>
+            <button onclick="location.href='/opinions/'" class="outline">Opinions</button>
+            <button onclick="location.href='/justices/'" class="outline">Justices</button>
+            <button onclick="location.href='/data/'" class="outline">Data</button>
+          </fieldset>
+        </li>
+      </ul>
+    </nav>
 
   <!--FLASH MESSAGES-->
   {% if messages %}
-    {% for msg in messages %}
-      <div class="alert alert-{{msg.level_tag}} flash-dissolve text-center" role="alert">
-        <stong>{{msg.message}}</stong>
-      </div>
-    {% endfor %}
-	{% endif %}
+    <div id="flash-container">
+      {% for msg in messages %}
+        <article class="flash-dissolve" data-level="{{ msg.level_tag }}">
+          <strong>{{ msg.message }}</strong>
+        </article>
+      {% endfor %}
+    </div>
+  {% endif %}
 
   <!--MAIN BODY CONTENT FROM EXTENDING TEMPLATE-->
-  {% block content %}{% endblock %}
+  <article>
+    {% block content %}{% endblock %}
+  </article>
+
 
   <!--FOOTER-->
-  <footer class="footer">
+  <footer class="text-center">
     <p>
       ScotusWebCites
       <a target="_blank" href="https://github.com/arderyp/scotuswebcites/releases/tag/{{ VERSION }}">v{{ VERSION }}</a>
@@ -94,5 +76,6 @@
   </footer>
 </body>
 
+<script async src="{% static 'js/nav.js' %}"></script>
 {% block javascript_bottom %}{% endblock %}
 </html>

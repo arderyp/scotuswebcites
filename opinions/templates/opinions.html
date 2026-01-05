@@ -3,21 +3,39 @@
 {% load static %}
 
 {% block javascript %}
-<script src="{% static 'js/opinion-filters.js' %}"></script>
-<script src="{% static 'js/jquery.floatThead.min.js' %}"></script>
+<script src="{% static 'js/opinions.js' %}"></script>
 {% endblock %}
 
 {% block content %}
-<div class="container">
-  <div class="row">
-    {% include "opinion-filters.html" %}
-    <table class="table table-responsive sticky-header">
+    <div class="container">
+      <div class="row">
+
+        <div class="container">
+          <div class="row">
+            <div id="javascript-filters" style="display:none;">
+              <fieldset role="group">
+                <button id="filter-all" class="outline" title="All items">
+                  All <span id="filter-all-count"></span>
+                </button>
+                <button id="filter-citations" class="outline" title="Items with web citations">
+                  With Web Citations <span id="filter-citations-count"></span>
+                </button>
+                <button id="filter-revisions" class="outline" title="Revised items">
+                  Revisions <span id="filter-revisions-count"></span>
+                </button>
+              </fieldset>
+            </div>
+          </div>
+        </div>
+
+    <figure>
+      <table class="table table-responsive sticky-header">
       <thead>
       <tr>
         <th>Opinion</th>
         <th>Justice</th>
         <th>Published</th>
-        <th>Web Citations</th>
+        <th class="text-right">WebCites</th>
       </tr>
       </thead>
       <tbody>
@@ -38,7 +56,7 @@
               <span class="glyphicon glyphicon-info-sign text-info" title="Discovered on {{ opinion.discovered|yyyymmdd }}"></span>
             </td>
 
-            <td>
+            <td class="text-right">
               {% if opinion.citation_count %}
                 <a href="/citations/{{ opinion.id  }}" title="view opinion citations" target="_blank">
                   <span class="label label-primary label-as-badge citation-count">
@@ -54,6 +72,7 @@
         {% endfor %}
       </tbody>
     </table>
+    </figure>
   </div>
 </div>
 {% endblock %}
