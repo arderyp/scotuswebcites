@@ -3,57 +3,81 @@
 {% load static %}
 
 {% block javascript %}
-<script src="{% static 'js/opinion-filters.js' %}"></script>
-<script src="{% static 'js/jquery.floatThead.min.js' %}"></script>
+  <script src="{% static 'js/filter.js' %}"></script>
 {% endblock %}
 
 {% block content %}
-<div class="container">
-  <div class="row">
-    {% include "opinion-filters.html" %}
-    <table class="table table-responsive sticky-header">
-      <thead>
-      <tr>
-        <th>Opinion</th>
-        <th>Justice</th>
-        <th>Published</th>
-        <th>Web Citations</th>
-      </tr>
-      </thead>
-      <tbody>
-        {% for opinion in opinions %}
-          <tr class="{% if '[REVISION]' in opinion.name %}revision{% endif %} {% if opinion.citation_count %}has-citations{% endif %}">
+  <div class="container">
+    <details class="dropdown js-filter-dropdown" style="display:none;">
+      <summary aria-haspopup="listbox">Filter opinions by:</summary>
+      <ul role="listbox">
+        <li>
+          <a href="#" data-value="all">
+            All <span class="count-badge" data-count-type="all"></span>
+          </a>
+        </li>
+        <li>
+          <a href="#" data-value=".has-citation">
+            With Web Citations <span class="count-badge" data-count-type=".has-citation"></span>
+          </a>
+        </li>
+        <li>
+          <a href="#" data-value=".has-revision">
+            Revisions <span class="count-badge" data-count-type=".has-revision"></span>
+          </a>
+        </li>
+      </ul>
+    </details>
 
-            <td>
-              <a href="{{ opinion.pdf_url }}" title="View Original Opinion" target="_blank">
-                {{ opinion.name }}
-              </a>
-            </td>
+    <figure>
+      <table class="table table-responsive sticky-header">
+        <thead>
+          <tr>
+            <th>Opinion</th>
+            <th><small>Justice</small></th>
+            <th><small>Published</small></th>
+            <th class="text-right"><small>WebCites</small></th>
+          </tr>
+        </thead>
+        <tbody>
 
+          {% for opinion in opinions %}
+            <tr class="{% if '[REVISION]' in opinion.name %}revision{% endif %} {% if opinion.citation_count %}has-citations{% endif %}">
 
-            <td class="justice-name">{{ opinion.justice.name }}</td>
-
-            <td>
-              {{ opinion.published|yyyymmdd }}
-              <span class="glyphicon glyphicon-info-sign text-info" title="Discovered on {{ opinion.discovered|yyyymmdd }}"></span>
-            </td>
-
-            <td>
-              {% if opinion.citation_count %}
-                <a href="/citations/{{ opinion.id  }}" title="view opinion citations" target="_blank">
-                  <span class="label label-primary label-as-badge citation-count">
-                    {{ opinion.citation_count }}
+              <td>
+                <a href="{{ opinion.pdf_url }}" title="View Original Opinion" target="_blank">
+                  <span class="{% if 'REVISION' in opinion.name %}has-revision{% endif %}">
+                    {{ opinion.name }}
                   </span>
                 </a>
-              {% else %}
-                <span class="label label-default label-as-badge">{{ opinion.citation_count }}</span>
-              {% endif %}
-            </td>
+              </td>
 
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+
+              <td class="justice-name">{{ opinion.justice.name }}</td>
+
+              <td>
+                <span data-tooltip="Discovered on {{ opinion.discovered|yyyymmdd }}" data-placement="right">
+                  {{ opinion.published|yyyymmdd }}
+                </span>
+
+              </td>
+
+              <td class="text-right">
+                {% if opinion.citation_count %}
+                  <a href="/citations/{{ opinion.id  }}" title="view opinion citations" target="_blank">
+                    <span class="has-citation">
+                      {{ opinion.citation_count }}
+                    </span>
+                  </a>
+                {% else %}
+                  <span>{{ opinion.citation_count }}</span>
+                {% endif %}
+              </td>
+
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </figure>
   </div>
-</div>
 {% endblock %}

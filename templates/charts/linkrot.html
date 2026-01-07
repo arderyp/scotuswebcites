@@ -1,58 +1,86 @@
-<!--Build LinkRot Chart-->
 <script>
-  Highcharts.setOptions(
-    {
-      colors: [
-        '#90ed7d',
-        '#f7a35c',
-        '#434348',
-      ]
-    }
-  );
-  $('#rot_distribution').highcharts({
+  Highcharts.setOptions({
+    colors: ['#90ed7d', '#f7a35c', '#434348']
+  });
+
+  Highcharts.chart('rot_distribution', {
     title: {
-      text: 'Availability<br>Upon<br>Discovery',
-      //align: 'center',
+      text: 'AVAILABILITY UPON DISCOVERY',
+      align: 'center',
       verticalAlign: 'middle',
-      //y: 50,
-      y: -15,
+      useHTML: true,
+      x: 0,
+      y: 0,
+      style: {
+        textAlign: 'center',
+        fontSize: '20px',
+        width: '180px'
+      }
     },
     chart: {
       plotBackgroundColor: null,
       plotBorderWidth: 0,
       plotShadow: false,
-      height: 450,
-      width:450,
+      type: 'pie',
+      spacingLeft: 0,
+      spacingRight: 0
     },
-    credits: {
-      enabled: false,
-    },
+    credits: { enabled: false },
     plotOptions: {
-       pie: {
-         //startAngle: -90,
-         //endAngle: 90,
-         //center: ['50%', '75%'],
-         dataLabels: {
-           enabled: true,
-           distance: -50,
-           style: {
-             fontSize: '14px',
-             fontWeight: 'bold',
-             color: 'white',
-             textShadow: '0px 1px 2px black',
-           },
-         },
-       }
+      pie: {
+        center: ['50%', '50%'],
+        dataLabels: {
+          enabled: true,
+          useHTML: true,
+          distance: 30,
+          style: {
+            fontSize: '22px',
+            fontWeight: 'bold',
+            textOutline: 'none'
+          },
+          formatter: function() {
+            return '<span style="color:' + this.point.color + '">' + this.point.name + '</span>';
+          }
+        },
+      }
     },
     series: [{
-      type: 'pie',
       name: 'Web Citations',
-      innerSize: '50%',
+      innerSize: '55%',
       data: [
-        ['<a href="{{ base }}/citations/available">available</a>', {{ available }}],
-        ['<a href="{{ base }}/citations/redirect">redirected</a>', {{ redirected }}],
-        ['<a href="{{ base }}/citations/unavailable">unavailable</a>', {{ unavailable }}],
+        { name: '<a href="{{ base }}/citations/available">available</a>', y: {{ available }} },
+        { name: '<a href="{{ base }}/citations/redirect">redirected</a>', y: {{ redirected }} },
+        { name: '<a href="{{ base }}/citations/unavailable">unavailable</a>', y: {{ unavailable }} }
       ],
     }],
+    responsive: {
+      rules: [{
+        condition: {
+          maxWidth: 480
+        },
+        chartOptions: {
+          title: {
+            style: {
+              fontSize: '14px',
+              width: '100px'
+            }
+          },
+          plotOptions: {
+            pie: {
+              dataLabels: {
+                distance: 10,
+                style: {
+                  fontSize: '14px'
+                }
+              }
+            }
+          },
+          series: [{
+            size: '90%',
+            innerSize: '60%'
+          }]
+        }
+      }]
+    }
   });
 </script>

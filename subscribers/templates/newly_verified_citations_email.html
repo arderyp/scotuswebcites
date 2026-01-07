@@ -6,24 +6,24 @@
 </p>
 <table style="border-collapse:collapse; border:1px solid black;">
   <thead>
-  <th style="border:1px solid black;">Opinion</th>
-  <th style="border:1px solid black;">Citation URI</th>
-  <th style="border:1px solid black;">Perma Link</th>
+    <th style="border:1px solid black;">Opinion</th>
+    <th style="border:1px solid black;">Citation URI</th>
+    <th style="border:1px solid black;">Perma Link</th>
   </thead>
   <tbody>
-  {% for citation in citations %}
-    <tr>
-      <td style="border:1px solid black; padding: 5px;">{{ citation.opinion.name }}</td>
-      <td style="border:1px solid black; padding: 5px;">{{ citation.validated }}</td>
-      <td style="border:1px solid black; padding: 5px;">
-        {% if citation.perma %}
-          {{ citation.perma }}
-        {% else %}
-          None available (Link Rot!)
-        {% endif %}
-      </td>
-    </tr>
-  {% endfor %}
+    {% for citation in citations %}
+      <tr>
+        <td style="border:1px solid black; padding: 5px;">{{ citation.opinion.name }}</td>
+        <td style="border:1px solid black; padding: 5px;">{{ citation.validated }}</td>
+        <td style="border:1px solid black; padding: 5px;">
+          {% if citation.perma %}
+            {{ citation.perma }}
+          {% else %}
+            None available (Link Rot!)
+          {% endif %}
+        </td>
+      </tr>
+    {% endfor %}
   </tbody>
 </table>
 <p>

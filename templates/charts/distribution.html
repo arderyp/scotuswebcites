@@ -1,34 +1,32 @@
-<!--Build Distribution Chart-->
 <script>
- $('#citation_distribution').highcharts({
-    title: {
-      text: '',
-    },
+  Highcharts.chart('citation_distribution', {
     chart: {
       type: 'line',
       height: 520,
+    },
+    title: {
+      text: null, // 'text: ' is deprecated in favor of null
     },
     credits: {
       enabled: false,
     },
     xAxis: {
       type: 'datetime',
-      //min: {{ earliest }},
-      //max: {{ latest }},
       title: {
-        text: '',
+        text: null,
       },
       plotLines: [{
         color: '#F206FF',
-        dashStyle: 'dot',
+        dashStyle: 'Dot', // Case sensitive in some versions, 'Dot' is standard
         value: {{ go_live_date }},
         width: 2,
+        zIndex: 5, // Ensures the line sits above the series
         label: {
-          //text: '<a href="{{ cite_nyt }}">NYT Publication</a>',
           text: '<strong>Web Citation Discovery Begins</strong>',
+          useHTML: true, // Required for <strong> tags
           style: {
             color: 'purple',
-            fontSize:'18px',
+            fontSize: '18px',
           }
         },
       }],
@@ -37,7 +35,7 @@
       min: 0,
       maxPadding: 0,
       title: {
-        text: ''
+        text: null
       },
     },
     series: [
@@ -45,7 +43,8 @@
         color: '#7cb5ec',
         name: 'Web Citations',
         data: {{ citation_distribution }},
-      }, {
+      },
+      {
         color: '#f45b5b',
         name: 'Opinions',
         data: {{ opinion_distribution }},

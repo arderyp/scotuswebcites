@@ -2,49 +2,58 @@
 {% load static %}
 
 {% block javascript %}
-<script src="{% static 'js/highcharts.js' %}"></script>
-<script src="{% static 'js/grid-light.js' %}"></script>
+  <script src="https://code.highcharts.com/12/highcharts.js"></script>
+  <script src="{% static 'js/data.js' %}"></script>
 {% endblock %}
 
 {% block css %}
-<link href='https://fonts.googleapis.com/css?family=Libre+Baskerville|Special+Elite' rel='stylesheet' type='text/css'>
 {% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-  <div class="row">
-    <div id="citation_distribution" class="chart"></div>
-  </div>
-</div>
-<div class="container">
-  <div class="row">
-    <noscript>
-      <div class="alert alert-warning text-center" role="alert">
-        <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-        Please enable javascript in your broswer to view our distribution charts
-      </div>
-    </noscript>
+  <section>
+    <div id="citation_distribution"></div>
+  </section>
 
-    <div id="data-text" class="col-md-8">
-      <h2>Analyzing Our Data</h2>
-      <p>
-        Our primary goal is to archive critical web citations
-        for posterity's sake. Above is a graph of the distribution of opinion
-        publications and web citations over time. The gauge to the right represents
-        the availability of web citations as we discover them. These are simple
-        examples, and the rest is up to you! Download a csv dump of our data set
-        and keep us posted on the interesting things that you do with it!
-      </p>
-      <p><a id="download-data" href="/csv" class="btn btn-primary" title="Analyze Our Data">Download Data</a></p>
-    </div>
-    <div class="col-md-4">
-      <div id="rot_distribution" class="chart"></div>
-    </div>
-  </div>
-</div>
+  <main class="container">
+    <section>
+      <div id="data-grid" class="grid">
+        <div id="data-text">
+          <noscript>
+            <article id="enable-js">
+              Please enable javascript in your browser to view our distribution charts
+            </article>
+          </noscript>
+
+          <h2>Analyzing Our Data</h2>
+          <p>
+            Our primary goal is to archive critical web citations
+            for posterity's sake. Above is a graph of the distribution of opinion
+            publications and web citations over time. The gauge to the right represents
+            the availability of web citations as we discover them. These are simple
+            examples, and the rest is up to you! Download a csv dump of our data set
+            and keep us posted on the interesting things that you do with it!
+          </p>
+          <p>
+            If you'd like to subscribe to get notifications when new citations are discovered
+            and validated, please open an issue on the
+            <a href="https://github.com/arderyp/scotuswebcites/issues" target="_blank">github repo</a>
+            to request access.
+          </p>
+          <p>
+            <button title="Analyze Our Data" onclick="location.href='/csv'" class="outline">Download CSV</button>
+          </p>
+        </div>
+
+        <div>
+          <div id="rot_distribution"></div>
+        </div>
+
+      </div>
+    </section>
+  </main>
 {% endblock %}
 
 {% block javascript_bottom %}
-{% include "charts/distribution.html" %}
-{% include "charts/linkrot.html" %}
+  {% include "charts/distribution.html" %}
+  {% include "charts/linkrot.html" %}
 {% endblock %}

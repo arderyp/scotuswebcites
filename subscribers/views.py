@@ -85,10 +85,10 @@ def unsubscribe(request, hash_key):
     return HttpResponseRedirect('/')
 
 
-# @login_required()
-# def notify_subscribers(request):
-#     call_command('notifysubscribers')
-#     return HttpResponseRedirect('/citations/')
+@login_required()
+def notify_subscribers(request):
+    call_command('notifysubscribers')
+    return HttpResponseRedirect('/citations/')
 
 
 def _send_confirmation_email(request, subscriber):

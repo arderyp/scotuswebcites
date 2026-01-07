@@ -48,7 +48,6 @@ def opinion_citations(request, opinion_id):
 
 @login_required()
 def verify(request, citation_id):
-    error = False
     template = 'verify.html'
 
     if request.method == 'POST':
@@ -81,10 +80,10 @@ def verify(request, citation_id):
                 messages.add_message(request, messages.SUCCESS, 'Successfully verified citation!')
                 return HttpResponseRedirect('/citations/#%s' % citation.id)
 
-            error = 'Your form submission was invalid'
+            messages.add_message(request, messages.ERROR, 'Your form submission was invalid')
 
         except Exception as exception:
-            error = str(exception)
+            messages.add_message(request, messages.ERROR, str(exception))
 
             # if settings.DEBUG:
             #     import traceback
@@ -106,7 +105,6 @@ def verify(request, citation_id):
     context = {
         'citation': citation,
         'form': form,
-        'error': error,
     }
 
     return render(request, template, context)
