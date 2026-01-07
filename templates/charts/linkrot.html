@@ -9,19 +9,18 @@
       align: 'center',
       verticalAlign: 'middle',
       useHTML: true,
-      x: 50, // Adjust this number (e.g., 30 to 50) to nudge it right into the hole
+      x: 0,
       y: 0,
       style: {
         textAlign: 'center',
         fontSize: '20px',
-        width: '180px' // Forces wrap to stay inside the circle
+        width: '180px'
       }
     },
     chart: {
       plotBackgroundColor: null,
       plotBorderWidth: 0,
       plotShadow: false,
-      height: 700,
       type: 'pie',
       spacingLeft: 0,
       spacingRight: 0
@@ -29,7 +28,7 @@
     credits: { enabled: false },
     plotOptions: {
       pie: {
-        center: ['50%', '50%'], // Explicitly pins the pie to the exact center of the container
+        center: ['50%', '50%'],
         dataLabels: {
           enabled: true,
           useHTML: true,
@@ -54,5 +53,34 @@
         { name: '<a href="{{ base }}/citations/unavailable">unavailable</a>', y: {{ unavailable }} }
       ],
     }],
+    responsive: {
+      rules: [{
+        condition: {
+          maxWidth: 480
+        },
+        chartOptions: {
+          title: {
+            style: {
+              fontSize: '14px',
+              width: '100px'
+            }
+          },
+          plotOptions: {
+            pie: {
+              dataLabels: {
+                distance: 10,
+                style: {
+                  fontSize: '14px'
+                }
+              }
+            }
+          },
+          series: [{
+            size: '90%',
+            innerSize: '60%'
+          }]
+        }
+      }]
+    }
   });
 </script>

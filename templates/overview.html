@@ -1,136 +1,130 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block javascript %}{% endblock %}
-
-{% block css %}
-<link href="{% static 'css/overview.css' %}" media="all" rel="stylesheet">
-<link href='https://fonts.googleapis.com/css?family=Libre+Baskerville|Special+Elite' rel='stylesheet' type='text/css'>
-{% endblock %}
-
 {% block content %}
   <div class="container overview-container">
-    <div class="row">
-      <!--CAROUSEL SLIDER-->
-      <div class="carousel slide" data-ride="carousel" id="scotusCarousel">
-        <ol class="carousel-indicators">
-          <li data-target="#scotusCarousel" data-slide-to="0" class="active"></li>
-          <li data-target="#scotusCarousel" data-slide-to="1"></li>
-          <li data-target="#scotusCarousel" data-slide-to="2"></li>
-        </ol>
-        <div class="carousel-inner" role="listbox">
-          <div class="item active" id="sl1">
-            <p>
-              When a judicial opinion <strong>cites</strong> something from the web, researchers
-              should be able to <strong>check it</strong> later and find <strong>exactly</strong>
-              what it looked like when it was cited.<sup>1</sup>
-            </p>
-            <p class="footnote">
-              <span class="number">1</span>
-              <a href="http://scotus.law.berkeley.edu">http://scotus.law.berkeley.edu</a>,
+    <div id="font-courier-new" class="carousel-container">
+      <div class="carousel-inner">
+        <article id="sl1" class="item">
+          <p>
+            When a judicial opinion <strong>cites</strong> something from the web, researchers
+            should be able to <strong>check it</strong> later and find <strong>exactly</strong>
+            what it looked like when it was cited.<sup>1</sup>
+          </p>
+          <footer class="footnote">
+            <small class="number">1 <a href="http://scotus.law.berkeley.edu">scotus.law.berkeley.edu</a>,
               <i>archived at</i>
-              <a href="https://perma.cc/Z7BV-CJNY">https://perma.cc/Z7BV-CJNY</a>
-            </p>
-          </div>
-          <div class="item" id="sl2">
-            Unfortunately, legal publication hasn't fully moved into the <strong>age of the web</strong>,
+              <a href="https://perma.cc/Z7BV-CJNY">perma.cc/Z7BV-CJNY</a></small>
+          </footer>
+        </article>
+
+        <article id="sl2" class="item">
+          <p>Unfortunately, legal publication hasn't fully moved into the <strong>age of the web</strong>,
             so these web citations are prone to <strong>"rot."</strong> That is, what a researcher may
             find (if anything) when they check that URL may not be the same as it was when it was first
-            consulted by the judge or clerk.
-          </div>
-          <div class="item">
-            scotus.law.berkeley.edu captures a <strong>snapshot</strong> of any webpage cited by the
-            US Supreme Court as soon as possible after the court opinion is issued.
-          </div>
-        </div>
+            consulted by the judge or clerk.</p>
+        </article>
+
+        <article id="sl3" class="item">
+          <p>SCOTUS WebCites captures a <strong>snapshot</strong> of any webpage cited by the
+            US Supreme Court as soon as possible after the court opinion is issued.</p>
+        </article>
       </div>
 
-        <!--TEXT-->
-        <div class="row" id="about">
-          <div class="col-lg-12">
-            <p>
-              Courts cite the web, and the web is always changing. In the time between the moment
-              when a website was cited and the time an opinion is published, information on that
-              website can disappear or change subtly... or substantially.
-            </p>
-            <p>
-              This obscures and dilutes the value of citations to web resources in court documents.
-              Over time, these unarchived resources are exposed ever more to the vagaries of the
-              web&mdash;site reorganizations, domain-name lapses, etc. The citations become useless
-              or increasingly suspect.
-            </p>
-            <p>
-              SCOTUS has begun to address this matter, but at present offers only PDFs made from
-              printouts of webpages, and does so only weeks or months after the citing opinion was
-              published.
-            </p>
+      <nav class="carousel-indicators">
+        <button class="outline" data-slide="0"></button>
+        <button class="outline" data-slide="1"></button>
+        <button class="outline" data-slide="2"></button>
+      </nav>
+    </div>
 
-            <h2>A Stopgap Measure</h2>
-            <p>
-              Our system determines in near real-time when the Court publishes an opinion and promptly
-              takes snapshots of the web pages it cites.
-            </p>
-            <p>
-              Though it's possible the web page has changed in the time between citation and publication
-              of the opinion, this process catches the resource at the freshest possible moment.
-            </p>
+    <!--TEXT-->
+    <div id="about">
+      <p>
+        Courts cite the web, and the web is always changing. In the time between the moment
+        when a website was cited and the time an opinion is published, information on that
+        website can disappear or change subtly... or substantially.
+      </p>
+      <p>
+        This obscures and dilutes the value of citations to web resources in court documents.
+        Over time, these unarchived resources are exposed ever more to the vagaries of the
+        web&mdash;site reorganizations, domain-name lapses, etc. The citations become useless
+        or increasingly suspect.
+      </p>
+      <p>
+        SCOTUS has begun to address this matter, but at present offers only PDFs made from
+        printouts of webpages, and does so only weeks or months after the citing opinion was
+        published.
+      </p>
 
-            <h2>A Long-Term Solution</h2>
-            <p>
-              As legal publishing evolves over time, we expect judges, clerks and others to use services
-              like Harvard's <a href="http://perma.cc">perma.cc</a> to create an archive of any web
-              resource they cite and provide links to it as well.
-            </p>
+      <h2>A Stopgap Measure</h2>
+      <p>
+        Our system determines in near real-time when the Court publishes an opinion and promptly
+        takes snapshots of the web pages it cites.
+      </p>
+      <p>
+        Though it's possible the web page has changed in the time between citation and publication
+        of the opinion, this process catches the resource at the freshest possible moment.
+      </p>
 
-            <h2>How does this work?</h2>
-            <ol>
-              <li>
-                our application watches the
-                <a href="https://www.supremecourt.gov/">Supreme Court website</a> for new opinions
-              </li>
-              <li>
-                when it sees one, it downloads it and converts it from a PDF to text
-              </li>
-              <li>
-                it looks for web citations in the text, then passes any it finds to a human on our
-                team for evaluation
-              </li>
-              <li>
-                if the resource is findable online when the human validates the URL, the application
-                archives it using perma.cc's API
-              </li>
-              <li>
-                users can browse <a href="/opinions/">opinions</a>, <a href="/justices/">justices</a> or the master
-                list of <a href="/citations/">citations</a> found in the opinions
-              </li>
-              <li>
-                notifications go out to subscribers whenever citations are harvested from new
-                opinions
-              </li>
-            </ol>
-            <p id="broughtToYouBy">
-              This site was developed by Phil Ardery and is hosted by UC Berkeley Law Library.
-            </p>
+      <h2>A Long-Term Solution</h2>
+      <p>
+        As legal publishing evolves over time, we expect judges, clerks and others to use services
+        like Harvard's <a href="http://perma.cc">perma.cc</a> to create an archive of any web
+        resource they cite and provide links to it as well.
+      </p>
 
-<!--            <h2>Subscribe</h2>-->
-<!--            <form class="navbar-form navbar-left" method="post" action="/signup">-->
-<!--              {% csrf_token %}-->
-<!--              <p>-->
-<!--                for updates-->
-<!--                <input type="text" class="form-control" name="email" placeholder="email@domain.com">-->
-<!--                <button type="submit" class="btn btn-primary" title="Get Email Notifications When New Data Is Discovered">-->
-<!--                  Subscribe-->
-<!--                </button>-->
-<!--              </p>-->
-<!--            </form>-->
-          </div>
-        </div>
+      <h2>How does this work?</h2>
+      <ol>
+        <li>
+          our application watches the
+          <a href="https://www.supremecourt.gov/">Supreme Court website</a> for new opinions
+        </li>
+        <li>
+          when it sees one, it downloads it and converts it from a PDF to text
+        </li>
+        <li>
+          it looks for web citations in the text, then passes any it finds to a human on our
+          team for evaluation
+        </li>
+        <li>
+          if the resource is findable online when the human validates the URL, the application
+          archives it using perma.cc's API
+        </li>
+        <li>
+          users can browse <a href="/opinions/">opinions</a>, <a href="/justices/">justices</a> or the master
+          list of <a href="/citations/">citations</a> found in the opinions
+        </li>
+        <li>
+          notifications go out to subscribers whenever citations are harvested from new
+          opinions
+          <ul>
+            <li>
+              open an issue on the <a href="https://github.com/arderyp/scotuswebcites/issues" target="_blank">github repo</a>
+              to request subscriber access.
+            </li>
+          </ul>
+        </li>
+      </ol>
+      <p id="broughtToYouBy">
+        This site was developed by Phil Ardery and is hosted by UC Berkeley Law Library.
+      </p>
+
+<!--      <h2>Subscribe</h2>-->
+<!--      <form class="navbar-form navbar-left" method="post" action="/signup">-->
+<!--        {% csrf_token %}-->
+<!--        <p>-->
+<!--          for updates-->
+<!--          <input type="text" class="form-control" name="email" placeholder="email@domain.com">-->
+<!--          <button type="submit" class="btn btn-primary" title="Get Email Notifications When New Data Is Discovered">-->
+<!--            Subscribe-->
+<!--          </button>-->
+<!--        </p>-->
+<!--      </form>-->
     </div>
   </div>
 {% endblock %}
 
 {% block javascript_bottom %}
-<script>
-  $('#scotusCarousel').carousel({ interval: 11000 });
-</script>
+  <script src="{% static 'js/overview.js' %}"></script>
 {% endblock %}

@@ -2,80 +2,74 @@
 
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-<head>
-  <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="MobileOptimized" content="width" />
-  <meta name="HandheldFriendly" content="true" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="MobileOptimized" content="width" />
+    <meta name="HandheldFriendly" content="true" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>United States Supreme Court Web Citations</title>
+    <title>United States Supreme Court Web Citations</title>
 
-  <!--favicon-->
-  <link rel="shortcut icon" type="image/png" href="https://www.law.berkeley.edu/favicon.ico"/>
+    <!--favicon-->
+    <link rel="shortcut icon" type="image/png" href="https://www.law.berkeley.edu/favicon.ico"/>
 
-  <!--javascript-->
-  {% if SITE_IMPROVE_SCRIPT_URL %}
-    <script async src="{{ SITE_IMPROVE_SCRIPT_URL }}"></script>
-  {% endif %}
+    <!--javascript-->
+    {% if SITE_IMPROVE_SCRIPT_URL %}
+      <script async src="{{ SITE_IMPROVE_SCRIPT_URL }}"></script>
+    {% endif %}
 
-  {% block javascript %}{% endblock %}
+    {% block javascript %}{% endblock %}
 
-  <!--stylesheets-->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2.1.1/css/pico.min.css">
-<!--  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2.1.1/css/pico.classless.min.css">-->
-<!--  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2.1.1/css/pico.slim.min.css">-->
-  <link href="{% static 'css/scotuswebcites.css' %}" media="all" rel="stylesheet">
-  {% block css %}{% endblock %}
-</head>
+    <!--stylesheets-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2.1.1/css/pico.min.css">
+    <link href="{% static 'css/scotuswebcites.css' %}" media="all" rel="stylesheet">
+    {% block css %}{% endblock %}
+  </head>
 
-<body>
-    <nav class="container">
+  <body>
+    <nav class="container-fluid">
       <ul>
-        <li><strong>
-          <a href="/">
-            SCOTUS WebCites
-          </a>
-        </strong></li>
+        <li><strong><a href="/">SCOTUS WebCites</a></strong></li>
       </ul>
-      <ul>
-        <li>
-          <fieldset id="nav-group" role="group" style="margin-bottom: 0;">
-            <button onclick="location.href='/citations/'" class="outline">Citations</button>
-            <button onclick="location.href='/opinions/'" class="outline">Opinions</button>
-            <button onclick="location.href='/justices/'" class="outline">Justices</button>
-            <button onclick="location.href='/data/'" class="outline">Data</button>
-          </fieldset>
-        </li>
+
+      <!-- Hamburger label: Hidden on desktop by default -->
+      <input type="checkbox" id="menu-toggle" hidden>
+      <label for="menu-toggle" class="burger-icon" aria-label="Toggle menu">&#x2261;</label>
+
+      <!-- Navigation links -->
+      <ul class="nav-menu">
+        <li><a href="/citations/">Citations</a></li>
+        <li><a href="/opinions/">Opinions</a></li>
+        <li><a href="/justices/">Justices</a></li>
+        <li><a href="/data/">Data</a></li>
       </ul>
     </nav>
 
-  <!--FLASH MESSAGES-->
-  {% if messages %}
+    <!--FLASH MESSAGES-->
     <div id="flash-container">
       {% for msg in messages %}
-        <article class="flash-dissolve" data-level="{{ msg.level_tag }}">
+        <article class="flash" data-level="{{ msg.level_tag }}">
           <strong>{{ msg.message }}</strong>
         </article>
       {% endfor %}
     </div>
-  {% endif %}
 
-  <!--MAIN BODY CONTENT FROM EXTENDING TEMPLATE-->
-  <article>
-    {% block content %}{% endblock %}
-  </article>
+    <!--MAIN BODY CONTENT FROM EXTENDING TEMPLATE-->
+    <article>
+      {% block content %}{% endblock %}
+    </article>
 
 
-  <!--FOOTER-->
-  <footer class="text-center">
-    <p>
-      ScotusWebCites
-      <a target="_blank" href="https://github.com/arderyp/scotuswebcites/releases/tag/{{ VERSION }}">v{{ VERSION }}</a>
-    </p>
-  </footer>
-</body>
+    <!--FOOTER-->
+    <footer class="text-center">
+      <p>
+        ScotusWebCites
+        <a target="_blank" href="https://github.com/arderyp/scotuswebcites/releases/tag/{{ VERSION }}">v{{ VERSION }}</a>
+      </p>
+    </footer>
+  </body>
 
-<script async src="{% static 'js/nav.js' %}"></script>
-{% block javascript_bottom %}{% endblock %}
+  <script async src="{% static 'js/nav.js' %}"></script>
+  {% block javascript_bottom %}{% endblock %}
 </html>

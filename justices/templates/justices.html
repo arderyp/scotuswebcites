@@ -5,16 +5,15 @@
 {% endblock %}
 
 {% block content %}
-<div class="container">
-  <div class="row">
+  <div class="container">
     <table class="table table-striped sticky-header">
       <thead>
-      <tr>
-        <th>Justice</th>
-        <th class="text-right">Opinions</th>
-        <th class="text-right">WebCites</th>
-        <th class="text-right">Average WebCites Per Opinion</th>
-      </tr>
+        <tr>
+          <th>Justice</th>
+          <th class="text-right"><small>Opinions</small></th>
+          <th class="text-right"><small>WebCites</small></th>
+          <th class="text-right"><small>Average</small></th>
+        </tr>
       </thead>
       <tbody>
         {% for justice in justices %}
@@ -46,5 +45,4 @@
       </tbody>
     </table>
   </div>
-</div>
 {% endblock %}

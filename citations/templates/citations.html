@@ -3,92 +3,109 @@
 {% load static %}
 
 {% block javascript %}
-   <script src="{% static 'js/citations.js' %}"></script>
+  <script src="{% static 'js/filter.js' %}"></script>
 {% endblock %}
 
 {% block content %}
   {% if user.is_authenticated %}
-    <header style="display: flex; justify-content: flex-end; align-items: center;">
+    <header id="citations-header">
       <button onclick="location.href='/notifysubscribers'" class="outline">Notify Subscribers</button>
     </header>
   {% endif %}
 
-  <div id="javascript-filters" style="display:none;">
-    <fieldset role="group">
-      <button id="filter-all" class="outline" aria-current="true" title="all web citations">
-        All <span id="filter-all-count"></span>
-      </button>
-      <button id="filter-available" class="outline status-a" title="available at crawl time">
-        Available <span id="filter-available-count"></span>
-      </button>
-      <button id="filter-redirect" class="outline status-r" title="redirected at crawl time">
-        Redirect <span id="filter-redirect-count"></span>
-      </button>
-      <button id="filter-unavailable" class="outline status-u" title="unavailable at crawl time">
-        Unavailable <span id="filter-unavailable-count"></span>
-      </button>
-    </fieldset>
-  </div>
+  <details class="dropdown js-filter-dropdown" style="display:none;">
+    <summary aria-haspopup="listbox">Filter citations by discovery status:</summary>
+    <ul role="listbox">
+      <li>
+        <a href="#" data-value="all">
+          All <span class="count-badge" data-count-type="all"></span>
+        </a>
+      </li>
+      <li>
+        <a href="#" data-value=".status-a">
+          Available upon discovery <span class="count-badge status-a" data-count-type=".status-a"></span>
+        </a>
+      </li>
+      <li>
+        <a href="#" data-value=".status-r">
+          Redirect upon discovery <span class="count-badge status-r" data-count-type=".status-r"></span>
+        </a>
+      </li>
+      <li>
+        <a href="#" data-value=".status-u">
+          Unavailable upon discovery <span class="count-badge status-u" data-count-type=".status-u"></span>
+        </a>
+      </li>
+      <li>
+        <a href="#" data-value=".status-x">
+          Auto-Validated from previous opinion draft at crawl time <span class="count-badge status-x" data-count-type=".status-x"></span>
+        </a>
+      </li>
+    </ul>
+  </details>
 
   <figure>
     <table class="sticky-header">
       <thead>
         <tr>
-          <th>Verified</th>
-          <th>Status</th>
+          <th class="column-citation-opinion"><!--opinion--></th>
           <th>Citation</th>
-          <th>Memento</th>
+          <th><small>Verified</small></th>
+          <th><small>Memento</small></th>
         </tr>
       </thead>
       <tbody>
-      {% for citation in citations %}
-        <tr id="{{ citation.id }}">
-          <td>
-            {% if citation.verify_date %}
-              {% if citation.perma %}
-                <a target="_blank" href="{{ citation.perma }}" title="view archived capture">
-                  {{ citation.verify_date|date:"Y.m.d" }}
-                </a>
-              {% else %}
-                {{ citation.verify_date|date:"Y.m.d" }}
-              {% endif %}
-            {% else %}
-              {% if user.is_authenticated %}
-                <button onclick="location.href='/citations/verify/{{ citation.id }}'" class="button-verify outline">Verify</button>
-              {% else %}
-                unverified
-              {% endif %}
-            {% endif %}
-          </td>
+        {% for citation in citations %}
+          <tr id="{{ citation.id }}">
 
-          <td>
-            <span class="bold-text status-{{ citation.status }}">{{ citation.status }}</span>
-          </td>
+            <td class="column-citation-opinion">
+              <a href="{{ citation.opinion.pdf_url }}"
+                 title='Cited on {{ citation.opinion.published|date:"Y.m.d" }} in "{{ citation.opinion.name }}"'
+                 target="_blank">📖</a>
+            </td>
 
-          <td>
-            <a href="{{ citation.opinion.pdf_url }}"
-               title='Cited on {{ citation.opinion.published|date:"Ymd" }} in "{{ citation.opinion.name }}"' target="_blank">
-               📖
-            </a>
-
-            {% if citation.status == 'u' %}
-              {{ citation.validated|default:citation.scraped }}
-            {% else %}
-              <a target="_blank" href="{{ citation.validated|default:citation.scraped }}">
+            <td>
+              {% if citation.status == 'u' %}
                 {{ citation.validated|default:citation.scraped }}
-              </a>
-            {% endif %}
-          </td>
+              {% else %}
+                <a target="_blank" href="{{ citation.validated|default:citation.scraped }}">
+                  {{ citation.validated|default:citation.scraped }}
+                </a>
+              {% endif %}
+            </td>
 
-          <td class="text-center">
-            {% if citation.memento %}
-              <a href="{{ citation.memento }}" target="_blank">
-                <img src="/static/img/memento-logo.png" style="height: 40px; width: auto;" />
-              </a>
-            {% endif %}
-          </td>
-        </tr>
-      {% endfor %}
+            <td>
+              {% if citation.verify_date %}
+                <small>
+                  <mark class="status-{{ citation.status }}">
+                    {% if citation.perma %}
+                      <a target="_blank" href="{{ citation.perma }}" title="view archived capture">
+                        {{ citation.verify_date|date:"Y.m.d" }}
+                      </a>
+                    {% else %}
+                      {{ citation.verify_date|date:"Y.m.d" }}
+                    {% endif %}
+                  </mark>
+
+                </small>
+              {% else %}
+                {% if user.is_authenticated %}
+                  <button onclick="location.href='/citations/verify/{{ citation.id }}'" class="button-verify outline">Verify</button>
+                {% else %}
+                  unverified
+                {% endif %}
+              {% endif %}
+            </td>
+
+            <td class="text-center">
+              {% if citation.memento %}
+                <a href="{{ citation.memento }}" target="_blank">
+                  <img src="/static/img/memento-logo.png" style="height: 40px; width: auto;"/>
+                </a>
+              {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
       </tbody>
     </table>
   </figure>

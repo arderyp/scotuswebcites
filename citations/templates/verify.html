@@ -1,48 +1,52 @@
 {% extends "base.html" %}
 
-{% block content %}
-<div class="container">
-  <!--Report Submit Error-->
-  {% if error %}
-    <div class="alert alert-danger">
-      <strong>ERROR:</strong> {{ error|linebreaksbr }}
-    </div>
-  {% endif %}
+{% load static %}
 
+{% block content %}
+  <div class="container">
 
   <!--Present Form-->
-  <div class="row">
-    <form method="post" action="/citations/verify/{{ citation.id  }}">
+    <form method="post" action="/citations/verify/{{ citation.id }}">
       {% csrf_token %}
-      <input type='hidden' name='citation_id' value='{{ citation.id }}' />
-      <ul class="list-group">
-        <li class="list-group-item">Citation Status:
-          <span class="label label-default label-as-badge status-{{ citation.status }}">
+      <input type="hidden" name="citation_id" value="{{ citation.id }}"/>
+
+      <article>
+        <p>
+          <strong>Status:</strong>
+          <span class="status-{{ citation.status }}">
             {{ citation.status }}
           </span>
-        </li>
-        <li class="list-group-item">Opinion: <a href="{{ citation.opinion.pdf_url }}" target="_blank">{{ citation.opinion.name }}</a></li>
-        <li class="list-group-item">
-            Scraped Citation: &nbsp;
-          <a href="{{ citation.scraped }}" target="_blank">{{ citation.scraped }}</a>
-        </li>
-        <li class="list-group-item">Validated Citation: {{ form.validated }}</li>
-        <li class="list-group-item">
-            Scrape Evaluation: {{ form.scrape_evaluation }}
-          <input class="btn btn-primary" type="submit" value="Verify" />
+        </p>
+        <p>
+          <strong>Opinion:</strong>
+          <a href="{{ citation.opinion.pdf_url }}" target="_blank">{{ citation.opinion.name }}</a>
+        </p>
+        <p>
+          <strong>Scraped Citation:</strong>
+          <a id="verify-form-scraped-citations" href="{{ citation.scraped }}" target="_blank">{{ citation.scraped }}</a>
+        </p>
 
-          <!--Show loading wheel when click verify, if js enabled-->
-          <div class='load-wheel' style="display:none">
-            <br>
-            <img src="/static/img/loading.gif" id="loading-indicator" /> Checking status of validated citation, please be patient...
-          </div>
+        <div class="verify-form-info">
+          <label for="id_validated">
+            Validated Citation:
+          </label>
+          {{ form.validated }}
+        </div>
 
-          <!--Show patient message if js disabled-->
-          <div class='js-disabled'>
-            * Verification will take a few seconds, as we validate the status and archive acessibility of the verified link. Please be patient.
-          </div>
-        </li>
-      </ul>
+        <div class="verify-form-info">
+          <label for="id_scrape_evaluation">
+            Scrape Evaluation:
+          </label>
+          {{ form.scrape_evaluation }}
+        </div>
+
+        <footer>
+          <input type="submit" value="Verify"/>
+          <article id="loading" aria-busy="true" style="display:none">
+            Checking status of validated citation, please be patient...
+          </article>
+        </footer>
+      </article>
     </form>
 
     <!--Report Form Errors-->
@@ -50,14 +54,21 @@
       <br>
       {% for field in form %}
         {% if field.errors %}
-          <div class="alert alert-danger" role="alert">
+          <div data-level="error">
             {% for error in field.errors %}
               {{ field.label }}: {{ error }}
+              {% if not forloop.last %}
+                <br>
+              {% endif %}
             {% endfor %}
           </div>
-          {% endif %}
+        {% endif %}
       {% endfor %}
     {% endif %}
   </div>
-</div>
+{% endblock %}
+
+
+{% block javascript_bottom %}
+  <script src="{% static 'js/verify.js' %}"></script>
 {% endblock %}
