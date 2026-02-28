@@ -46,19 +46,20 @@
       </ul>
     </nav>
 
-    <!--FLASH MESSAGES-->
-    <div id="flash-container">
-      {% for msg in messages %}
-        <article class="flash" data-level="{{ msg.level_tag }}">
-          <strong>{{ msg.message }}</strong>
-        </article>
-      {% endfor %}
-    </div>
-
     <!--MAIN BODY CONTENT FROM EXTENDING TEMPLATE-->
-    <article>
+    <main>
+
+      <!--FLASH MESSAGES-->
+      <div id="flash-container">
+        {% for msg in messages %}
+          <article class="flash" data-level="{{ msg.level_tag }}">
+            <strong>{{ msg.message }}</strong>
+          </article>
+        {% endfor %}
+      </div>
+
       {% block content %}{% endblock %}
-    </article>
+    </main>
 
 
     <!--FOOTER-->

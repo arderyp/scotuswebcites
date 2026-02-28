@@ -5,6 +5,8 @@
 {% block content %}
   <div class="container">
 
+    <h1 class="visually-hidden">Verify</h1>
+
   <!--Present Form-->
     <form method="post" action="/citations/verify/{{ citation.id }}">
       {% csrf_token %}

@@ -7,6 +7,9 @@
 {% endblock %}
 
 {% block content %}
+
+  <h1 class="visually-hidden">Citations</h1>
+
   {% if user.is_authenticated %}
     <header id="citations-header">
       <button onclick="location.href='/notifysubscribers'" class="outline">Notify Subscribers</button>
@@ -14,30 +17,30 @@
   {% endif %}
 
   <details class="dropdown js-filter-dropdown" style="display:none;">
-    <summary aria-haspopup="listbox">Filter citations by discovery status:</summary>
-    <ul role="listbox">
-      <li>
-        <a href="#" data-value="all">
+    <summary id="js-filter-dropdown-citations">Filter citations by discovery status:</summary>
+    <ul role="menu" aria-labelledby="js-filter-dropdown-citations">
+      <li role="presentation">
+        <a href="#" role="menuitem" aria-current="false" data-value="all">
           All <span class="count-badge" data-count-type="all"></span>
         </a>
       </li>
-      <li>
-        <a href="#" data-value=".status-a">
+      <li role="presentation">
+        <a href="#" role="menuitem" aria-current="false" data-value=".status-a">
           Available upon discovery <span class="count-badge status-a" data-count-type=".status-a"></span>
         </a>
       </li>
-      <li>
-        <a href="#" data-value=".status-r">
+      <li role="presentation">
+        <a href="#" role="menuitem" aria-current="false" data-value=".status-r">
           Redirect upon discovery <span class="count-badge status-r" data-count-type=".status-r"></span>
         </a>
       </li>
-      <li>
-        <a href="#" data-value=".status-u">
+      <li role="presentation">
+        <a href="#" role="menuitem" aria-current="false" data-value=".status-u">
           Unavailable upon discovery <span class="count-badge status-u" data-count-type=".status-u"></span>
         </a>
       </li>
-      <li>
-        <a href="#" data-value=".status-x">
+      <li role="presentation">
+        <a href="#" role="menuitem" aria-current="false" data-value=".status-x">
           Auto-Validated from previous opinion draft at crawl time <span class="count-badge status-x" data-count-type=".status-x"></span>
         </a>
       </li>
@@ -48,7 +51,9 @@
     <table class="sticky-header">
       <thead>
         <tr>
-          <th class="column-citation-opinion"><!--opinion--></th>
+          <th class="column-citation-opinion">
+            <span class="visually-hidden">Opinion</span>
+          </th>
           <th>Citation</th>
           <th><small>Verified</small></th>
           <th><small>Memento</small></th>
@@ -100,7 +105,7 @@
             <td class="text-center">
               {% if citation.memento %}
                 <a href="{{ citation.memento }}" target="_blank">
-                  <img src="/static/img/memento-logo.png" style="height: 40px; width: auto;"/>
+                  <img src="/static/img/memento-logo.png" alt="View memento archive for citation {{ citation.id }}" style="height: 40px; width: auto;"/>
                 </a>
               {% endif %}
             </td>

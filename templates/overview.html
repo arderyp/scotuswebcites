@@ -3,9 +3,10 @@
 
 {% block content %}
   <div class="container overview-container">
-    <div id="font-courier-new" class="carousel-container">
+
+    <div id="carousel-container" class="font-courier-new" role="region" aria-roledescription="carousel" aria-label="SCOTUS WebCites Overview">
       <div class="carousel-inner">
-        <article id="sl1" class="item">
+        <article id="sl1" class="item" role="tabpanel" aria-roledescription="slide" aria-label="1 of 3">
           <p>
             When a judicial opinion <strong>cites</strong> something from the web, researchers
             should be able to <strong>check it</strong> later and find <strong>exactly</strong>
@@ -18,25 +19,27 @@
           </footer>
         </article>
 
-        <article id="sl2" class="item">
+        <article id="sl2" class="item" role="tabpanel" aria-roledescription="slide" aria-label="2 of 3">
           <p>Unfortunately, legal publication hasn't fully moved into the <strong>age of the web</strong>,
             so these web citations are prone to <strong>"rot."</strong> That is, what a researcher may
             find (if anything) when they check that URL may not be the same as it was when it was first
             consulted by the judge or clerk.</p>
         </article>
 
-        <article id="sl3" class="item">
+        <article id="sl3" class="item" role="tabpanel" aria-roledescription="slide" aria-label="3 of 3">
           <p>SCOTUS WebCites captures a <strong>snapshot</strong> of any webpage cited by the
             US Supreme Court as soon as possible after the court opinion is issued.</p>
         </article>
       </div>
 
-      <nav class="carousel-indicators">
-        <button class="outline" data-slide="0"></button>
-        <button class="outline" data-slide="1"></button>
-        <button class="outline" data-slide="2"></button>
+      <nav class="carousel-indicators" role="tablist" aria-label="Slideshow navigation">
+        <button class="outline" data-slide="0" role="tab" aria-selected="true" aria-controls="sl1" aria-label="Show slide 1"></button>
+        <button class="outline" data-slide="1" role="tab" aria-selected="false" aria-controls="sl2" aria-label="Show slide 2"></button>
+        <button class="outline" data-slide="2" role="tab" aria-selected="false" aria-controls="sl3" aria-label="Show slide 3"></button>
       </nav>
     </div>
+
+    <h1 class="visually-hidden">SCOTUS WebCites Overview</h1>
 
     <!--TEXT-->
     <div id="about">
@@ -57,7 +60,7 @@
         published.
       </p>
 
-      <h2>A Stopgap Measure</h2>
+      <div role="heading" aria-level="2" class="h2-mock">A Stopgap Measure</div>
       <p>
         Our system determines in near real-time when the Court publishes an opinion and promptly
         takes snapshots of the web pages it cites.
@@ -67,14 +70,14 @@
         of the opinion, this process catches the resource at the freshest possible moment.
       </p>
 
-      <h2>A Long-Term Solution</h2>
+      <div role="heading" aria-level="2" class="h2-mock">A Long-Term Solution</div>
       <p>
         As legal publishing evolves over time, we expect judges, clerks and others to use services
         like Harvard's <a href="http://perma.cc">perma.cc</a> to create an archive of any web
         resource they cite and provide links to it as well.
       </p>
 
-      <h2>How does this work?</h2>
+      <div role="heading" aria-level="2" class="h2-mock">How does this work?</div>
       <ol>
         <li>
           our application watches the
@@ -110,7 +113,7 @@
         This site was developed by Phil Ardery and is hosted by UC Berkeley Law Library.
       </p>
 
-<!--      <h2>Subscribe</h2>-->
+<!--      <div role="heading" aria-level="2" class="h2-mock">Subscribe</div>-->
 <!--      <form class="navbar-form navbar-left" method="post" action="/signup">-->
 <!--        {% csrf_token %}-->
 <!--        <p>-->

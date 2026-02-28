@@ -27,6 +27,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 e.preventDefault();
                 const selector = link.getAttribute('data-value');
                 const summary = menu.querySelector('summary');
+		
+		// ACCESSIBILITY: Reset all options in this menu to unselected
+		menu.querySelectorAll('li[role="option"]').forEach(opt => {
+                    opt.setAttribute('aria-selected', 'false');
+                });
+                // ACCESSIBILITY: Set the clicked link to selected
+		link.parentElement.setAttribute('aria-selected', 'true');
 
                 // Update Summary text
                 summary.textContent = link.childNodes[0].textContent.trim();

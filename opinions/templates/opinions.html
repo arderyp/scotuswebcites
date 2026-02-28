@@ -8,21 +8,24 @@
 
 {% block content %}
   <div class="container">
+
+    <h1 class="visually-hidden">Opinions</h1>
+
     <details class="dropdown js-filter-dropdown" style="display:none;">
-      <summary aria-haspopup="listbox">Filter opinions by:</summary>
-      <ul role="listbox">
-        <li>
-          <a href="#" data-value="all">
+      <summary id="js-filter-dropdown-opinions">Filter opinions by:</summary>
+      <ul role="menu" aria-labelledby="js-filter-dropdown-opinions">
+        <li role="presentation">
+          <a href="#" role="menuitem" aria-current="false" data-value="all">
             All <span class="count-badge" data-count-type="all"></span>
           </a>
         </li>
-        <li>
-          <a href="#" data-value=".has-citation">
+        <li role="presentation">
+          <a href="#" role="menuitem" aria-current="false" data-value=".has-citation">
             With Web Citations <span class="count-badge" data-count-type=".has-citation"></span>
           </a>
         </li>
-        <li>
-          <a href="#" data-value=".has-revision">
+        <li role="presentation">
+          <a href="#" role="menuitem" aria-current="false" data-value=".has-revision">
             Revisions <span class="count-badge" data-count-type=".has-revision"></span>
           </a>
         </li>
