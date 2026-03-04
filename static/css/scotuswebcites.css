@@ -168,9 +168,11 @@
   font-size: 0.8rem;
   width: 100%;
 }
+/*
 .column-citation-opinion {
     padding: 0;
 }
+*/
 .count-badge.status-a {
     color: var(--berkeley-green);
 }
