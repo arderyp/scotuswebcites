@@ -9,6 +9,14 @@
   --berkeley-red: #FFCFE5;
   --berkeley-dark: #010133
 }
+.retire-message {
+  color: var(--pico-form-element-valid-active-border-color) !important;
+  border-color: var(--pico-form-element-valid-active-border-color) !important;
+  text-align: center;
+}
+.retire-message p {
+  color: inherit;
+}
 .visually-hidden {
   position: absolute;
   width: 1px;
