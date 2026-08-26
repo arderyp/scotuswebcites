@@ -1,4 +1,4 @@
-Django==5.2.15
+Django==5.2.16
 lxml==6.1.0
 mysqlclient==2.1.0
 python-dateutil==2.8.2
